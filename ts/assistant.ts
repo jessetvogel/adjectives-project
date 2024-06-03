@@ -127,7 +127,7 @@ export class Assistant {
         return results;
     }
 
-    apply_theorem(theorem: core.Theorem, context: core.Context, id: string): boolean {
+    apply_theorem(theorem: core.Theorem, context: core.Context, id: string, should_apply: boolean = true): { object: core.Example, adjective: string, value: boolean } | null {
         // check type
         const type = theorem.type;
         if (!(id in context[type]))
@@ -142,7 +142,7 @@ export class Assistant {
                 throw new Error(`Could not resolve path '${path}' on object '${id}' of type '${type}'`);
             for (const key in theorem.conditions[path]) {
                 if (!(key in object.adjectives) || object.adjectives[key] != theorem.conditions[path][key])
-                    return false;
+                    return null;
             }
         }
 
@@ -150,8 +150,12 @@ export class Assistant {
         const object = this.book.resolve_path(context, subject, theorem.conclusion.path);
         if (object == null)
             throw new Error(`Could not resolve path '${theorem.conclusion.path}' on object '${id}' of type '${type}'`);
-        object.adjectives[theorem.conclusion.adjective] = theorem.conclusion.value;
-        return true;
+        if (should_apply)
+            object.adjectives[theorem.conclusion.adjective] = theorem.conclusion.value;
+        return { object, adjective: theorem.conclusion.adjective, value: theorem.conclusion.value };
+
+        // TODO: Also try to apply the theorem in the opposite direction!
+        //       That is, if the conclusion does not hold, and all but one of the conditions does hold, them the remaining condition must be false
     }
 
     deduce(context: core.Context): void {

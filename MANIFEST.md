@@ -51,10 +51,19 @@ proof: See reference [...] on page [...].
 
 # Architecture
 
-All user-data is stored in .yaml files for readability, and ease of manually changing
-All processed data is stored in .json files for ease of use together with JavaScript
-Then the browser does not need to parse .yaml, only .json, but that it can do very well
-Also the distinction between user-data and processed data is very clear
+All user data is stored in .yaml files (for readability and ease-of-use) in the /data folder.
+All processed data is stored in .json files (for ease-of-use with JavaScript).
+Note that the browser not need parse .yaml files, only .json files, which it can do very well.
+Note that the distinction between user data and processed data is very clear.
+The admin modifies only the .yaml data in the /data folder.
+
+The .yaml data consists of one file per type / theorem / adjective / example.
+From the .yaml data, a book.json file is constructed, containing the important data (omitting descriptions and justifications)
+The book.json file is loaded by the client to search for examples and perform deductions.
+Note that we do not want descriptions and justifications in book.json because we do not want the client to load massive amounts of text.
+
+The descriptions and justifications are stored in [...]
+
 
 The assistant has the following functionality:
 ✅ - Given a set of adjectives with truth values, find the matching examples `Assistant.search(Context)`
