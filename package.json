@@ -1,14 +1,16 @@
 {
-  "name": "the-adjectives-project",
+  "name": "adjectives-project",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "watch-ts": "(cd ts && tsc -w)",
-    "test": "echo TODO",
-    "deploy": "echo TODO"
+    "build-book": "(cd py && python3 yaml_to_json.py)"
   },
   "author": "Jesse Vogel",
   "license": "MIT",
-  "description": ""
+  "description": "The Adjectives Project is a project to collect mathematical definitions, properties, theorems and (counter)examples.",
+  "dependencies": {
+    "@types/node": "^7.0.5"
+  }
 }

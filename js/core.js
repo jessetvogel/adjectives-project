@@ -4,6 +4,7 @@ export class Book {
         this.adjectives = {};
         this.theorems = {};
         this.examples = {};
+        this.descriptions = { types: {}, adjectives: {}, theorems: {}, examples: {} };
         this.initialize(contents);
     }
     initialize(contents) {
@@ -16,16 +17,18 @@ export class Book {
     deserialize_type(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         const parameters = ('parameters' in data) ? data.parameters : {}; // fallback to empty set of parameters if none are given
-        // const description = ('description' in data) ? data.description.toString() : null;
         // TODO: check if parameter keys are [\w\-]+
         return { id, name, parameters };
     }
-    serialize_type(type) {
-        return {
+    serialize_type(type, elaborate = false) {
+        const data = {
             type: 'type',
             name: type.name,
             parameters: type.parameters
         };
+        if (elaborate && type.id in this.descriptions.types) // add description when elaborate is true
+            data.description = this.descriptions.types[type.id];
+        return data;
     }
     deserialize_theorem(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
@@ -82,7 +85,7 @@ export class Book {
             throw new Error(`Invalid conclusion '${then}' in theorem '${id}'`);
         return { id, name, type: subject_type, conditions, conclusion };
     }
-    serialize_theorem(theorem) {
+    serialize_theorem(theorem, elaborate = false) {
         const name = 'x';
         function conditions_for_path(path) {
             const conditions = [];
@@ -92,13 +95,16 @@ export class Book {
             }
             return conditions;
         }
-        return {
+        const data = {
             type: 'theorem',
             name: theorem.name,
             given: theorem.type + ' ' + name,
             if: Object.keys(theorem.conditions).map(conditions_for_path).flat(),
             then: `${name}${theorem.conclusion.path}${theorem.conclusion.value ? ' ' : ' not'}${theorem.conclusion.adjective}`
         };
+        if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type]) // add description when elaborate is true
+            data.description = this.descriptions.theorems[theorem.type][theorem.id];
+        return data;
     }
     deserialize_adjective(id, data) {
         const type_base = data.type.replace(/ adjective$/, '');
@@ -110,34 +116,46 @@ export class Book {
         // const description = ('description' in data) ? data.description.toString() : null;
         return { id, type: type_base, name };
     }
-    serialize_adjective(adjective) {
-        return {
+    serialize_adjective(adjective, elaborate = false) {
+        const data = {
             type: `${adjective.type} adjective`,
             name: adjective.name,
         };
+        if (elaborate && adjective.type in this.descriptions.adjectives && adjective.id in this.descriptions.adjectives[adjective.type]) // add description when elaborate is true
+            data.description = this.descriptions.adjectives[adjective.type][adjective.id];
+        return data;
     }
     deserialize_example(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         const args = ('with' in data) ? data.with : {}; // fallback to empty set of arguments if none are given
         const adjectives = ('adjectives' in data) ? data.adjectives : {}; // fallback to empty set of adjectives if none are given
         // const description = ('description' in data) ? data.description.toString() : null;
-        for (const key in adjectives) {
-            const value = (typeof adjectives[key] == 'boolean')
-                ? adjectives[key] : ((Array.isArray(adjectives[key]) && adjectives[key].length == 2 && typeof adjectives[key][0] == 'boolean') ? adjectives[key][0] : null);
-            if (value == null)
-                throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective ${key}`);
-            adjectives[key] = value;
+        for (const key in adjectives) { // check adjectives
+            const value = adjectives[key];
+            if (typeof value != 'boolean' && !(Array.isArray(value) && value.length == 2 && typeof value[0] == 'boolean' && typeof value[1] == 'string'))
+                throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective '${key}'`);
         }
         // TODO: check if arguments and adjectives keys are [\w\-]+
         return { id, type: data.type, name, args, adjectives };
     }
-    serialize_example(example) {
-        return {
+    serialize_example(example, elaborate = false) {
+        const data = {
             type: example.type,
             name: example.name,
             with: example.args,
             adjectives: example.adjectives
         };
+        if (!elaborate) { // remove justifications when elaborate is false 
+            for (const key of data.adjectives) {
+                if (Array.isArray(data.adjectives[key]))
+                    data.adjectives[key] = data.adjectives[key][0];
+            }
+        }
+        if (elaborate) { // add description when elaborate is true
+            if (example.type in this.descriptions.examples && example.id in this.descriptions.examples[example.type])
+                data.description = this.descriptions.examples[example.type][example.id];
+        }
+        return data;
     }
     add(id, data) {
         if (!('type' in data) || typeof data.type != 'string')
@@ -149,6 +167,9 @@ export class Book {
             if (id in this.types)
                 throw new Error(`Type with id '${id}' already exists`);
             this.types[id] = this.deserialize_type(id, data);
+            const description = ('description' in data) ? data.description.toString() : null;
+            if (description != null)
+                this.descriptions.types[id] = description;
             return;
         }
         if (type == 'theorem') { // parse theorems
@@ -158,6 +179,12 @@ export class Book {
             if (id in this.theorems[theorem.type])
                 throw new Error(`Theorem with id '${id}' for type '${theorem.type}' already exists`);
             this.theorems[theorem.type][id] = theorem;
+            const description = ('description' in data) ? data.description.toString() : null;
+            if (description != null) {
+                if (!(theorem.type in this.descriptions.theorems))
+                    this.descriptions.theorems[theorem.type] = {};
+                this.descriptions.theorems[theorem.type][id] = description;
+            }
             return;
         }
         if (type.endsWith(' adjective')) { // parse adjective
@@ -167,6 +194,12 @@ export class Book {
             if (id in this.adjectives[adjective.type])
                 throw new Error(`Adjective with id '${id}' for type '${adjective.type}' already exists`);
             this.adjectives[adjective.type][id] = adjective;
+            const description = ('description' in data) ? data.description.toString() : null;
+            if (description != null) {
+                if (!(adjective.type in this.descriptions.adjectives))
+                    this.descriptions.adjectives[adjective.type] = {};
+                this.descriptions.adjectives[adjective.type][id] = description;
+            }
             return;
         }
         { // parse examples
@@ -176,6 +209,13 @@ export class Book {
             if (id in this.examples[type])
                 throw new Error(`Example with id '${id}' for type '${type}' already exists`);
             this.examples[type][id] = example;
+            const description = ('description' in data) ? data.description.toString() : null;
+            if (description != null) {
+                if (!(example.type in this.descriptions.examples))
+                    this.descriptions.examples[example.type] = {};
+                this.descriptions.examples[example.type][id] = description;
+            }
+            return;
         }
     }
     verify() {

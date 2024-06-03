@@ -62,7 +62,12 @@ From the .yaml data, a book.json file is constructed, containing the important d
 The book.json file is loaded by the client to search for examples and perform deductions.
 Note that we do not want descriptions and justifications in book.json because we do not want the client to load massive amounts of text.
 
-The descriptions and justifications are stored in [...]
+The descriptions and justifications are stored in the /json folder.
+Every type has a file under `/json/types/<id>.json`
+Every adjective has a file under `/json/adjectives/<type>/<id>.json`
+Every theorem has a file under `/json/theorems/<type>/<id>.json`
+Every example has a file under `/json/examples/<type>/<id>.json`
+
 
 
 The assistant has the following functionality:
@@ -72,4 +77,4 @@ The assistant has the following functionality:
 - Given a context, try to deduce a contradiction
 
 # TODO
-- Go from snake_case to camelCase
+- Go from snake_case to camelCase ?
