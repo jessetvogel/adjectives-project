@@ -1,0 +1,6 @@
+type: scheme
+name: $\Spec \QQ$
+description: Spectrum of the rational numbers
+adjectives:
+  affine: true
+  integral: [true, The ring $\QQ$ is a domain]

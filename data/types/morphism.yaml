@@ -1,0 +1,5 @@
+type: type
+name: morphism
+parameters:
+  source: scheme
+  target: scheme

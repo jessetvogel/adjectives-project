@@ -1,0 +1,14 @@
+{
+  "name": "the-adjectives-project",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "watch-ts": "(cd ts && tsc -w)",
+    "test": "echo TODO",
+    "deploy": "echo TODO"
+  },
+  "author": "Jesse Vogel",
+  "license": "MIT",
+  "description": ""
+}

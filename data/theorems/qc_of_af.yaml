@@ -1,0 +1,5 @@
+type: theorem
+name: affine schemes are quasi-compact
+given: scheme X
+if: [X affine] # if only one assumption, it could also be a single string
+then: X quasi-compact # always only one conclusion

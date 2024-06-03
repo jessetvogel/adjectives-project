@@ -1,0 +1,15 @@
+# Node
+node_modules/
+
+# macOS
+.DS_Store
+
+# Python
+.ipynb_checkpoints
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Source maps
+*.js.map
+*.css.map

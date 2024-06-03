@@ -1,0 +1,7 @@
+type: morphism
+arguments:
+  source: Spec_QQ
+  target: Spec_ZZ
+adjectives:
+  affine: true
+  flat: true
