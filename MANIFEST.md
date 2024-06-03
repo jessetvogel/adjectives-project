@@ -58,10 +58,9 @@ Also the distinction between user-data and processed data is very clear
 
 The assistant has the following functionality:
 ✅ - Given a set of adjectives with truth values, find the matching examples `Assistant.search(Context)`
-- Given a context (a set of examples which might refer to each other), and a list of theorems (bundled in a book), deduce adjectives for the examples
+✅ - Given a context (a set of examples which might refer to each other), and a list of theorems (bundled in a book), deduce adjectives for the examples
   - Also give 'proofs' for the statements: i.e. a (short as possible) list of theorems which to apply in order to arrive at the result
 - Given a context, try to deduce a contradiction
-
 
 # TODO
 - Go from snake_case to camelCase

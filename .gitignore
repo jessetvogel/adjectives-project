@@ -13,3 +13,6 @@ __pycache__/
 # Source maps
 *.js.map
 *.css.map
+
+# JSON files
+json/

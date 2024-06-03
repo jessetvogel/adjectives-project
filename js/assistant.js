@@ -97,10 +97,41 @@ export class Assistant {
         helper(new Matcher(this.book, query), 0);
         return results;
     }
-    apply_theorem(context, object, theorem) {
-        return false;
+    apply_theorem(theorem, context, id) {
+        // check type
+        const type = theorem.type;
+        if (!(id in context[type]))
+            throw new Error(`Cannot apply theorem '${theorem.id}': no object '${id}' of type '${type}' found`);
+        const subject = context[type][id];
+        // verify conditions
+        for (const path in theorem.conditions) {
+            const object = this.book.resolve_path(context, subject, path);
+            if (object == null)
+                throw new Error(`Could not resolve path '${path}' on object '${id}' of type '${type}'`);
+            for (const key in theorem.conditions[path]) {
+                if (!(key in object.adjectives) || object.adjectives[key] != theorem.conditions[path][key])
+                    return false;
+            }
+        }
+        // apply the conclusion
+        const object = this.book.resolve_path(context, subject, theorem.conclusion.path);
+        if (object == null)
+            throw new Error(`Could not resolve path '${theorem.conclusion.path}' on object '${id}' of type '${type}'`);
+        object.adjectives[theorem.conclusion.adjective] = theorem.conclusion.value;
+        return true;
     }
     deduce(context) {
+        for (const type in context) { // for every object in the context ...
+            for (const id in context[type]) {
+                if (!(type in this.book.theorems))
+                    continue;
+                const theorems = this.book.theorems[type];
+                for (const thm_id in theorems) { // ... and for every theorem of the corresponding type ...
+                    if (this.apply_theorem(theorems[thm_id], context, id)) // ... try to apply the theorem to the object
+                        console.log(`Successfully applied theorem '${thm_id}' to '${id}'`);
+                }
+            }
+        }
     }
 }
 ;
