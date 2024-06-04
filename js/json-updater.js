@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { PATH_JSON, PATH_SUMMARY } from './general.js';
+import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
 function update_object(source, target) {
     let changes = false;
     for (const key in target) {
@@ -42,11 +42,11 @@ function update_json_file(file_path, data) {
         }
         if (changes) {
             fs.writeFileSync(file_path, JSON.stringify(json), 'utf8');
-            console.log(`✅ Updated '${file_path}'`);
+            Log.success(`Updated '${file_path}'`);
         }
     }
     catch (err) {
-        console.log(`Failed to update '${file_path}': ${err}`);
+        Log.error(`Failed to update '${file_path}': ${err}`);
     }
 }
 function update_summary(book) {

@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { Book } from './core.js'
-import { PATH_JSON, PATH_SUMMARY } from './general.js';
+import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
 
 function update_object(source: any, target: any): boolean { // returns true if any actual change was made
     let changes = false;
@@ -48,11 +48,11 @@ function update_json_file(file_path: string, data: any): void {
         }
         if (changes) {
             fs.writeFileSync(file_path, JSON.stringify(json), 'utf8');
-            console.log(`✅ Updated '${file_path}'`);
+            Log.success(`Updated '${file_path}'`);
         }
     }
     catch (err) {
-        console.log(`Failed to update '${file_path}': ${err}`);
+        Log.error(`Failed to update '${file_path}': ${err}`);
     }
 }
 

@@ -1,16 +1,36 @@
 import fs from 'fs';
 
 import { Book } from './core.js';
-import { Assistant } from './assistant.js';
+import { Assistant, DeduceOptions } from './assistant.js';
 import { update_json } from './json-updater.js';
+import { Log } from './general.js';
 
 const PATH_SUMMARY = './json/summary.json';
 
 function main() {
+    // Parse arguments
+    let options: DeduceOptions = {};
+    for (const arg of process.argv) {
+        let match;
+        match = arg.match(/^--types?=([\w\-,]+)$/);
+        if (match) options.types = match[1].split(',');
+        match = arg.match(/^--ids?=([\w\-]+,)$/);
+        if (match) options.ids = match[1].split(',');
+        match = arg.match(/^--help$/)
+        if (match) {
+            console.log('usage: script-deduce.js [options]');
+            console.log('  options:');
+            console.log('    --help            show this help message');
+            console.log('    --type=<types>    restrict to objects with type in comma-separated list <types>');
+            console.log('    --id=<ids>        restrict to objects with id in comma-separated list <ids>');
+            return;
+        }
+    }
+
     try {
         // Load summary
         if (!fs.existsSync(PATH_SUMMARY)) {
-            console.log(`🚨 Missing summary file '${PATH_SUMMARY}'`);
+            Log.error(`Missing summary file '${PATH_SUMMARY}'`);
             return;
         }
 
@@ -22,25 +42,25 @@ function main() {
 
         // Make deductions
         const assistant = new Assistant(book);
-        console.log(`👉 Deducing ...`);
-        const conclusions = assistant.deduce(book.examples);
+        Log.action(`Deducing`);
+        const conclusions = assistant.deduce(book.examples, options);
         for (const conclusion of conclusions)
-            console.log(`🤖 Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
+            Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
 
         // Save conclusions
         if (conclusions.length > 0) {
-            console.log(`👉 Saving conclusions ...`);
+            Log.action(`Saving conclusions`);
             update_json(book);
         }
         else {
-            console.log(`💬 No deductions were made`);
+            Log.info(`No deductions were made`);
         }
 
         // Done
-        console.log('✅ Done');
+        Log.success('Done');
     }
-    catch (err) {
-        console.log(`🚨 ${err}`);
+    catch (err: any) {
+        Log.error(err.toString());
     }
 }
 

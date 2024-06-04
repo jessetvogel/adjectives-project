@@ -7,7 +7,8 @@
     "watch-ts": "(cd ts && tsc -w)",
     "update-json-from-yaml": "node --enable-source-maps ./js/script-update-json-from-yaml.js",
     "clear-json": "node --enable-source-maps ./js/script-clear-json.js",
-    "deduce": "node --enable-source-maps ./js/script-deduce.js"
+    "deduce": "node --enable-source-maps ./js/script-deduce.js",
+    "script": "node --enable-source-maps ./js/script.js"
   },
   "author": "Jesse Vogel",
   "license": "MIT",

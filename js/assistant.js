@@ -132,10 +132,14 @@ export class Assistant {
         // TODO: Also try to apply the theorem in the opposite direction!
         //       That is, if the conclusion does not hold, and all but one of the conditions does hold, them the remaining condition must be false
     }
-    deduce(context) {
+    deduce(context, options) {
         const conclusions = [];
         for (const type in context) { // for every object in the context ...
+            if ((options === null || options === void 0 ? void 0 : options.types) && !options.types.includes(type))
+                continue; // skip if not in options
             for (const id in context[type]) {
+                if ((options === null || options === void 0 ? void 0 : options.ids) && !options.ids.includes(id))
+                    continue; // skip if not in options
                 if (!(type in this.book.theorems))
                     continue;
                 const theorems = this.book.theorems[type];

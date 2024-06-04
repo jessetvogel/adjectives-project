@@ -1,16 +1,16 @@
 import fs from 'fs';
-import { PATH_JSON } from './general.js';
+import { Log, PATH_JSON } from './general.js';
 function main() {
     try {
         // Delete json directory, and create a fresh one
-        console.log(`👉 Deleting '${PATH_JSON}' ...`);
+        Log.action(`Deleting '${PATH_JSON}'`);
         fs.rmSync(PATH_JSON, { recursive: true });
-        console.log(`👉 Creating '${PATH_JSON}' ...`);
+        Log.action(`Creating '${PATH_JSON}'`);
         fs.mkdirSync(PATH_JSON);
-        console.log('✅ Done');
+        Log.success('Done');
     }
     catch (err) {
-        console.log(`🚨 ${err}`);
+        Log.error(err.toString());
     }
 }
 main();

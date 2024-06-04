@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 
 import { Book } from './core.js';
 import { update_json } from './json-updater.js';
-import { PATH_YAML, EXTENSION_YAML } from './general.js';
+import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
 
 // Finds all files (recursively) with the given extension inside the given directory.
 // Returns a list of the paths to all files found. 
@@ -32,7 +32,7 @@ function main() {
                 book.add(id, data);
             }
             catch (err) {
-                console.log(`Failed to load '${file}': ${err}`);
+                Log.error(`Failed to load '${file}': ${err}`);
             }
         }
         book.verify();
@@ -41,9 +41,9 @@ function main() {
         update_json(book);
 
         // Done
-        console.log('✅ Done');
-    } catch (err) {
-        console.log(`🚨 ${err}`);
+        Log.success('Done');
+    } catch (err: any) {
+        Log.error(err.toString());
     }
 }
 

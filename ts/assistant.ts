@@ -55,6 +55,7 @@ class Matcher {
 };
 
 type Conclusion = { object: core.Example, adjective: string, value: boolean };
+export type DeduceOptions = { types?: string[], ids?: string[] };
 
 export class Assistant {
 
@@ -169,10 +170,12 @@ export class Assistant {
         //       That is, if the conclusion does not hold, and all but one of the conditions does hold, them the remaining condition must be false
     }
 
-    deduce(context: core.Context): Conclusion[] {
+    deduce(context: core.Context, options?: DeduceOptions): Conclusion[] {
         const conclusions: Conclusion[] = [];
         for (const type in context) { // for every object in the context ...
+            if (options?.types && !options.types.includes(type)) continue; // skip if not in options
             for (const id in context[type]) {
+                if (options?.ids && !options.ids.includes(id)) continue; // skip if not in options
                 if (!(type in this.book.theorems))
                     continue;
                 const theorems = this.book.theorems[type];
