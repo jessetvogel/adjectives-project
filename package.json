@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "watch-ts": "(cd ts && tsc -w)",
-    "build-book": "(cd py && python3 yaml_to_json.py)"
+    "update-json-from-yaml": "node --enable-source-maps ./js/script-update-json-from-yaml.js",
+    "clear-json": "node --enable-source-maps ./js/script-clear-json.js",
+    "deduce": "node --enable-source-maps ./js/script-deduce.js"
   },
   "author": "Jesse Vogel",
   "license": "MIT",
   "description": "The Adjectives Project is a project to collect mathematical definitions, properties, theorems and (counter)examples.",
   "dependencies": {
-    "@types/node": "^7.0.5"
+    "js-yaml": "^4.1.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.14.1"
   }
 }

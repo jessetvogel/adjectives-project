@@ -98,11 +98,21 @@ export class Assistant {
         return results;
     }
     apply_theorem(theorem, context, id, should_apply = true) {
+        var _a;
         // check type
         const type = theorem.type;
         if (!(id in context[type]))
             throw new Error(`Cannot apply theorem '${theorem.id}': no object '${id}' of type '${type}' found`);
         const subject = context[type][id];
+        // if the theorem conclusion already holds, there is no need to try to apply the theorem
+        const object = this.book.resolve_path(context, subject, theorem.conclusion.path);
+        if (object == null)
+            throw new Error(`Could not resolve path '${theorem.conclusion.path}' on object '${id}' of type '${type}'`);
+        let object_adjective_value = (_a = object.adjectives) === null || _a === void 0 ? void 0 : _a[theorem.conclusion.adjective];
+        if (Array.isArray(object_adjective_value))
+            object_adjective_value = object_adjective_value[0];
+        if (object_adjective_value == theorem.conclusion.value)
+            return null;
         // verify conditions
         for (const path in theorem.conditions) {
             const object = this.book.resolve_path(context, subject, path);
@@ -113,28 +123,30 @@ export class Assistant {
                     return null;
             }
         }
-        // apply the conclusion
-        const object = this.book.resolve_path(context, subject, theorem.conclusion.path);
-        if (object == null)
-            throw new Error(`Could not resolve path '${theorem.conclusion.path}' on object '${id}' of type '${type}'`);
-        if (should_apply)
+        // apply and return the conclusion
+        if (should_apply) {
             object.adjectives[theorem.conclusion.adjective] = theorem.conclusion.value;
+            object.proofs[theorem.conclusion.adjective] = `🤖 ${type} ${theorem.id} ${id}`;
+        }
         return { object, adjective: theorem.conclusion.adjective, value: theorem.conclusion.value };
         // TODO: Also try to apply the theorem in the opposite direction!
         //       That is, if the conclusion does not hold, and all but one of the conditions does hold, them the remaining condition must be false
     }
     deduce(context) {
+        const conclusions = [];
         for (const type in context) { // for every object in the context ...
             for (const id in context[type]) {
                 if (!(type in this.book.theorems))
                     continue;
                 const theorems = this.book.theorems[type];
                 for (const thm_id in theorems) { // ... and for every theorem of the corresponding type ...
-                    if (this.apply_theorem(theorems[thm_id], context, id)) // ... try to apply the theorem to the object
-                        console.log(`Successfully applied theorem '${thm_id}' to '${id}'`);
+                    const conclusion = this.apply_theorem(theorems[thm_id], context, id);
+                    if (conclusion != null)
+                        conclusions.push(conclusion);
                 }
             }
         }
+        return conclusions;
     }
 }
 ;

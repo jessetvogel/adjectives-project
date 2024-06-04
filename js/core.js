@@ -1,18 +1,25 @@
 export class Book {
-    constructor(contents = {}) {
+    constructor(contents = null) {
         this.types = {};
         this.adjectives = {};
         this.theorems = {};
         this.examples = {};
         this.descriptions = { types: {}, adjectives: {}, theorems: {}, examples: {} };
-        this.initialize(contents);
+        if (contents != null)
+            this.initialize(contents);
     }
     initialize(contents) {
-        for (const id in contents) {
-            const data = (Array.isArray(contents[id])) ? contents[id] : [contents[id]];
-            for (const x of data)
-                this.add(id, x);
-        }
+        for (const id in contents.types)
+            this.add(id, contents.types[id]);
+        for (const type in contents.adjectives)
+            for (const id in contents.adjectives[type])
+                this.add(id, contents.adjectives[type][id]);
+        for (const type in contents.theorems)
+            for (const id in contents.theorems[type])
+                this.add(id, contents.theorems[type][id]);
+        for (const type in contents.examples)
+            for (const id in contents.examples[type])
+                this.add(id, contents.examples[type][id]);
     }
     deserialize_type(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
@@ -23,9 +30,10 @@ export class Book {
     serialize_type(type, elaborate = false) {
         const data = {
             type: 'type',
-            name: type.name,
-            parameters: type.parameters
+            name: type.name
         };
+        if (Object.keys(type.parameters).length > 0)
+            data.parameters = type.parameters;
         if (elaborate && type.id in this.descriptions.types) // add description when elaborate is true
             data.description = this.descriptions.types[type.id];
         return data;
@@ -83,24 +91,23 @@ export class Book {
             : ((then_parts.length == 3 && then_parts[1] != 'not') ? { path: then_parts[0], adjective: then_parts[2], value: false } : null);
         if (conclusion == null)
             throw new Error(`Invalid conclusion '${then}' in theorem '${id}'`);
-        return { id, name, type: subject_type, conditions, conclusion };
+        return { id, name, type: subject_type, subject: subject_name, conditions, conclusion };
     }
     serialize_theorem(theorem, elaborate = false) {
-        const name = 'x';
         function conditions_for_path(path) {
             const conditions = [];
             for (const adj in theorem.conditions[path]) {
                 const value = theorem.conditions[path][adj];
-                conditions.push(`${name}${path}${value ? ' ' : ' not '}${adj}`);
+                conditions.push(`${theorem.subject}${path}${value ? ' ' : ' not '}${adj}`);
             }
             return conditions;
         }
         const data = {
             type: 'theorem',
             name: theorem.name,
-            given: theorem.type + ' ' + name,
+            given: theorem.type + ' ' + theorem.subject,
             if: Object.keys(theorem.conditions).map(conditions_for_path).flat(),
-            then: `${name}${theorem.conclusion.path}${theorem.conclusion.value ? ' ' : ' not'}${theorem.conclusion.adjective}`
+            then: `${theorem.subject}${theorem.conclusion.path}${theorem.conclusion.value ? ' ' : ' not'}${theorem.conclusion.adjective}`
         };
         if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type]) // add description when elaborate is true
             data.description = this.descriptions.theorems[theorem.type][theorem.id];
@@ -129,28 +136,34 @@ export class Book {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         const args = ('with' in data) ? data.with : {}; // fallback to empty set of arguments if none are given
         const adjectives = ('adjectives' in data) ? data.adjectives : {}; // fallback to empty set of adjectives if none are given
+        const proofs = {};
         // const description = ('description' in data) ? data.description.toString() : null;
-        for (const key in adjectives) { // check adjectives
+        // check adjectives
+        // NOTE: adjective values may be 'boolean' (usually) or '[boolean, string]' where the string is the proof. We split them.
+        for (const key in adjectives) {
             const value = adjectives[key];
-            if (typeof value != 'boolean' && !(Array.isArray(value) && value.length == 2 && typeof value[0] == 'boolean' && typeof value[1] == 'string'))
+            if (typeof value == 'boolean') { }
+            else if (Array.isArray(value) && value.length == 2 && typeof value[0] == 'boolean' && typeof value[1] == 'string') {
+                adjectives[key] = value[0];
+                proofs[key] = value[1];
+            }
+            else
                 throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective '${key}'`);
         }
         // TODO: check if arguments and adjectives keys are [\w\-]+
-        return { id, type: data.type, name, args, adjectives };
+        return { id, type: data.type, name, args, adjectives, proofs };
     }
     serialize_example(example, elaborate = false) {
         const data = {
             type: example.type,
-            name: example.name,
-            with: example.args,
-            adjectives: example.adjectives
+            name: example.name
         };
-        if (!elaborate) { // remove justifications when elaborate is false 
-            for (const key of data.adjectives) {
-                if (Array.isArray(data.adjectives[key]))
-                    data.adjectives[key] = data.adjectives[key][0];
-            }
-        }
+        if (Object.keys(example.args).length > 0)
+            data.with = example.args;
+        if (Object.keys(example.adjectives).length > 0)
+            data.adjectives = example.adjectives;
+        if (elaborate && Object.keys(example.proofs).length > 0)
+            data.proofs = example.proofs;
         if (elaborate) { // add description when elaborate is true
             if (example.type in this.descriptions.examples && example.id in this.descriptions.examples[example.type])
                 data.description = this.descriptions.examples[example.type][example.id];
@@ -314,24 +327,34 @@ export class Book {
         }
         return object;
     }
-    serialize() {
-        const contents = {};
-        function contents_add(id, data) {
-            if (!(id in contents))
-                contents[id] = [];
-            contents[id].push(data);
+    serialize(elaborate = false) {
+        const contents = {
+            types: {},
+            adjectives: {},
+            theorems: {},
+            examples: {}
+        };
+        for (const id in this.types) { // add types
+            contents.types[id] = this.serialize_type(this.types[id], elaborate);
         }
-        for (const id in this.types) // add types
-            contents_add(id, this.serialize_type(this.types[id]));
-        for (const type in this.adjectives) // add adjectives
+        for (const type in this.adjectives) { // add adjectives
+            if (!(type in contents.adjectives))
+                contents.adjectives[type] = {};
             for (const id in this.adjectives[type])
-                contents_add(id, this.serialize_adjective(this.adjectives[type][id]));
-        for (const type in this.theorems) // add theorems
+                contents.adjectives[type][id] = this.serialize_adjective(this.adjectives[type][id], elaborate);
+        }
+        for (const type in this.theorems) { // add theorems
+            if (!(type in contents.theorems))
+                contents.theorems[type] = {};
             for (const id in this.theorems[type])
-                contents_add(id, this.serialize_theorem(this.theorems[type][id]));
-        for (const type in this.examples) // add examples
+                contents.theorems[type][id] = this.serialize_theorem(this.theorems[type][id], elaborate);
+        }
+        for (const type in this.examples) { // add examples
+            if (!(type in contents.examples))
+                contents.examples[type] = {};
             for (const id in this.examples[type])
-                contents_add(id, this.serialize_example(this.examples[type][id]));
+                contents.examples[type][id] = this.serialize_example(this.examples[type][id], elaborate);
+        }
         return contents;
     }
 }

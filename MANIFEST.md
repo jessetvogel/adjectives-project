@@ -58,23 +58,32 @@ Note that the distinction between user data and processed data is very clear.
 The admin modifies only the .yaml data in the /data folder.
 
 The .yaml data consists of one file per type / theorem / adjective / example.
-From the .yaml data, a book.json file is constructed, containing the important data (omitting descriptions and justifications)
-The book.json file is loaded by the client to search for examples and perform deductions.
-Note that we do not want descriptions and justifications in book.json because we do not want the client to load massive amounts of text.
 
-The descriptions and justifications are stored in the /json folder.
-Every type has a file under `/json/types/<id>.json`
-Every adjective has a file under `/json/adjectives/<type>/<id>.json`
-Every theorem has a file under `/json/theorems/<type>/<id>.json`
-Every example has a file under `/json/examples/<type>/<id>.json`
+Among the processed .json data is a summary.json file.
+The summary.json file contains a virtual tree of the files in the json directory.
+However, the summary.json file does not contain descriptions nor justifications.
+The summary.json file is loaded by the client to search for examples and perform deductions.
+Note that we do not want descriptions and justifications in summary.json because we do not want the client to load massive amounts of text.
+The summary.json file is updated whenever new deductions are made.
 
+The full data of each type / adjective / theorem / example are stored in the /json folder as follows:
+- Every type has a file under `/json/types/<id>.json`
+- Every adjective has a file under `/json/adjectives/<type>/<id>.json`
+- Every theorem has a file under `/json/theorems/<type>/<id>.json`
+- Every example has a file under `/json/examples/<type>/<id>.json`
+
+
+There are a number of scripts:
+- `script-update-json-from-yaml.js`: reads the .yaml files and updates summary.json and the other .json files accordingly with any new information that is provided. Note that it overwrites (but not erases) existing data.
+- `script-deduce.js`: tries to make as many new deductions as possible for the examples (based on the summary.json file), and updates summary.json and the relevant .json files accoringly.
+
+# TODO
+- Go from snake_case to camelCase ?
 
 
 The assistant has the following functionality:
 ✅ - Given a set of adjectives with truth values, find the matching examples `Assistant.search(Context)`
 ✅ - Given a context (a set of examples which might refer to each other), and a list of theorems (bundled in a book), deduce adjectives for the examples
-  - Also give 'proofs' for the statements: i.e. a (short as possible) list of theorems which to apply in order to arrive at the result
+   - Also give 'proofs' for the statements: i.e. a (short as possible) list of theorems which to apply in order to arrive at the result
 - Given a context, try to deduce a contradiction
-
-# TODO
-- Go from snake_case to camelCase ?
+- 
