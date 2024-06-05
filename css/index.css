@@ -1,9 +1,82 @@
 :root {
-  --color: black;
+  --color-black: #101010;
+  --color-white: #ffffff;
+  --color-blue: #1a7d8e;
+  --color-yellow: #e2a32d;
+  --color-green: #7faa6c;
+  --color-red: #ba5912;
+  --color-light-gray: #dddddd;
+  --color-dark-gray: #233239;
+  --font-main: "Palatino-Linotype";
+  --font-typewriter: "Computer-Modern-Typewriter";
 }
 
+@font-face {
+  font-family: "Palatino-Linotype";
+  src: url("../fonts/pala.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Palatino-Linotype";
+  src: url("../fonts/palab.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Palatino-Linotype";
+  src: url("../fonts/palai.ttf");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Palatino-Linotype";
+  src: url("../fonts/palabi.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Computer-Modern-Typewriter";
+  src: url("../fonts/cmuntb.ttf");
+}
 span.comment {
   color: gray;
+}
+
+span.tt {
+  background-color: var(--color-light-gray);
+  color: var(--color-dark-gray);
+  padding: 0.1em 0.2em;
+  margin: 0em 0.2em;
+  font-family: var(--font-typewriter);
+  text-decoration: none;
+}
+
+span.title {
+  display: block;
+  font-size: 1.5rem;
+  margin: 24px 0px;
+  text-align: center;
+}
+
+a {
+  color: var(--color-blue);
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-main);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+span.katex {
+  display: contents;
+  font-size: inherit;
+}
+
+li {
+  margin: 8px 0px;
 }
 
 .page-example {
@@ -13,35 +86,48 @@ span.comment {
 
 table.adjectives {
   border-collapse: collapse;
+  table-layout: auto;
+  width: 100%;
 }
-table.adjectives td {
+table.adjectives td,
+table.adjectives th {
   padding: 8px;
   border: 1px solid;
+  text-align: center;
+}
+table.adjectives th {
+  font-variant: small-caps;
 }
 
 body {
   margin: 0;
+  font-family: var(--font-main);
+  font-size: 1rem;
 }
 
-#menu {
+nav {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
-  background-color: black;
+  background-color: var(--color-dark-gray);
 }
-#menu button {
+nav button {
+  display: block;
+  flex-grow: 1;
+  max-width: 128px;
   border: 0;
   background-color: transparent;
-  color: white;
+  color: var(--color-white);
+  text-align: center;
   height: 48px;
   line-height: 48px;
   padding: 0px 8px;
 }
-#menu button:hover {
+nav button:hover {
   background-color: rgba(255, 255, 255, 0.12);
 }
-#menu .logo {
+nav .logo {
   background-color: #1a7d8e;
   width: 24px;
   height: 24px;
