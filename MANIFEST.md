@@ -1,55 +1,10 @@
-# These are the kinds of .yaml files that consitute the database
+# The Adjectives Project
 
-# type = scheme | morphism | scheme property | morphism property | scheme theorem | morphism theorem
-
-```yaml
---- # Example scheme file
-type: scheme
-name: Spectrum of the integers
-description: Take the spectrum of the integers $\ZZ$
-adjectives:
-  affine: true # if there is no comment, then just true or false is sufficient
-  integral: [true, The ring $\ZZ$ is a domain.]
-```
-
-```yaml
---- # Example morphism file
-type: morphism
-source: E0001 # Spec Q
-target: E0002 # Spec Z
-name: Morphism $\ZZ \to \QQ$
-description: The unique morphism $\Spec \QQ \to \Spec \ZZ$
-adjectives:
-  affine: true
-  # etc ...
-```
-
-```yaml
---- # Example property file `quasi_compact.yaml`
-type: scheme adjective
-name: quasi-compact
-description: A scheme is quasi-compact if the underlying topological space is quasi-compact.
-```
-
-```yaml
---- # Example theorem file `T0001.yaml`
-type: scheme theorem
-name: Affine schemes are quasi-compact
-statement: X affine => X quasi_compact
-description: A scheme is quasi-compact if the underlying topological space is quasi-compact.
-```
-
-```yaml
---- # Example theorem file `src_qc_of_qc_trg_qc.yaml`
-type: morphism theorem
-name: Affine morphisms are quasi-compact
-statement: Y quasi_compact & f quasi_compact => X quasi_compact # always think of $f : X \to Y$
-proof: See reference [...] on page [...].
-```
+## Introduction
 
 
 
-# Architecture
+## Architecture
 
 All user data is stored in .yaml files (for readability and ease-of-use) in the /data folder.
 All processed data is stored in .json files (for ease-of-use with JavaScript).
@@ -82,3 +37,62 @@ There are a number of scripts:
 - `script-update-json-from-yaml.js`: reads the .yaml files and updates summary.json and the other .json files accordingly with any new information that is provided. Note that it overwrites (but not erases) existing data.
 - `script-deduce.js`: tries to make as many new deductions as possible for the examples (based on the summary.json file), and updates summary.json and the relevant .json files accoringly.
 - `script-clear-json.js`: clears all generated .json files.
+
+## YAML files
+
+The `id` of every type, adjective, theorem or example is given by the filename. For instance, `Spec-ZZ.yaml` is given the id `Spec-ZZ`.
+
+```yaml
+# yaml file for types
+type: type
+name: morphism                   # optional: id by default
+parameters:                      # optional
+  source: scheme
+  target: scheme
+description: A morphism is [...] # optional
+```
+
+```yaml
+# yaml file for adjectives
+type: scheme adjective                   # '<type> adjective'
+name: affine                             # optional: id by default
+description: A scheme is affine if [...] # optional
+```
+
+```yaml
+# yaml file for examples
+type: scheme
+name: $\Spec \ZZ$                               # optional: id by default
+description: The spectrum of the integers       # optional
+adjectives:                                     # optional
+  affine: true                                  # either true/false ...
+  integral: [true, The ring $\ZZ$ is a domain.] # ... or [true/false, <proof>]
+```
+
+```yaml
+# yaml file for theorems
+type: theorem
+name: morphisms with affine source and target are affine # optional: id by default
+given: morphism f                                        # <type> <placeholder>
+if: [f.source affine, f.target affine]                   # <object> [not] <adjective>
+then: f affine                                           # <object> [not] <adjective>
+```
+
+## Client
+
+- `index.html`: single page application, with tabs:
+  - Explore: allows for dynamic searching, deductions, contradictions, etc.
+  - Overview: lists all objects, with id, name, type, and description if it fits
+              with some filters
+  - Contribute: some way to contribute
+  Furthermore:
+  - Example page: display name, arguments, description, and a table of properties with their status and proofs
+  - Adjective page: display name, type, description (and possibly button to show which are and which are not)
+  - Theorem page: display name, type, description. Auto-generate the theorem statement in human-readable format.
+  - Type page: display name, parameters
+
+- `admin.html`: admin panel, where the admin can edit the yaml files, and execute a number of scripts
+
+## TODO
+
+- snake_case to camelCase

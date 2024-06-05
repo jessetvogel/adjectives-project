@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { Book } from './core.js';
+import { Book } from '../shared/core.js';
 import { update_json } from './json-updater.js';
 import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
 // Finds all files (recursively) with the given extension inside the given directory.

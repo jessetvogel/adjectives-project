@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { Book } from './core.js'
+import { Book } from '../shared/core.js'
 import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
 
 function update_object(source: any, target: any): boolean { // returns true if any actual change was made

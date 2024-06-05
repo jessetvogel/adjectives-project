@@ -1,0 +1,52 @@
+:root {
+  --color: black;
+}
+
+span.comment {
+  color: gray;
+}
+
+.page-example {
+  margin: auto;
+  max-width: 960px;
+}
+
+table.adjectives {
+  border-collapse: collapse;
+}
+table.adjectives td {
+  padding: 8px;
+  border: 1px solid;
+}
+
+body {
+  margin: 0;
+}
+
+#menu {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+}
+#menu button {
+  border: 0;
+  background-color: transparent;
+  color: white;
+  height: 48px;
+  line-height: 48px;
+  padding: 0px 8px;
+}
+#menu button:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+#menu .logo {
+  background-color: #1a7d8e;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin: 0px 16px;
+}
+
+/*# sourceMappingURL=index.css.map */

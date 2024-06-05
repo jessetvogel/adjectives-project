@@ -2,14 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 
-import { Book } from './core.js';
+import { Book } from '../shared/core.js';
 import { update_json } from './json-updater.js';
 import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
 
 // Finds all files (recursively) with the given extension inside the given directory.
 // Returns a list of the paths to all files found. 
 function find_files_with_extension(directory: string, extension: string): string[] {
-    const files = [];
+    const files: string[] = [];
     for (const file of fs.readdirSync(directory)) {
         const file_path = path.join(directory, file);
         const file_stat = fs.statSync(file_path);
