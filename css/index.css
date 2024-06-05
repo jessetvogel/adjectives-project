@@ -6,6 +6,7 @@
   --color-green: #7faa6c;
   --color-red: #ba5912;
   --color-light-gray: #dddddd;
+  --color-gray: #7f7f7f;
   --color-dark-gray: #233239;
   --font-main: "Palatino-Linotype";
   --font-typewriter: "Computer-Modern-Typewriter";
@@ -79,11 +80,6 @@ li {
   margin: 8px 0px;
 }
 
-.page-example {
-  margin: auto;
-  max-width: 960px;
-}
-
 table.adjectives {
   border-collapse: collapse;
   table-layout: auto;
@@ -97,6 +93,97 @@ table.adjectives th {
 }
 table.adjectives th {
   font-variant: small-caps;
+}
+
+.page-explore .context {
+  display: flex;
+  flex-direction: row;
+  max-height: 512px;
+  max-width: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.page-explore .context .list-objects,
+.page-explore .context .list-adjectives {
+  flex-grow: 1;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+.page-explore .context .list-adjectives {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  overflow-y: scroll;
+}
+.page-explore .context .list-adjectives > div {
+  padding: 0px 0px 0px 8px;
+  line-height: 30px;
+  cursor: pointer;
+}
+.page-explore .context .list-adjectives > div:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.page-explore .context .list-adjectives > div label {
+  flex-grow: 1;
+  display: flex;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+.page-explore .context .list-adjectives > div label::before {
+  content: "";
+  display: block;
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  margin: 5px 8px 2px 2px;
+  border-radius: 2px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
+  background-color: white;
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.page-explore .context .list-adjectives > div.yes label::before {
+  background-image: url("../img/check.png");
+}
+.page-explore .context .list-adjectives > div.no label::before {
+  background-image: url("../img/cross.png");
+}
+.page-explore .context .list-objects > div {
+  text-align: center;
+  min-height: 24px;
+  padding: 8px 40px 8px 8px;
+  transition: background-color 0.2s;
+  position: relative;
+  cursor: pointer;
+}
+.page-explore .context .list-objects > div.selected {
+  background-color: rgba(0, 0, 0, 0.24);
+}
+.page-explore .context .list-objects > div:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+.page-explore .context .list-objects > div .type,
+.page-explore .context .list-objects > div .id {
+  display: none;
+}
+.page-explore .context .list-objects > div .adjectives {
+  color: var(--color-gray);
+  padding-left: 8px;
+}
+.page-explore .context .list-objects > div .adjectives .yes {
+  color: var(--color-green);
+}
+.page-explore .context .list-objects > div .adjectives .no {
+  color: var(--color-red);
+}
+.page-explore .context .list-objects > div .adjectives .no::before {
+  content: "not ";
+}
+.page-explore .context .list-objects > div .adjectives:not(:empty)::after {
+  content: ")";
+}
+.page-explore .context .list-objects > div .adjectives:not(:empty)::before {
+  content: "(";
 }
 
 body {
@@ -133,6 +220,11 @@ nav .logo {
   height: 24px;
   border-radius: 50%;
   margin: 0px 16px;
+}
+
+.page {
+  margin: auto;
+  max-width: 960px;
 }
 
 /*# sourceMappingURL=index.css.map */

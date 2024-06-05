@@ -11,8 +11,9 @@ export function pageData(summary, options) {
         for (const type in summary[sort]) {
             for (const id in summary[sort][type]) {
                 ul.append(create('li', {}, create('a', { href: `?page=${sort.slice(0, -1)}&type=${type}&id=${id}` }, [
-                    create('span', { class: 'tt' }, `${type} ${id}`),
-                    create('span', {}, summary[sort][type][id].name)
+                    create('span', {}, summary[sort][type][id].name),
+                    create('span', {}, ' '),
+                    create('span', { class: 'comment' }, `(${summary.types[type].name})`)
                 ])));
             }
         }
