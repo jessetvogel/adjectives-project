@@ -6,19 +6,25 @@
 
 body {
     margin: 0;
+    font-family: var(--font-main);
+    font-size: 1rem;
 }
 
-#menu {
+nav {
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: center;
-    background-color: black;
+    background-color: var(--color-dark-gray);
 
     button {
+        display: block;
+        flex-grow: 1;
+        max-width: 128px;
         border: 0;
         background-color: transparent;
-        color: white;
+        color: var(--color-white);
+        text-align: center;
         height: 48px;
         line-height: 48px;
         padding: 0px 8px;

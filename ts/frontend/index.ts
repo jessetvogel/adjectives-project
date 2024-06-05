@@ -15,10 +15,10 @@ function navigate(url: string, state: any): void {
 function navigateCallback(state: any): void {
     const query = Object.fromEntries(new URLSearchParams(window.location.search));
 
-    if (!('page' in query) || query.page == 'home') setContent(pageHome());
+    if (!('page' in query) || query.page == 'home') return setContent(pageHome());
     switch (query.page) {
-        case 'explore': return setContent(pageExplore(query));
-        case 'data': return setContent(pageData(query))
+        case 'explore': return setContent(pageExplore(summary, query));
+        case 'data': return setContent(pageData(summary, query))
         case 'example': return setContent(pageExample(summary, query))
         case 'adjective': return setContent(pageAdjective(summary, query))
         case 'theorem': return setContent(pageTheorem(summary, query))
@@ -48,8 +48,9 @@ async function main() {
     window.onpopstate = (event: PopStateEvent) => navigateCallback(event.state);
     navigateCallback({});
 
+    mapButton('button-home', '?', {});
     mapButton('button-explore', '?page=explore', {});
     mapButton('button-data', '?page=data', {});
 }
 
-main();
+window.onload = main;

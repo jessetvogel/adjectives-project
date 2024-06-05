@@ -1,5 +1,5 @@
 import { create } from './util.js';
-export function pageExplore(options) {
-    return create('div', {}, 'A');
+export function pageExplore(summary, options) {
+    return create('div', {}, 'TODO: Create explore page');
 }
 //# sourceMappingURL=page-explore.js.map
