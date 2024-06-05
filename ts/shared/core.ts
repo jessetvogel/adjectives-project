@@ -159,7 +159,7 @@ export class Book {
 
     serialize_theorem(theorem: Theorem, elaborate: boolean = false): any {
         function conditions_for_path(path: string) {
-            const conditions = [];
+            const conditions: string[] = [];
             for (const adj in theorem.conditions[path]) {
                 const value = theorem.conditions[path][adj];
                 conditions.push(`${theorem.subject}${path}${value ? ' ' : ' not '}${adj}`);

@@ -3,6 +3,7 @@
 @use "general";
 
 @use "page-example";
+@use "page-explore";
 
 body {
     margin: 0;
@@ -41,4 +42,9 @@ nav {
         border-radius: 50%;
         margin: 0px 16px;
     }
+}
+
+.page {
+    margin: auto;
+    max-width: 960px;
 }

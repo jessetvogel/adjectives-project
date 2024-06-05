@@ -47,7 +47,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
         console.log(`[ERROR] ${error}`);
     });
 
-    return create('div', { class: 'page-example' }, [
+    return create('div', { class: 'page page-example' }, [
         create('span', { class: 'title' }, [create('span', { class: 'tt', style: 'margin-right: 8px;' }, `${type} ${id}`), span_name]),
         p_description,
         table_adjectives

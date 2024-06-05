@@ -1,0 +1,115 @@
+.page-explore {
+    .context {
+        display: flex;
+        flex-direction: row;
+        max-height: 512px;
+        max-width: 100%;
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+        .list-objects,
+        .list-adjectives {
+            flex-grow: 1;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-adjectives {
+            border-left: 1px solid rgba(0, 0, 0, 0.12);
+            overflow-y: scroll;
+
+            > div {
+                padding: 0px 0px 0px 8px;
+                line-height: 30px;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.05);
+                }
+
+                label {
+                    flex-grow: 1;
+                    display: flex;
+                    transition: background-color 0.2s;
+                    cursor: pointer;
+
+                    &::before {
+                        content: "";
+                        display: block;
+                        min-width: 20px;
+                        width: 20px;
+                        height: 20px;
+                        margin: 5px 8px 2px 2px;
+                        border-radius: 2px;
+                        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
+                        background-color: white;
+                        background-size: 60%;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                    }
+                }
+
+                &.yes label::before {
+                    background-image: url("../img/check.png");
+                }
+
+                &.no label::before {
+                    background-image: url("../img/cross.png");
+                }
+            }
+        }
+
+        .list-objects {
+            > div {
+                text-align: center;
+                min-height: 24px;
+                padding: 8px 40px 8px 8px;
+                transition: background-color 0.2s;
+                position: relative;
+                cursor: pointer;
+
+                &.selected {
+                    background-color: rgba(0, 0, 0, 0.24);
+                }
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.12);
+                }
+
+                .type,
+                .id {
+                    display: none;
+                }
+
+                .name {
+                    // nothing special here ...
+                }
+
+                .adjectives {
+                    color: var(--color-gray);
+                    padding-left: 8px;
+
+                    .yes {
+                        color: var(--color-green);
+                    }
+
+                    .no {
+                        color: var(--color-red);
+
+                        &::before {
+                            content: "not ";
+                        }
+                    }
+
+                    &:not(:empty)::after {
+                        content: ")";
+                    }
+                    &:not(:empty)::before {
+                        content: "(";
+                    }
+                }
+            }
+        }
+    }
+}

@@ -36,5 +36,5 @@ const options = {
 export function katexTypeset(elem: HTMLElement): void {
     if (!('renderMathInElement' in window))
         throw new Error(`Missing function 'renderMathInElement'`);
-    (window.renderMathInElement as any)(elem, options);
+    (window as any).renderMathInElement(elem, options);
 }

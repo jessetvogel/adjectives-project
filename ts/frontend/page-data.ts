@@ -1,11 +1,8 @@
 import { Book } from '../shared/core.js';
 import { create } from './util.js';
-import { pageExampleUrl } from './page-example.js';
-import { pageAdjectiveUrl } from './page-adjective.js';
-import { pageTheoremUrl } from './page-theorem.js';
 import { katexTypeset } from './katex-typeset.js';
 
-export function pageData(summary: Book, options: any): HTMLElement {
+export function pageData(summary: any, options: any): HTMLElement {
     console.log(summary);
 
     const page = create('div');
@@ -18,8 +15,9 @@ export function pageData(summary: Book, options: any): HTMLElement {
         for (const type in summary[sort]) {
             for (const id in summary[sort][type]) {
                 ul.append(create('li', {}, create('a', { href: `?page=${sort.slice(0, -1)}&type=${type}&id=${id}` }, [
-                    create('span', { class: 'tt' }, `${type} ${id}`),
-                    create('span', {}, summary[sort][type][id].name)
+                    create('span', {}, summary[sort][type][id].name),
+                    create('span', {}, ' '),
+                    create('span', { class: 'comment' }, `(${summary.types[type].name})`)
                 ])));
             }
         }
