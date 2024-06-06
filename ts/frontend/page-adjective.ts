@@ -2,10 +2,6 @@ import { Book } from '../shared/core.js';
 import { katexTypeset } from './katex-typeset.js';
 import { create, setText } from './util.js';
 
-export function pageAdjectiveUrl(type: string, id: string) {
-    return `?page=adjective&type=${type}&id=${id}`;
-}
-
 export function pageAdjective(summary: Book, options: any): HTMLElement {
     const type = options?.type;
     const id = options?.id;
@@ -13,7 +9,7 @@ export function pageAdjective(summary: Book, options: any): HTMLElement {
     // TODO: regex check type and id
 
     const span_name = create('span', {}, '');
-    const p_description = create('p', { class: 'decsription ' }, '');
+    const p_description = create('p', { class: 'description' }, '');
 
     fetch(`json/adjectives/${type}/${id}.json`).then(response => response.json()).then(data => {
         // Update name span
@@ -27,8 +23,12 @@ export function pageAdjective(summary: Book, options: any): HTMLElement {
         console.log(`[ERROR] ${error}`);
     });
 
-    return create('div', { class: 'page-adjective' }, [
-        create('span', { class: 'title' }, [create('span', { class: 'tt', style: 'margin-right: 8px;' }, `${type} ${id}`), span_name]),
+    return create('div', { class: 'page page-adjective' }, [
+        create('span', { class: 'title' }, [
+            create('span', {}, `Adjective `),
+            span_name,
+            create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
+        ]),
         p_description
     ]);
 }

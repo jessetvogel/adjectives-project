@@ -1,0 +1,15 @@
+.page-theorem {
+    p.statement {
+        &:not(:empty)::before {
+            content: "Statement: ";
+            font-weight: bold;
+        }
+    }
+
+    p.description {
+        &:not(:empty)::before {
+            content: "Description: ";
+            font-weight: bold;
+        }
+    }
+}

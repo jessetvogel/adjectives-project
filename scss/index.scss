@@ -4,6 +4,8 @@
 
 @use "page-example";
 @use "page-explore";
+@use "page-theorem";
+@use "page-data";
 
 body {
     margin: 0;
@@ -49,4 +51,5 @@ nav {
 .page {
     margin: auto;
     max-width: 960px;
+    padding: 0px 8px;
 }

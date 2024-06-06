@@ -81,6 +81,14 @@ table {
         background-color: var(--color-blue);
         color: var(--color-white);
     }
+
+    tr:nth-child(2n + 1) {
+        background-color: var(--color-hover-background);
+    }
+
+    tr:nth-child(2n) {
+        background-color: var(--color-background);
+    }
 }
 
 select {
@@ -90,4 +98,13 @@ select {
     background-color: var(--color-white);
     font-family: var(--font-main);
     font-size: inherit;
+}
+
+input[type="text"] {
+    border: 1px solid black;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    box-sizing: border-box;
 }

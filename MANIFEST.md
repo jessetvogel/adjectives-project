@@ -89,6 +89,7 @@ then: f affine                                           # <object> [not] <adjec
   - Example page: display name, arguments, description, and a table of properties with their status and proofs
   - Adjective page: display name, type, description (and possibly button to show which are and which are not)
   - Theorem page: display name, type, description. Auto-generate the theorem statement in human-readable format.
+    - Show list of counterexamples for the converse statement
   - Type page: display name, parameters
 
 - `admin.html`: admin panel, where the admin can edit the yaml files, and execute a number of scripts
@@ -97,3 +98,4 @@ then: f affine                                           # <object> [not] <adjec
 
 - snake_case to camelCase
 - HTMLElement variables should end in `Elem`
+- navigator.anchorExample(...), navigator.anchorAdjective(...), etc.

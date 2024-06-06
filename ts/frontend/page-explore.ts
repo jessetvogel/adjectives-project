@@ -2,6 +2,7 @@ import { Context, Book, Proof } from '../shared/core.js';
 import { Assistant } from '../shared/assistant.js';
 import { create, clear, onClick, $$, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
+import navigation from './navigation.js';
 
 function sentenceFromProof(summary: Book, context: Context, proof: string | Proof): string {
     if (proof === undefined)
@@ -10,7 +11,7 @@ function sentenceFromProof(summary: Book, context: Context, proof: string | Proo
     if (typeof proof == 'string')
         return proof;
 
-    return `By <a href="?page=theorem&type=${proof.type}&id=${proof.theorem}">${summary.theorems[proof.type][proof.theorem].name}</a> applied to ${context[proof.type][proof.subject].name}.`;
+    return `By ${navigation.anchorTheorem(proof.type, proof.theorem).outerHTML} applied to ${context[proof.type][proof.subject].name}.`;
 }
 
 function contextFromType(summary: Book, type: string): Context {
@@ -53,7 +54,7 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
             const trElem = create('tr', {},);
             for (const type in context) {
                 for (const id in context[type])
-                    trElem.append(create('td', {}, create('a', { href: `?page=example&type=${type}&id=${result[type][id].id}` }, result[type][id].name)));
+                    trElem.append(create('td', {}, navigation.anchorExample(type, result[type][id].id)));
             }
             tableElem.append(trElem);
         }
@@ -87,7 +88,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
             tableElem.append(create('tr', {}, [
                 create('td', {}, [
                     `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
-                    create('a', { href: `?page=adjective&type=${conclusion.object.type}&id=${conclusion.adjective}` }, summary.adjectives[conclusion.object.type][conclusion.adjective].name)
+                    navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
                 ]),
                 create('td', {}, sentenceFromProof(summary, context, conclusion.object.proofs[conclusion.adjective]))
             ]));

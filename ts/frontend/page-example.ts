@@ -1,6 +1,7 @@
 import { Book, Proof } from '../shared/core.js';
 import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
+import navigation from './navigation.js';
 
 function sentenceFromProof(summary: Book, proof: string | Proof): string {
     if (proof === undefined)
@@ -9,7 +10,7 @@ function sentenceFromProof(summary: Book, proof: string | Proof): string {
     if (typeof proof == 'string')
         return proof;
 
-    return `By <a href="?page=theorem&type=${proof.type}&id=${proof.theorem}">${summary.theorems[proof.type][proof.theorem].name}</a> applied to <a href="?page=example&type=${proof.type}&id=${proof.subject}">${summary.examples[proof.type][proof.subject].name}</a>.`;
+    return `By ${navigation.anchorTheorem(proof.type, proof.theorem).outerHTML} applied to ${navigation.anchorExample(proof.type, proof.subject).outerHTML}.`;
 }
 
 export function pageExample(summary: Book, options: any): HTMLElement {
@@ -18,7 +19,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
 
     // TODO: regex check type and id
     const span_name = create('span', {}, '');
-    const p_description = create('p', { class: 'decsription ' }, '');
+    const p_description = create('p', { class: 'description' }, '');
     const table_adjectives = create('table', { class: 'adjectives' }, '');
 
     fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
@@ -38,13 +39,23 @@ export function pageExample(summary: Book, options: any): HTMLElement {
             create('th', {}, 'Value'),
             create('th', {}, 'Proof')
         ]));
-        for (const adj_id in summary.adjectives[type]) {
-            const adjective = summary.adjectives[type][adj_id];
-            const value = data?.adjectives?.[adj_id]; // true, false or undefined
+
+        const adjectiveValuePairs: { id: string, name: string, value: boolean | null }[] = []; // sort the adjectives based on name and value
+        for (const adjId in summary.adjectives[type])
+            adjectiveValuePairs.push({ id: adjId, name: summary.adjectives[type][adjId].name, value: data?.adjectives?.[adjId] });
+        adjectiveValuePairs.sort((a, b) => {
+            if (a.value == true && b.value != true) return -1;
+            if (a.value != true && b.value == true) return 1;
+            return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+        });
+        for (const x of adjectiveValuePairs) {
+            const adjId = x.id;
+            const value = x.value;
+            const adjective = summary.adjectives[type][adjId];
             table_adjectives.append(create('tr', {}, [
-                create('td', {}, create('a', { href: `?page=adjective&type=${adjective.type}&id=${adj_id}` }, adjective.name)),
+                create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
-                create('td', {}, sentenceFromProof(summary, data?.proofs?.[adj_id]))
+                create('td', {}, sentenceFromProof(summary, data?.proofs?.[adjId]))
             ]));
         }
         katexTypeset(table_adjectives);
@@ -54,7 +65,11 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     });
 
     return create('div', { class: 'page page-example' }, [
-        create('span', { class: 'title' }, [create('span', { class: 'tt', style: 'margin-right: 8px;' }, `${type} ${id}`), span_name]),
+        create('span', { class: 'title' }, [
+            create('span', {}, `Example `),
+            span_name,
+            create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
+        ]),
         p_description,
         table_adjectives
     ]);

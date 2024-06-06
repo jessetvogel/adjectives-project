@@ -1,0 +1,27 @@
+.page-data {
+    input[type="text"] {
+        width: 100%;
+        padding: 0px 40px;
+        line-height: 40px;
+        box-sizing: border-box;
+    }
+
+    .search-bar {
+        position: relative;
+        margin: 16px 0px;
+
+        &::before {
+            content: "";
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            width: 40px;
+            height: 40px;
+            background-image: url("../img/search.png");
+            background-size: 40%;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+        }
+    }
+}

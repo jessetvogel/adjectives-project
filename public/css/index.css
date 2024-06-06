@@ -113,6 +113,12 @@ table th {
   background-color: var(--color-blue);
   color: var(--color-white);
 }
+table tr:nth-child(2n+1) {
+  background-color: var(--color-hover-background);
+}
+table tr:nth-child(2n) {
+  background-color: var(--color-background);
+}
 
 select {
   border-radius: 4px;
@@ -121,6 +127,15 @@ select {
   background-color: var(--color-white);
   font-family: var(--font-main);
   font-size: inherit;
+}
+
+input[type=text] {
+  border: 1px solid black;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  box-sizing: border-box;
 }
 
 .page-explore .type-selection {
@@ -247,6 +262,39 @@ select {
   margin-bottom: 16px;
 }
 
+.page-theorem p.statement:not(:empty)::before {
+  content: "Statement: ";
+  font-weight: bold;
+}
+.page-theorem p.description:not(:empty)::before {
+  content: "Description: ";
+  font-weight: bold;
+}
+
+.page-data input[type=text] {
+  width: 100%;
+  padding: 0px 40px;
+  line-height: 40px;
+  box-sizing: border-box;
+}
+.page-data .search-bar {
+  position: relative;
+  margin: 16px 0px;
+}
+.page-data .search-bar::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  width: 40px;
+  height: 40px;
+  background-image: url("../img/search.png");
+  background-size: 40%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
 body {
   margin: 0;
   font-family: var(--font-main);
@@ -288,6 +336,7 @@ nav .logo {
 .page {
   margin: auto;
   max-width: 960px;
+  padding: 0px 8px;
 }
 
 /*# sourceMappingURL=index.css.map */
