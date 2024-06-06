@@ -325,7 +325,7 @@ export class Book {
         }
         return type;
     }
-    resolve_path(context, object, path) {
+    resolvePath(context, object, path) {
         const path_parts = path.split('.');
         for (let i = 0; i < path_parts.length; ++i) {
             if (i == 0 && path_parts[0] != '')

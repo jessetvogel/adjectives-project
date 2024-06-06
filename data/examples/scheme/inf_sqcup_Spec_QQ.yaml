@@ -1,0 +1,5 @@
+type: scheme
+name: $\sqcup_{i = 1}^{\infty} \Spec \QQ$
+description: The infinite disjoint union of copies of $\Spec \QQ$.
+adjectives:
+  quasi-compact: false
