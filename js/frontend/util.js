@@ -15,13 +15,18 @@ export function create(tag, properties, content) {
         }
     }
     if (content !== undefined) {
-        if (typeof (content) === 'string')
+        if (typeof content === 'string')
             elem.innerHTML = content;
         if (content instanceof HTMLElement)
             elem.append(content);
-        if (Array.isArray(content))
-            for (const child of content)
-                elem.append(child);
+        if (Array.isArray(content)) {
+            for (const child of content) {
+                if (typeof child === 'string')
+                    elem.insertAdjacentHTML('beforeend', child);
+                if (child instanceof HTMLElement)
+                    elem.append(child);
+            }
+        }
     }
     return elem;
 }

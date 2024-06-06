@@ -271,7 +271,7 @@ export class Book {
                 if (!(theorem.type in this.types))
                     throw new Error(`Theorem '${id}' refers to unknown type '${type}'`);
                 for (const path in theorem.conditions) { // verify theorem conditions
-                    const path_type = this.resolve_path_type(theorem.type, path);
+                    const path_type = this.resolvePathType(theorem.type, path);
                     if (path_type == null)
                         throw new Error(`Theorem '${id}' refers to invalid path '${path}' in its conditions`);
                     for (const key in theorem.conditions[path]) {
@@ -280,7 +280,7 @@ export class Book {
                     }
                 }
                 // verify theorem conclusion
-                const conclusion_path_type = this.resolve_path_type(theorem.type, theorem.conclusion.path);
+                const conclusion_path_type = this.resolvePathType(theorem.type, theorem.conclusion.path);
                 if (conclusion_path_type == null)
                     throw new Error(`Theorem '${id}' refers to invalid path '${theorem.conclusion.path}' in its conclusion`);
                 if (!(theorem.conclusion.adjective in this.adjectives[conclusion_path_type]))
@@ -313,7 +313,7 @@ export class Book {
         }
         return true;
     }
-    resolve_path_type(type, path) {
+    resolvePathType(type, path) {
         const path_parts = path.split('.');
         for (let i = 0; i < path_parts.length; ++i) {
             if (i == 0 && path_parts[0] != '')
