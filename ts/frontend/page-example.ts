@@ -18,23 +18,23 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     const id = options?.id;
 
     // TODO: regex check type and id
-    const span_name = create('span', {}, '');
-    const p_description = create('p', { class: 'description' }, '');
-    const table_adjectives = create('table', { class: 'adjectives' }, '');
+    const spanName = create('span', {}, '');
+    const pDescription = create('p', { class: 'description' }, '');
+    const tableAdjectives = create('table', { class: 'adjectives' }, '');
 
     fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
         // Update name span
-        if ('name' in data) setText(span_name, data.name);
-        katexTypeset(span_name);
+        if ('name' in data) setText(spanName, data.name);
+        katexTypeset(spanName);
 
         // Update description paragraph
         if ('description' in data) {
-            setText(p_description, data.description);
-            katexTypeset(p_description);
+            setText(pDescription, data.description);
+            katexTypeset(pDescription);
         }
 
         // Update adjectives table
-        table_adjectives.append(create('tr', {}, [
+        tableAdjectives.append(create('tr', {}, [
             create('th', {}, 'Adjective'),
             create('th', {}, 'Value'),
             create('th', {}, 'Proof')
@@ -52,13 +52,13 @@ export function pageExample(summary: Book, options: any): HTMLElement {
             const adjId = x.id;
             const value = x.value;
             const adjective = summary.adjectives[type][adjId];
-            table_adjectives.append(create('tr', {}, [
+            tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
                 create('td', {}, sentenceFromProof(summary, data?.proofs?.[adjId]))
             ]));
         }
-        katexTypeset(table_adjectives);
+        katexTypeset(tableAdjectives);
 
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
@@ -67,10 +67,10 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     return create('div', { class: 'page page-example' }, [
         create('span', { class: 'title' }, [
             create('span', {}, `Example `),
-            span_name,
+            spanName,
             create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
         ]),
-        p_description,
-        table_adjectives
+        pDescription,
+        tableAdjectives
     ]);
 }

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Book } from '../shared/core.js';
 import { Assistant } from '../shared/assistant.js';
-import { update_json } from './json-updater.js';
+import { updateJSON } from './json-updater.js';
 import { Log, PATH_SUMMARY } from './general.js';
 function main() {
     // Parse arguments
@@ -43,7 +43,7 @@ function main() {
         // Save conclusions
         if (conclusions.length > 0) {
             Log.action(`Saving conclusions`);
-            update_json(book);
+            updateJSON(book);
         }
         else {
             Log.info(`No deductions were made`);

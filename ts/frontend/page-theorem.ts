@@ -50,20 +50,20 @@ export function pageTheorem(summary: Book, options: any): HTMLElement {
 
     // TODO: regex check type and id
 
-    const span_name = create('span', {}, '');
-    const p_statement = create('p', { class: 'statement' }, statementFromTheorem(summary, summary.theorems[type][id]));
-    const p_description = create('p', { class: 'description' }, '');
+    const spanName = create('span', {}, '');
+    const pStatement = create('p', { class: 'statement' }, statementFromTheorem(summary, summary.theorems[type][id]));
+    const pDescription = create('p', { class: 'description' }, '');
 
-    katexTypeset(p_statement);
+    katexTypeset(pStatement);
 
     fetch(`json/theorems/${type}/${id}.json`).then(response => response.json()).then(data => {
         // Update name span
-        if ('name' in data) setText(span_name, data.name);
-        katexTypeset(span_name);
+        if ('name' in data) setText(spanName, data.name);
+        katexTypeset(spanName);
 
         // Update description paragraph
-        if ('description' in data) setText(p_description, data.description);
-        katexTypeset(p_description);
+        if ('description' in data) setText(pDescription, data.description);
+        katexTypeset(pDescription);
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
@@ -71,10 +71,10 @@ export function pageTheorem(summary: Book, options: any): HTMLElement {
     return create('div', { class: 'page page-theorem' }, [
         create('span', { class: 'title' }, [
             create('span', {}, `Theorem `),
-            span_name,
+            spanName,
             create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
         ]),
-        p_statement,
-        p_description
+        pStatement,
+        pDescription
     ]);
 }

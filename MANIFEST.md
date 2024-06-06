@@ -98,4 +98,4 @@ then: f affine                                           # <object> [not] <adjec
 
 - snake_case to camelCase
 - HTMLElement variables should end in `Elem`
-- navigator.anchorExample(...), navigator.anchorAdjective(...), etc.
+- 

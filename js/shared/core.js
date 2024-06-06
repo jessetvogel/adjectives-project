@@ -21,13 +21,13 @@ export class Book {
             for (const id in contents.examples[type])
                 this.add(id, contents.examples[type][id]);
     }
-    deserialize_type(id, data) {
+    deserializeType(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         const parameters = ('parameters' in data) ? data.parameters : {}; // fallback to empty set of parameters if none are given
         // TODO: check if parameter keys are [\w\-]+
         return { id, name, parameters };
     }
-    serialize_type(type, elaborate = false) {
+    serializeType(type, elaborate = false) {
         const data = {
             type: 'type',
             name: type.name
@@ -38,38 +38,38 @@ export class Book {
             data.description = this.descriptions.types[type.id];
         return data;
     }
-    deserialize_theorem(id, data) {
+    deserializeTheorem(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         // const description = ('description' in data) ? data.description.toString() : null;
         // parse subject
         if (!('given' in data) || typeof data.given != 'string')
             throw new Error(`Missing field 'given' in theorem '${id}'`);
-        const subject_parts = data.given.split(' ');
-        if (subject_parts.length != 2)
+        const subjectParts = data.given.split(' ');
+        if (subjectParts.length != 2)
             throw new Error(`Invalid field 'given' in theorem '${id}'`);
-        const subject_type = subject_parts[0];
-        const subject_name = subject_parts[1];
-        if (!(subject_type in this.theorems))
-            this.theorems[subject_type] = {};
-        if (id in this.theorems[subject_type])
-            throw new Error(`Theorem with id '${id}' for type '${subject_type}' already exists`);
+        const subjectType = subjectParts[0];
+        const subjectName = subjectParts[1];
+        if (!(subjectType in this.theorems))
+            this.theorems[subjectType] = {};
+        if (id in this.theorems[subjectType])
+            throw new Error(`Theorem with id '${id}' for type '${subjectType}' already exists`);
         // parse theorem conditions
-        const data_if = ('if' in data) ? (typeof data.if == 'string' ? [data.if] : data.if) : [];
-        if (!Array.isArray(data_if))
+        const dataIf = ('if' in data) ? (typeof data.if == 'string' ? [data.if] : data.if) : [];
+        if (!Array.isArray(dataIf))
             throw new Error(`Invalid field 'if' in theorem '${id}'`);
         const conditions = {};
-        for (const condition of data_if) {
+        for (const condition of dataIf) {
             if (typeof condition != 'string')
                 throw new Error(`Invalid condition '${condition}' in theorem '${id}'`);
-            const condition_parts = condition.split(' ');
-            if (condition_parts.length != 2 && !(condition_parts.length == 3 && condition_parts[1] == 'not'))
+            const conditionParts = condition.split(' ');
+            if (conditionParts.length != 2 && !(conditionParts.length == 3 && conditionParts[1] == 'not'))
                 throw new Error(`Invalid condition '${condition}' in theorem '${id}'`);
-            const full_path = condition_parts[0];
-            const adjective = (condition_parts.length == 2) ? condition_parts[1] : condition_parts[2];
-            const value = (condition_parts.length == 2) ? true : false;
-            if (!full_path.startsWith(subject_name))
-                throw new Error(`Invalid path '${full_path}' (should start with '${subject_name}') in theorem '${id}'`);
-            const path = full_path.substring(subject_name.length);
+            const fullPath = conditionParts[0];
+            const adjective = (conditionParts.length == 2) ? conditionParts[1] : conditionParts[2];
+            const value = (conditionParts.length == 2) ? true : false;
+            if (!fullPath.startsWith(subjectName))
+                throw new Error(`Invalid path '${fullPath}' (should start with '${subjectName}') in theorem '${id}'`);
+            const path = fullPath.substring(subjectName.length);
             if (!(path in conditions))
                 conditions[path] = {};
             if (adjective in conditions[path])
@@ -82,19 +82,19 @@ export class Book {
         const then = data.then;
         if (typeof then != 'string')
             throw new Error(`Invalid field 'then' in theorem '${id}'`);
-        const then_parts = then.split(' ');
-        if (!then_parts[0].startsWith(subject_name))
-            throw new Error(`Invalid path '${then_parts[0]}' (should start with '${subject_name}') in theorem '${id}'`);
-        then_parts[0] = then_parts[0].substring(subject_name.length);
-        const conclusion = (then_parts.length == 2)
-            ? { path: then_parts[0], adjective: then_parts[1], value: true }
-            : ((then_parts.length == 3 && then_parts[1] != 'not') ? { path: then_parts[0], adjective: then_parts[2], value: false } : null);
+        const thenParts = then.split(' ');
+        if (!thenParts[0].startsWith(subjectName))
+            throw new Error(`Invalid path '${thenParts[0]}' (should start with '${subjectName}') in theorem '${id}'`);
+        thenParts[0] = thenParts[0].substring(subjectName.length);
+        const conclusion = (thenParts.length == 2)
+            ? { path: thenParts[0], adjective: thenParts[1], value: true }
+            : ((thenParts.length == 3 && thenParts[1] != 'not') ? { path: thenParts[0], adjective: thenParts[2], value: false } : null);
         if (conclusion == null)
             throw new Error(`Invalid conclusion '${then}' in theorem '${id}'`);
-        return { id, name, type: subject_type, subject: subject_name, conditions, conclusion };
+        return { id, name, type: subjectType, subject: subjectName, conditions, conclusion };
     }
-    serialize_theorem(theorem, elaborate = false) {
-        function conditions_for_path(path) {
+    serializeTheorem(theorem, elaborate = false) {
+        function conditionsForPath(path) {
             const conditions = [];
             for (const adj in theorem.conditions[path]) {
                 const value = theorem.conditions[path][adj];
@@ -106,24 +106,24 @@ export class Book {
             type: 'theorem',
             name: theorem.name,
             given: theorem.type + ' ' + theorem.subject,
-            if: Object.keys(theorem.conditions).map(conditions_for_path).flat(),
+            if: Object.keys(theorem.conditions).map(conditionsForPath).flat(),
             then: `${theorem.subject}${theorem.conclusion.path}${theorem.conclusion.value ? ' ' : ' not'}${theorem.conclusion.adjective}`
         };
         if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type]) // add description when elaborate is true
             data.description = this.descriptions.theorems[theorem.type][theorem.id];
         return data;
     }
-    deserialize_adjective(id, data) {
-        const type_base = data.type.replace(/ adjective$/, '');
-        if (!(type_base in this.adjectives))
-            this.adjectives[type_base] = {};
-        if (id in this.adjectives[type_base])
-            throw new Error(`Adjective with id '${id}' for type '${type_base}' already exists`);
+    deserializeAdjective(id, data) {
+        const typeBase = data.type.replace(/ adjective$/, '');
+        if (!(typeBase in this.adjectives))
+            this.adjectives[typeBase] = {};
+        if (id in this.adjectives[typeBase])
+            throw new Error(`Adjective with id '${id}' for type '${typeBase}' already exists`);
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given            
         // const description = ('description' in data) ? data.description.toString() : null;
-        return { id, type: type_base, name };
+        return { id, type: typeBase, name };
     }
-    serialize_adjective(adjective, elaborate = false) {
+    serializeAdjective(adjective, elaborate = false) {
         const data = {
             type: `${adjective.type} adjective`,
             name: adjective.name,
@@ -132,7 +132,7 @@ export class Book {
             data.description = this.descriptions.adjectives[adjective.type][adjective.id];
         return data;
     }
-    deserialize_example(id, data) {
+    deserializeExample(id, data) {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         const args = ('with' in data) ? data.with : {}; // fallback to empty set of arguments if none are given
         const adjectives = ('adjectives' in data) ? data.adjectives : {}; // fallback to empty set of adjectives if none are given
@@ -167,7 +167,7 @@ export class Book {
         // TODO: check if arguments and adjectives keys are [\w\-]+
         return { id, type: data.type, name, args, adjectives, proofs };
     }
-    serialize_example(example, elaborate = false) {
+    serializeExample(example, elaborate = false) {
         const data = {
             type: example.type,
             name: example.name
@@ -193,14 +193,14 @@ export class Book {
         if (type == 'type') { // parse types
             if (id in this.types)
                 throw new Error(`Type with id '${id}' already exists`);
-            this.types[id] = this.deserialize_type(id, data);
+            this.types[id] = this.deserializeType(id, data);
             const description = ('description' in data) ? data.description.toString() : null;
             if (description != null)
                 this.descriptions.types[id] = description;
             return;
         }
         if (type == 'theorem') { // parse theorems
-            const theorem = this.deserialize_theorem(id, data);
+            const theorem = this.deserializeTheorem(id, data);
             if (!(theorem.type in this.theorems))
                 this.theorems[theorem.type] = {};
             if (id in this.theorems[theorem.type])
@@ -215,7 +215,7 @@ export class Book {
             return;
         }
         if (type.endsWith(' adjective')) { // parse adjective
-            const adjective = this.deserialize_adjective(id, data);
+            const adjective = this.deserializeAdjective(id, data);
             if (!(adjective.type in this.adjectives))
                 this.adjectives[adjective.type] = {};
             if (id in this.adjectives[adjective.type])
@@ -230,7 +230,7 @@ export class Book {
             return;
         }
         { // parse examples
-            const example = this.deserialize_example(id, data);
+            const example = this.deserializeExample(id, data);
             if (!(type in this.examples))
                 this.examples[type] = {};
             if (id in this.examples[type])
@@ -249,9 +249,9 @@ export class Book {
         for (const id in this.types) { // verify types
             const type = this.types[id];
             for (const key in type.parameters) {
-                const param_type = type.parameters[key];
-                if (!(param_type in this.types))
-                    throw new Error(`Type '${id}' refers to unknown type '${param_type}'`);
+                const paramType = type.parameters[key];
+                if (!(paramType in this.types))
+                    throw new Error(`Type '${id}' refers to unknown type '${paramType}'`);
             }
         }
         for (const type in this.adjectives) { // verify adjectives
@@ -271,20 +271,20 @@ export class Book {
                 if (!(theorem.type in this.types))
                     throw new Error(`Theorem '${id}' refers to unknown type '${type}'`);
                 for (const path in theorem.conditions) { // verify theorem conditions
-                    const path_type = this.resolvePathType(theorem.type, path);
-                    if (path_type == null)
+                    const pathType = this.resolvePathType(theorem.type, path);
+                    if (pathType == null)
                         throw new Error(`Theorem '${id}' refers to invalid path '${path}' in its conditions`);
                     for (const key in theorem.conditions[path]) {
-                        if (!(key in this.adjectives[path_type]))
-                            throw new Error(`Theorem '${id}' refers to unknown adjective '${key}' for '${path}' of type '${path_type}'`);
+                        if (!(key in this.adjectives[pathType]))
+                            throw new Error(`Theorem '${id}' refers to unknown adjective '${key}' for '${path}' of type '${pathType}'`);
                     }
                 }
                 // verify theorem conclusion
-                const conclusion_path_type = this.resolvePathType(theorem.type, theorem.conclusion.path);
-                if (conclusion_path_type == null)
+                const conclusionPathType = this.resolvePathType(theorem.type, theorem.conclusion.path);
+                if (conclusionPathType == null)
                     throw new Error(`Theorem '${id}' refers to invalid path '${theorem.conclusion.path}' in its conclusion`);
-                if (!(theorem.conclusion.adjective in this.adjectives[conclusion_path_type]))
-                    throw new Error(`Theorem '${id}' refers to unknown adjective '${theorem.conclusion.adjective}' for '${theorem.conclusion.path}' of type '${conclusion_path_type}'`);
+                if (!(theorem.conclusion.adjective in this.adjectives[conclusionPathType]))
+                    throw new Error(`Theorem '${id}' refers to unknown adjective '${theorem.conclusion.adjective}' for '${theorem.conclusion.path}' of type '${conclusionPathType}'`);
             }
         }
         for (const type in this.examples) { // verify examples
@@ -314,29 +314,29 @@ export class Book {
         return true;
     }
     resolvePathType(type, path) {
-        const path_parts = path.split('.');
-        for (let i = 0; i < path_parts.length; ++i) {
-            if (i == 0 && path_parts[0] != '')
+        const pathParts = path.split('.');
+        for (let i = 0; i < pathParts.length; ++i) {
+            if (i == 0 && pathParts[0] != '')
                 return null;
-            if (i > 0 && !(path_parts[i] in this.types[type].parameters))
+            if (i > 0 && !(pathParts[i] in this.types[type].parameters))
                 return null;
             if (i > 0)
-                type = this.types[type].parameters[path_parts[i]];
+                type = this.types[type].parameters[pathParts[i]];
         }
         return type;
     }
     resolvePath(context, object, path) {
-        const path_parts = path.split('.');
-        for (let i = 0; i < path_parts.length; ++i) {
-            if (i == 0 && path_parts[0] != '')
+        const pathParts = path.split('.');
+        for (let i = 0; i < pathParts.length; ++i) {
+            if (i == 0 && pathParts[0] != '')
                 return null;
-            if (i > 0 && !(path_parts[i] in this.types[object.type].parameters))
+            if (i > 0 && !(pathParts[i] in this.types[object.type].parameters))
                 return null;
-            if (i > 0 && !(path_parts[i] in object.args))
-                throw new Error(`Mysteriously missing argument '${path_parts[i]}' in '${object.id}' of type '${object.type}'`);
+            if (i > 0 && !(pathParts[i] in object.args))
+                throw new Error(`Mysteriously missing argument '${pathParts[i]}' in '${object.id}' of type '${object.type}'`);
             if (i > 0) {
-                const arg_type = this.types[object.type].parameters[path_parts[i]];
-                object = context[arg_type][object.args[path_parts[i]]];
+                const argType = this.types[object.type].parameters[pathParts[i]];
+                object = context[argType][object.args[pathParts[i]]];
             }
         }
         return object;
@@ -349,25 +349,25 @@ export class Book {
             examples: {}
         };
         for (const id in this.types) { // add types
-            contents.types[id] = this.serialize_type(this.types[id], elaborate);
+            contents.types[id] = this.serializeType(this.types[id], elaborate);
         }
         for (const type in this.adjectives) { // add adjectives
             if (!(type in contents.adjectives))
                 contents.adjectives[type] = {};
             for (const id in this.adjectives[type])
-                contents.adjectives[type][id] = this.serialize_adjective(this.adjectives[type][id], elaborate);
+                contents.adjectives[type][id] = this.serializeAdjective(this.adjectives[type][id], elaborate);
         }
         for (const type in this.theorems) { // add theorems
             if (!(type in contents.theorems))
                 contents.theorems[type] = {};
             for (const id in this.theorems[type])
-                contents.theorems[type][id] = this.serialize_theorem(this.theorems[type][id], elaborate);
+                contents.theorems[type][id] = this.serializeTheorem(this.theorems[type][id], elaborate);
         }
         for (const type in this.examples) { // add examples
             if (!(type in contents.examples))
                 contents.examples[type] = {};
             for (const id in this.examples[type])
-                contents.examples[type][id] = this.serialize_example(this.examples[type][id], elaborate);
+                contents.examples[type][id] = this.serializeExample(this.examples[type][id], elaborate);
         }
         return contents;
     }
