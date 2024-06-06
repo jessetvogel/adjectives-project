@@ -138,7 +138,7 @@ export class Book {
         const adjectives = ('adjectives' in data) ? data.adjectives : {}; // fallback to empty set of adjectives if none are given
         const proofs = {};
         // const description = ('description' in data) ? data.description.toString() : null;
-        // check adjectives
+        // parse adjectives
         // NOTE: adjective values may be 'boolean' (usually) or '[boolean, string]' where the string is the proof. We split them.
         for (const key in adjectives) {
             const value = adjectives[key];
@@ -149,6 +149,20 @@ export class Book {
             }
             else
                 throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective '${key}'`);
+        }
+        // parse proofs
+        if ('proofs' in data) {
+            for (const key in data.proofs) {
+                const proof = data.proofs[key];
+                if (typeof proof == 'string') {
+                    proofs[key] = proof;
+                }
+                else {
+                    if (!('type' in proof) || !('theorem' in proof) || !('subject' in proof))
+                        throw new Error(`Example with id '${id}' for type '${data.type}' has invalid proof for adjective '${key}'`);
+                    proofs[key] = { type: proof.type, theorem: proof.theorem, subject: proof.subject };
+                }
+            }
         }
         // TODO: check if arguments and adjectives keys are [\w\-]+
         return { id, type: data.type, name, args, adjectives, proofs };

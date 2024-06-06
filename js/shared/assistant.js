@@ -126,7 +126,11 @@ export class Assistant {
         // apply and return the conclusion
         if (should_apply) {
             object.adjectives[theorem.conclusion.adjective] = theorem.conclusion.value;
-            object.proofs[theorem.conclusion.adjective] = `🤖 ${type} ${theorem.id} ${id}`;
+            object.proofs[theorem.conclusion.adjective] = {
+                type: subject.type,
+                theorem: theorem.id,
+                subject: subject.id
+            };
         }
         return { object, adjective: theorem.conclusion.adjective, value: theorem.conclusion.value };
         // TODO: Also try to apply the theorem in the opposite direction!
