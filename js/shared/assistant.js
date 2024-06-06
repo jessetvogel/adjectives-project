@@ -18,15 +18,15 @@ class Matcher {
         }
         this.map[source.type][source.id] = target; // map `id` to `target`
         for (const key in source.args) { // match arguments as well 
-            const arg_type = this.book.types[source.type].parameters[key];
-            const arg_source = this.context[arg_type][source.args[key]];
-            const arg_target = this.book.examples[arg_type][target.args[key]];
-            if (!this.match(arg_source, arg_target))
+            const argType = this.book.types[source.type].parameters[key];
+            const argSource = this.context[argType][source.args[key]];
+            const argTarget = this.book.examples[argType][target.args[key]];
+            if (!this.match(argSource, argTarget))
                 return false;
         }
         return true; // if no problems occurred, return true
     }
-    has_match(source) {
+    hasMatch(source) {
         return (source.type in this.map && source.id in this.map[source.type]);
     }
     clone() {
@@ -54,19 +54,19 @@ export class Assistant {
             for (const id in query[type]) {
                 const object = query[type][id];
                 for (const key in object.args) {
-                    const arg_type = this.book.types[type].parameters[key];
-                    arrows.push([objects.indexOf(object), objects.indexOf(query[arg_type][object.args[key]])]);
+                    const argType = this.book.types[type].parameters[key];
+                    arrows.push([objects.indexOf(object), objects.indexOf(query[argType][object.args[key]])]);
                 }
             }
         }
         // Apply [topological sorting](https://en.wikipedia.org/wiki/Topological_sorting)
-        const objects_sorted = [];
+        const objectsSorted = [];
         while_loop: while (objects.some(x => x != null)) {
             for (let i = 0; i < objects.length; ++i) {
                 if (objects[i] == null)
                     continue; // if object has already moved to the sorted array, continue
                 if (!arrows.some(x => x[0] == i)) { // this means the i'th object has no dependencies on other objects
-                    objects_sorted.unshift(objects[i]); // move from `objects` array to `objects_sorted`
+                    objectsSorted.unshift(objects[i]); // move from `objects` array to `objects_sorted`
                     objects[i] = null;
                     arrows = arrows.filter(x => x[1] != i); // ignore all dependencies on the i'th object
                     continue while_loop;
@@ -74,7 +74,7 @@ export class Assistant {
             }
             throw new Error('Circular dependencies detected!');
         }
-        // Find matches for the objects, according to the `objects_sorted` array
+        // Find matches for the objects, according to the `objectsSorted` array
         const assistant = this;
         const results = [];
         function helper(matcher, i) {
@@ -84,20 +84,20 @@ export class Assistant {
                 results.push(result);
                 return;
             }
-            const source = objects_sorted[i];
-            if (matcher.has_match(source)) // if the i'th object already has a match, continue with the next object
+            const source = objectsSorted[i];
+            if (matcher.hasMatch(source)) // if the i'th object already has a match, continue with the next object
                 return helper(matcher, i + 1);
             // Find possible matches for the i'th object
             for (const target of Object.values(assistant.book.examples[source.type])) {
-                const matcher_copy = matcher.clone();
-                if (matcher_copy.match(source, target))
-                    helper(matcher_copy, i + 1);
+                const matcherCopy = matcher.clone();
+                if (matcherCopy.match(source, target))
+                    helper(matcherCopy, i + 1);
             }
         }
         helper(new Matcher(this.book, query), 0);
         return results;
     }
-    applyTheorem(theorem, context, id, should_apply = true) {
+    applyTheorem(theorem, context, id, shouldApply = true) {
         var _a, _b;
         // check type
         const type = theorem.type;
@@ -152,7 +152,7 @@ export class Assistant {
             }
         }
         // apply the conclusion (if so indicated) and return it
-        if (conclusion != null && should_apply) {
+        if (conclusion != null && shouldApply) {
             conclusion.object.adjectives[conclusion.adjective] = conclusion.value;
             conclusion.object.proofs[conclusion.adjective] = {
                 type: subject.type,
@@ -173,8 +173,8 @@ export class Assistant {
                 if (!(type in this.book.theorems))
                     continue;
                 const theorems = this.book.theorems[type];
-                for (const thm_id in theorems) { // ... and for every theorem of the corresponding type ...
-                    const conclusion = this.applyTheorem(theorems[thm_id], context, id);
+                for (const theoremId in theorems) { // ... and for every theorem of the corresponding type ...
+                    const conclusion = this.applyTheorem(theorems[theoremId], context, id);
                     if (conclusion != null)
                         conclusions.push(conclusion);
                 }
