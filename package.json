@@ -6,10 +6,10 @@
   "scripts": {
     "watch-ts": "(cd ts && tsc -w)",
     "watch-scss": "(cd scss && sass -w index.scss:../public/css/index.css)",
-    "update-json-from-yaml": "node --enable-source-maps ./js/script-update-json-from-yaml.js",
-    "clear-json": "node --enable-source-maps ./js/script-clear-json.js",
-    "deduce": "node --enable-source-maps ./js/script-deduce.js",
-    "script": "node --enable-source-maps ./js/script.js"
+    "update-json-from-yaml": "node --enable-source-maps ./js/backend/script-update-json-from-yaml.js",
+    "clear-json": "node --enable-source-maps ./js/backend/script-clear-json.js",
+    "deduce": "node --enable-source-maps ./js/backend/script-deduce.js",
+    "script": "node --enable-source-maps ./js/backend/script.js"
   },
   "author": "Jesse Vogel",
   "license": "MIT",

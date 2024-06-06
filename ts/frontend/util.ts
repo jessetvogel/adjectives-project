@@ -6,7 +6,7 @@ export function $$(selector: string): HTMLElement[] {
     return Array.from(document.querySelectorAll(selector));
 }
 
-export function create(tag: string, properties?: { [key: string]: any }, content?: string | HTMLElement | HTMLElement[]): HTMLElement {
+export function create(tag: string, properties?: { [key: string]: any }, content?: string | HTMLElement | (string | HTMLElement)[]): HTMLElement {
     const elem = document.createElement(tag);
 
     if (properties !== undefined) {

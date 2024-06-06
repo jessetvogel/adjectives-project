@@ -96,3 +96,4 @@ then: f affine                                           # <object> [not] <adjec
 ## TODO
 
 - snake_case to camelCase
+- HTMLElement variables should end in `Elem`

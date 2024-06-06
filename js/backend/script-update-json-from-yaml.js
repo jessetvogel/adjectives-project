@@ -5,10 +5,13 @@ import { Book } from '../shared/core.js';
 import { update_json } from './json-updater.js';
 import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
 // Finds all files (recursively) with the given extension inside the given directory.
-// Returns a list of the paths to all files found. 
+// Returns a list of the paths to all files found.
+// NOTE: ignore all hidden files (starting with .)
 function find_files_with_extension(directory, extension) {
     const files = [];
     for (const file of fs.readdirSync(directory)) {
+        if (file.startsWith('.'))
+            continue;
         const file_path = path.join(directory, file);
         const file_stat = fs.statSync(file_path);
         if (file_stat.isDirectory())

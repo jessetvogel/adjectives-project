@@ -1,4 +1,16 @@
 .page-explore {
+    .type-selection {
+        text-align: center;
+        font-size: 1.5rem;
+        height: 64px;
+        line-height: 64px;
+
+        select {
+            height: 32px;
+            padding: 0px 8px;
+        }
+    }
+
     .context {
         display: flex;
         flex-direction: row;
@@ -7,15 +19,15 @@
         border-top: 1px solid rgba(0, 0, 0, 0.12);
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
-        .list-objects,
-        .list-adjectives {
+        .column-objects,
+        .column-adjectives {
             flex-grow: 1;
             width: 50%;
             display: flex;
             flex-direction: column;
         }
 
-        .list-adjectives {
+        .column-adjectives {
             border-left: 1px solid rgba(0, 0, 0, 0.12);
             overflow-y: scroll;
 
@@ -60,7 +72,7 @@
             }
         }
 
-        .list-objects {
+        .column-objects {
             > div {
                 text-align: center;
                 min-height: 24px;
@@ -110,6 +122,31 @@
                     }
                 }
             }
+        }
+    }
+
+    .row-buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        height: 64px;
+    }
+
+    .results {
+        display: flex;
+        flex-direction: column;
+
+        .result {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        p {
+            text-align: center;
         }
     }
 }

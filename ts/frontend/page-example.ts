@@ -1,9 +1,15 @@
-import { Book } from '../shared/core.js';
+import { Book, Proof } from '../shared/core.js';
 import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 
-export function pageExampleUrl(type: string, id: string) {
-    return `?page=example&type=${type}&id=${id}`;
+function sentenceFromProof(summary: Book, proof: string | Proof): string {
+    if (proof === undefined)
+        return '';
+
+    if (typeof proof == 'string')
+        return proof;
+
+    return `By <a href="?page=theorem&type=${proof.type}&id=${proof.theorem}">${summary.theorems[proof.type][proof.theorem].name}</a> applied to <a href="?page=example&type=${proof.type}&id=${proof.subject}">${summary.examples[proof.type][proof.subject].name}</a>.`;
 }
 
 export function pageExample(summary: Book, options: any): HTMLElement {
@@ -38,7 +44,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
             table_adjectives.append(create('tr', {}, [
                 create('td', {}, create('a', { href: `?page=adjective&type=${adjective.type}&id=${adj_id}` }, adjective.name)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
-                create('td', {}, data?.proofs?.[adj_id] ?? '')
+                create('td', {}, sentenceFromProof(summary, data?.proofs?.[adj_id]))
             ]));
         }
         katexTypeset(table_adjectives);

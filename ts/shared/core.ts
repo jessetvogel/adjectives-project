@@ -22,13 +22,19 @@ export type Theorem = {
     conclusion: TheoremConclusion  // { path: '', adjective: 'quasi-compact', value: true }
 };
 
+export type Proof = {
+    type: string,    // type of subject to which the theorem is applied
+    theorem: string, // id of theorem which is applied
+    subject: string, // id of subject to which it is applied
+};
+
 export type Example = { // TODO: rename to Object or so ?
     id: string,   // Spec_ZZ_to_Spec_QQ
     type: string, // morphism
     name: string, // Spec ZZ to Spec QQ
     args: { [key: string]: string }, // { source: Spec QQ, target: Spec ZZ }
     adjectives: { [id: string]: boolean },
-    proofs: { [id: string]: string } // { integral: "The ring $\ZZ$ is a domain." }
+    proofs: { [id: string]: string | Proof } // { integral: "The ring $\ZZ$ is a domain." }
 };
 
 export type Context = { [type: string]: { [id: string]: Example } };
@@ -206,10 +212,10 @@ export class Book {
         const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
         const args = ('with' in data) ? data.with : {}; // fallback to empty set of arguments if none are given
         const adjectives = ('adjectives' in data) ? data.adjectives : {}; // fallback to empty set of adjectives if none are given
-        const proofs: { [id: string]: string } = {};
+        const proofs: { [id: string]: string | Proof } = {};
         // const description = ('description' in data) ? data.description.toString() : null;
 
-        // check adjectives
+        // parse adjectives
         // NOTE: adjective values may be 'boolean' (usually) or '[boolean, string]' where the string is the proof. We split them.
         for (const key in adjectives) {
             const value = adjectives[key];
@@ -219,6 +225,20 @@ export class Book {
                 proofs[key] = value[1];
             } else
                 throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective '${key}'`);
+        }
+
+        // parse proofs
+        if ('proofs' in data) {
+            for (const key in data.proofs) {
+                const proof = data.proofs[key];
+                if (typeof proof == 'string') {
+                    proofs[key] = proof;
+                } else {
+                    if (!('type' in proof) || !('theorem' in proof) || !('subject' in proof))
+                        throw new Error(`Example with id '${id}' for type '${data.type}' has invalid proof for adjective '${key}'`);
+                    proofs[key] = { type: proof.type, theorem: proof.theorem, subject: proof.subject };
+                }
+            }
         }
 
         // TODO: check if arguments and adjectives keys are [\w\-]+

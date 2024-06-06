@@ -1,7 +1,11 @@
 import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
-export function pageExampleUrl(type, id) {
-    return `?page=example&type=${type}&id=${id}`;
+function sentenceFromProof(summary, proof) {
+    if (proof === undefined)
+        return '';
+    if (typeof proof == 'string')
+        return proof;
+    return `By <a href="?page=theorem&type=${proof.type}&id=${proof.theorem}">${summary.theorems[proof.type][proof.theorem].name}</a> applied to <a href="?page=example&type=${proof.type}&id=${proof.subject}">${summary.examples[proof.type][proof.subject].name}</a>.`;
 }
 export function pageExample(summary, options) {
     const type = options === null || options === void 0 ? void 0 : options.type;
@@ -11,7 +15,7 @@ export function pageExample(summary, options) {
     const p_description = create('p', { class: 'decsription ' }, '');
     const table_adjectives = create('table', { class: 'adjectives' }, '');
     fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
-        var _a, _b, _c;
+        var _a, _b;
         // Update name span
         if ('name' in data)
             setText(span_name, data.name);
@@ -33,7 +37,7 @@ export function pageExample(summary, options) {
             table_adjectives.append(create('tr', {}, [
                 create('td', {}, create('a', { href: `?page=adjective&type=${adjective.type}&id=${adj_id}` }, adjective.name)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
-                create('td', {}, (_c = (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adj_id]) !== null && _c !== void 0 ? _c : '')
+                create('td', {}, sentenceFromProof(summary, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adj_id]))
             ]));
         }
         katexTypeset(table_adjectives);

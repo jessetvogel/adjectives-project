@@ -3,9 +3,7 @@ import fs from 'fs';
 import { Book } from '../shared/core.js';
 import { Assistant, DeduceOptions } from '../shared/assistant.js';
 import { update_json } from './json-updater.js';
-import { Log } from './general.js';
-
-const PATH_SUMMARY = './json/summary.json';
+import { Log, PATH_SUMMARY } from './general.js';
 
 function main() {
     // Parse arguments

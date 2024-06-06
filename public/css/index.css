@@ -8,6 +8,8 @@
   --color-light-gray: #dddddd;
   --color-gray: #7f7f7f;
   --color-dark-gray: #233239;
+  --color-button: #dddddd;
+  --color-button-hover: #cccccc;
   --font-main: "Palatino-Linotype";
   --font-typewriter: "Computer-Modern-Typewriter";
 }
@@ -62,13 +64,25 @@ span.title {
 
 a {
   color: var(--color-blue);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 button {
+  min-width: 120px;
+  height: 32px;
+  border-radius: 4px;
+  padding: 0px 8px;
+  line-height: 32px;
+  border: 0px;
   font-family: var(--font-main);
   font-size: 1rem;
+  background-color: var(--color-button);
+  text-align: center;
+  transition: 0.2s;
   cursor: pointer;
+}
+button:hover {
+  background-color: var(--color-button-hover);
 }
 
 span.katex {
@@ -80,21 +94,33 @@ li {
   margin: 8px 0px;
 }
 
-table.adjectives {
+table {
   border-collapse: collapse;
   table-layout: auto;
   width: 100%;
 }
-table.adjectives td,
-table.adjectives th {
+table td,
+table th {
   padding: 8px;
-  border: 1px solid;
+  border: 1px solid var(--color-black);
   text-align: center;
 }
-table.adjectives th {
+table th {
   font-variant: small-caps;
+  background-color: var(--color-blue);
+  color: var(--color-white);
 }
 
+.page-explore .type-selection {
+  text-align: center;
+  font-size: 1.5rem;
+  height: 64px;
+  line-height: 64px;
+}
+.page-explore .type-selection select {
+  height: 32px;
+  padding: 0px 8px;
+}
 .page-explore .context {
   display: flex;
   flex-direction: row;
@@ -103,32 +129,32 @@ table.adjectives th {
   border-top: 1px solid rgba(0, 0, 0, 0.12);
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
-.page-explore .context .list-objects,
-.page-explore .context .list-adjectives {
+.page-explore .context .column-objects,
+.page-explore .context .column-adjectives {
   flex-grow: 1;
   width: 50%;
   display: flex;
   flex-direction: column;
 }
-.page-explore .context .list-adjectives {
+.page-explore .context .column-adjectives {
   border-left: 1px solid rgba(0, 0, 0, 0.12);
   overflow-y: scroll;
 }
-.page-explore .context .list-adjectives > div {
+.page-explore .context .column-adjectives > div {
   padding: 0px 0px 0px 8px;
   line-height: 30px;
   cursor: pointer;
 }
-.page-explore .context .list-adjectives > div:hover {
+.page-explore .context .column-adjectives > div:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
-.page-explore .context .list-adjectives > div label {
+.page-explore .context .column-adjectives > div label {
   flex-grow: 1;
   display: flex;
   transition: background-color 0.2s;
   cursor: pointer;
 }
-.page-explore .context .list-adjectives > div label::before {
+.page-explore .context .column-adjectives > div label::before {
   content: "";
   display: block;
   min-width: 20px;
@@ -142,13 +168,13 @@ table.adjectives th {
   background-position: center;
   background-repeat: no-repeat;
 }
-.page-explore .context .list-adjectives > div.yes label::before {
+.page-explore .context .column-adjectives > div.yes label::before {
   background-image: url("../img/check.png");
 }
-.page-explore .context .list-adjectives > div.no label::before {
+.page-explore .context .column-adjectives > div.no label::before {
   background-image: url("../img/cross.png");
 }
-.page-explore .context .list-objects > div {
+.page-explore .context .column-objects > div {
   text-align: center;
   min-height: 24px;
   padding: 8px 40px 8px 8px;
@@ -156,34 +182,55 @@ table.adjectives th {
   position: relative;
   cursor: pointer;
 }
-.page-explore .context .list-objects > div.selected {
+.page-explore .context .column-objects > div.selected {
   background-color: rgba(0, 0, 0, 0.24);
 }
-.page-explore .context .list-objects > div:hover {
+.page-explore .context .column-objects > div:hover {
   background-color: rgba(0, 0, 0, 0.12);
 }
-.page-explore .context .list-objects > div .type,
-.page-explore .context .list-objects > div .id {
+.page-explore .context .column-objects > div .type,
+.page-explore .context .column-objects > div .id {
   display: none;
 }
-.page-explore .context .list-objects > div .adjectives {
+.page-explore .context .column-objects > div .adjectives {
   color: var(--color-gray);
   padding-left: 8px;
 }
-.page-explore .context .list-objects > div .adjectives .yes {
+.page-explore .context .column-objects > div .adjectives .yes {
   color: var(--color-green);
 }
-.page-explore .context .list-objects > div .adjectives .no {
+.page-explore .context .column-objects > div .adjectives .no {
   color: var(--color-red);
 }
-.page-explore .context .list-objects > div .adjectives .no::before {
+.page-explore .context .column-objects > div .adjectives .no::before {
   content: "not ";
 }
-.page-explore .context .list-objects > div .adjectives:not(:empty)::after {
+.page-explore .context .column-objects > div .adjectives:not(:empty)::after {
   content: ")";
 }
-.page-explore .context .list-objects > div .adjectives:not(:empty)::before {
+.page-explore .context .column-objects > div .adjectives:not(:empty)::before {
   content: "(";
+}
+.page-explore .row-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  height: 64px;
+}
+.page-explore .results {
+  display: flex;
+  flex-direction: column;
+}
+.page-explore .results .result {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 8px;
+}
+.page-explore .results p {
+  text-align: center;
 }
 
 body {
@@ -204,6 +251,7 @@ nav button {
   flex-grow: 1;
   max-width: 128px;
   border: 0;
+  border-radius: 0;
   background-color: transparent;
   color: var(--color-white);
   text-align: center;
