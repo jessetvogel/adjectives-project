@@ -6,8 +6,8 @@
         line-height: 64px;
 
         select {
-            height: 32px;
-            padding: 0px 8px;
+            // height: 32px;
+            padding: 2px 8px;
         }
     }
 
@@ -16,8 +16,9 @@
         flex-direction: row;
         max-height: 512px;
         max-width: 100%;
-        border-top: 1px solid rgba(0, 0, 0, 0.12);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        // border-top: 1px solid rgba(0, 0, 0, 0.12);
+        // border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        border: 1px solid black;
 
         .column-objects,
         .column-adjectives {
@@ -28,7 +29,7 @@
         }
 
         .column-adjectives {
-            border-left: 1px solid rgba(0, 0, 0, 0.12);
+            border-left: 1px solid black; // rgba(0, 0, 0, 0.12);
             overflow-y: scroll;
 
             > div {
@@ -37,7 +38,7 @@
                 cursor: pointer;
 
                 &:hover {
-                    background-color: rgba(0, 0, 0, 0.05);
+                    background-color: var(--color-hover-background);
                 }
 
                 label {
@@ -54,9 +55,11 @@
                         height: 20px;
                         margin: 5px 8px 2px 2px;
                         border-radius: 2px;
-                        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
+                        border: 1px solid black;
+                        box-sizing: border-box;
+                        // box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
                         background-color: white;
-                        background-size: 60%;
+                        background-size: 67%;
                         background-position: center;
                         background-repeat: no-repeat;
                     }
@@ -81,12 +84,12 @@
                 position: relative;
                 cursor: pointer;
 
-                &.selected {
-                    background-color: rgba(0, 0, 0, 0.24);
+                &:hover {
+                    background-color: var(--color-hover-background);
                 }
 
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.12);
+                &.selected {
+                    background-color: var(--color-focus-background);
                 }
 
                 .type,
@@ -147,6 +150,10 @@
 
         p {
             text-align: center;
+        }
+
+        table {
+            margin-bottom: 16px;
         }
     }
 }

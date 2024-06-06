@@ -14,11 +14,11 @@ export function pageData(summary: any, options: any): HTMLElement {
         div.append(ul);
         for (const type in summary[sort]) {
             for (const id in summary[sort][type]) {
-                ul.append(create('li', {}, create('a', { href: `?page=${sort.slice(0, -1)}&type=${type}&id=${id}` }, [
-                    create('span', {}, summary[sort][type][id].name),
+                ul.append(create('li', {}, [
+                    create('a', { href: `?page=${sort.slice(0, -1)}&type=${type}&id=${id}` }, summary[sort][type][id].name),
                     create('span', {}, ' '),
                     create('span', { class: 'comment' }, `(${summary.types[type].name})`)
-                ])));
+                ]));
             }
         }
         page.append(div);
