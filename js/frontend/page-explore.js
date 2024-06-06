@@ -53,6 +53,8 @@ function search(summary, context, resultsElem) {
         resultsElem.append(tableElem);
         katexTypeset(resultsElem);
     }
+    // scroll into view
+    resultsElem.scrollIntoView({ behavior: 'smooth' });
 }
 function deduce(summary, context, resultsElem) {
     clear(resultsElem);
@@ -62,6 +64,7 @@ function deduce(summary, context, resultsElem) {
         resultsElem.append(create('p', {}, 'No new conclusions could be made.'));
     }
     else {
+        resultsElem.append(create('p', {}, 'The following conclusions follow from your assumptions. (TODO: spell out what they satisfy)'));
         const tableElem = create('table');
         tableElem.append(create('tr', {}, [
             create('th', {}, 'Conclusion'),
@@ -78,6 +81,8 @@ function deduce(summary, context, resultsElem) {
         }
         resultsElem.append(tableElem);
     }
+    // scroll into view
+    resultsElem.scrollIntoView({ behavior: 'smooth' });
 }
 export function pageExplore(summary, options) {
     const pageElem = create('div', { class: 'page page-explore' });

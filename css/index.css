@@ -3,13 +3,16 @@
   --color-white: #ffffff;
   --color-blue: #1a7d8e;
   --color-yellow: #e2a32d;
-  --color-green: #7faa6c;
+  --color-green: #4a7f34;
   --color-red: #ba5912;
   --color-light-gray: #dddddd;
   --color-gray: #7f7f7f;
   --color-dark-gray: #233239;
+  --color-background: #fbfaf5;
   --color-button: #dddddd;
   --color-button-hover: #cccccc;
+  --color-focus-background: #1a7d8e66;
+  --color-hover-background: rgba(127, 127, 127, 0.12);
   --font-main: "Palatino-Linotype";
   --font-typewriter: "Computer-Modern-Typewriter";
 }
@@ -71,9 +74,10 @@ button {
   min-width: 120px;
   height: 32px;
   border-radius: 4px;
+  border: 1px solid black;
+  box-sizing: border-box;
   padding: 0px 8px;
   line-height: 32px;
-  border: 0px;
   font-family: var(--font-main);
   font-size: 1rem;
   background-color: var(--color-button);
@@ -86,7 +90,6 @@ button:hover {
 }
 
 span.katex {
-  display: contents;
   font-size: inherit;
 }
 
@@ -111,6 +114,15 @@ table th {
   color: var(--color-white);
 }
 
+select {
+  border-radius: 4px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  background-color: var(--color-white);
+  font-family: var(--font-main);
+  font-size: inherit;
+}
+
 .page-explore .type-selection {
   text-align: center;
   font-size: 1.5rem;
@@ -118,16 +130,14 @@ table th {
   line-height: 64px;
 }
 .page-explore .type-selection select {
-  height: 32px;
-  padding: 0px 8px;
+  padding: 2px 8px;
 }
 .page-explore .context {
   display: flex;
   flex-direction: row;
   max-height: 512px;
   max-width: 100%;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid black;
 }
 .page-explore .context .column-objects,
 .page-explore .context .column-adjectives {
@@ -137,7 +147,7 @@ table th {
   flex-direction: column;
 }
 .page-explore .context .column-adjectives {
-  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border-left: 1px solid black;
   overflow-y: scroll;
 }
 .page-explore .context .column-adjectives > div {
@@ -146,7 +156,7 @@ table th {
   cursor: pointer;
 }
 .page-explore .context .column-adjectives > div:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-hover-background);
 }
 .page-explore .context .column-adjectives > div label {
   flex-grow: 1;
@@ -162,9 +172,10 @@ table th {
   height: 20px;
   margin: 5px 8px 2px 2px;
   border-radius: 2px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
+  border: 1px solid black;
+  box-sizing: border-box;
   background-color: white;
-  background-size: 60%;
+  background-size: 67%;
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -182,11 +193,11 @@ table th {
   position: relative;
   cursor: pointer;
 }
-.page-explore .context .column-objects > div.selected {
-  background-color: rgba(0, 0, 0, 0.24);
-}
 .page-explore .context .column-objects > div:hover {
-  background-color: rgba(0, 0, 0, 0.12);
+  background-color: var(--color-hover-background);
+}
+.page-explore .context .column-objects > div.selected {
+  background-color: var(--color-focus-background);
 }
 .page-explore .context .column-objects > div .type,
 .page-explore .context .column-objects > div .id {
@@ -232,11 +243,15 @@ table th {
 .page-explore .results p {
   text-align: center;
 }
+.page-explore .results table {
+  margin-bottom: 16px;
+}
 
 body {
   margin: 0;
   font-family: var(--font-main);
   font-size: 1rem;
+  background-color: var(--color-background);
 }
 
 nav {
@@ -260,7 +275,7 @@ nav button {
   padding: 0px 8px;
 }
 nav button:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--color-hover-background);
 }
 nav .logo {
   background-color: #1a7d8e;
