@@ -3,14 +3,20 @@ import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 
-function sentenceFromProof(summary: Book, proof: string | Proof): string {
+function formatProof(summary: Book, proof: string | Proof): HTMLElement | null {
     if (proof === undefined)
-        return '';
+        return null;
 
     if (typeof proof == 'string')
-        return proof;
+        return create('span', {}, proof);
 
-    return `By ${navigation.anchorTheorem(proof.type, proof.theorem).outerHTML} applied to ${navigation.anchorExample(proof.type, proof.subject).outerHTML}.`;
+    return create('span', {}, [
+        'By ',
+        navigation.anchorTheorem(proof.type, proof.theorem),
+        ' applied to ',
+        navigation.anchorExample(proof.type, proof.subject),
+        '.'
+    ]);
 }
 
 export function pageExample(summary: Book, options: any): HTMLElement {
@@ -55,7 +61,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
-                create('td', {}, sentenceFromProof(summary, data?.proofs?.[adjId]))
+                create('td', {}, formatProof(summary, data?.proofs?.[adjId]) ?? '')
             ]));
         }
         katexTypeset(tableAdjectives);

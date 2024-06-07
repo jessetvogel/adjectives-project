@@ -371,6 +371,23 @@ export class Book {
         }
         return contents;
     }
+    createContextFromType(type, id) {
+        const context = {};
+        const book = this;
+        function addType(type, id, name) {
+            if (!(type in context))
+                context[type] = {};
+            const args = {};
+            for (const [arg, argType] of Object.entries(book.types[type].parameters)) {
+                const argId = id + '.' + arg;
+                addType(argType, argId, arg);
+                args[arg] = argId;
+            }
+            context[type][id] = { id, type, name, args, adjectives: {}, proofs: {} };
+        }
+        addType(type, id, this.types[type].name);
+        return context;
+    }
 }
 ;
 //# sourceMappingURL=core.js.map

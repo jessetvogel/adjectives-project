@@ -1,13 +1,28 @@
 .page-explore {
+    padding: 0px !important;
+
     .type-selection {
-        text-align: center;
-        font-size: 1.5rem;
-        height: 64px;
-        line-height: 64px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 1.4rem;
+        line-height: 40px;
+        padding: 20px 0px;
+
+        span {
+            margin-left: auto;
+        }
 
         select {
-            // height: 32px;
-            padding: 2px 8px;
+            height: 40px;
+            padding-left: 8px;
+            margin-right: auto;
+        }
+
+        a.help {
+            margin-right: 8px;
+            font-size: 1rem;
         }
     }
 
@@ -16,9 +31,9 @@
         flex-direction: row;
         max-height: 512px;
         max-width: 100%;
-        // border-top: 1px solid rgba(0, 0, 0, 0.12);
-        // border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-        border: 1px solid black;
+        border-top: var(--border-input);
+        border-bottom: var(--border-input);
+        // border: 1px solid black;
 
         .column-objects,
         .column-adjectives {
@@ -29,7 +44,7 @@
         }
 
         .column-adjectives {
-            border-left: 1px solid black; // rgba(0, 0, 0, 0.12);
+            border-left: var(--border-input);
             overflow-y: scroll;
 
             > div {
@@ -55,9 +70,10 @@
                         height: 20px;
                         margin: 5px 8px 2px 2px;
                         border-radius: 2px;
-                        border: 1px solid black;
+                        // border: 1px solid black;
+                        border: var(--border-input);
+                        box-shadow: var(--box-shadow-input);
                         box-sizing: border-box;
-                        // box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
                         background-color: white;
                         background-size: 67%;
                         background-position: center;
@@ -89,7 +105,18 @@
                 }
 
                 &.selected {
-                    background-color: var(--color-focus-background);
+                    background-color: var(--color-blue);
+                    color: var(--color-text-inverted);
+
+                    .adjectives {
+                        .yes {
+                            color: var(--color-light-green);
+                        }
+
+                        .no {
+                            color: var(--color-light-red);
+                        }
+                    }
                 }
 
                 .type,
@@ -140,6 +167,7 @@
     .results {
         display: flex;
         flex-direction: column;
+        padding: 0px 4px;
 
         .result {
             display: flex;
@@ -156,4 +184,14 @@
             margin-bottom: 16px;
         }
     }
+}
+
+// Pre-load some images
+body::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1; // hide images
+    content: url("../img/cross.png") url("../img/check.png");
 }

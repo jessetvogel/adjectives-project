@@ -27,10 +27,8 @@ function main() {
 
     try {
         // Load summary
-        if (!fs.existsSync(PATH_SUMMARY)) {
-            Log.error(`Missing summary file '${PATH_SUMMARY}'`);
-            return;
-        }
+        if (!fs.existsSync(PATH_SUMMARY))
+            throw new Error(`Missing summary file '${PATH_SUMMARY}'`);
 
         const summary = JSON.parse(fs.readFileSync(PATH_SUMMARY, 'utf8'));
 

@@ -8,14 +8,22 @@
     --color-light-gray: #dddddd;
     --color-gray: #7f7f7f;
     --color-dark-gray: #233239;
+    --color-light-green: #a6f385;
+    --color-light-red: #eb8740;
 
-    --color-background: #fbfaf5;
+    --color-background: #fcfcfc;
     --color-button: #dddddd;
     --color-button-hover: #cccccc;
+    --color-nav-background: #b3d9e0;
+    --color-text: var(--color-black);
+    --color-text-inverted: var(--color-white);
 
     --color-focus-background: #1a7d8e66;
     --color-hover-background: rgba(127, 127, 127, 0.12);
 
     --font-main: "Palatino-Linotype";
     --font-typewriter: "Computer-Modern-Typewriter";
+
+    --box-shadow-input: 0px 0px 5px rgba(0, 0, 0, 0.12);
+    --border-input: 1px solid rgba(0, 0, 0, 0.12);
 }

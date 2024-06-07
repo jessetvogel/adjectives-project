@@ -7,7 +7,7 @@ import { pageTheorem } from './page-theorem.js';
 import { pageType } from './page-type.js';
 import { pageContribute } from './page-contribute.js';
 
-import { clear, create } from './util.js';
+import { $$, clear, create, onClick, addClass, removeClass } from './util.js';
 import { Book } from '../shared/core.js';
 
 let summary: Book;
@@ -15,9 +15,15 @@ let content: HTMLElement;
 
 function navigateCallback(state: any): void {
     const query = Object.fromEntries(new URLSearchParams(window.location.search));
+    const page = query.page ?? 'home';
 
-    if (!('page' in query) || query.page == 'home') return setContent(pageHome());
-    switch (query.page) {
+    // update nav buttons
+    for (const button of $$('nav button'))
+        (button.id == `button-${page}` ? addClass : removeClass)(button, 'selected');
+
+    // set content
+    switch (page) {
+        case 'home': return setContent(pageHome());
         case 'explore': return setContent(pageExplore(summary, query));
         case 'data': return setContent(pageData(summary, query))
         case 'example': return setContent(pageExample(summary, query))
@@ -30,19 +36,19 @@ function navigateCallback(state: any): void {
 }
 
 function anchorType(id: string): HTMLElement {
-    return create('a', { href: `?page=type&id=${id}` }, summary.types[id].name);
+    return create('a', { href: `?page=type&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.types[id].name);
 }
 
 function anchorAdjective(type: string, id: string): HTMLElement {
-    return create('a', { href: `?page=adjective&type=${type}&id=${id}` }, summary.adjectives[type][id].name);
+    return create('a', { href: `?page=adjective&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.adjectives[type][id].name);
 }
 
 function anchorExample(type: string, id: string): HTMLElement {
-    return create('a', { href: `?page=example&type=${type}&id=${id}` }, summary.examples[type][id].name);
+    return create('a', { href: `?page=example&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.examples[type][id].name);
 }
 
 function anchorTheorem(type: string, id: string): HTMLElement {
-    return create('a', { href: `?page=theorem&type=${type}&id=${id}` }, summary.theorems[type][id].name);
+    return create('a', { href: `?page=theorem&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.theorems[type][id].name);
 }
 
 function init(s: Book, c: HTMLElement): void {
@@ -51,6 +57,13 @@ function init(s: Book, c: HTMLElement): void {
 
     window.onpopstate = (event: PopStateEvent) => navigateCallback(event.state);
     navigateCallback({});
+
+    // initialize navigation buttons
+    for (const button of $$('nav button')) {
+        const match = button.id.match(/^button-(\w+)$/);
+        if (match)
+            onClick(button, () => navigate(`?page=${match[1]}`, {}));
+    }
 }
 
 function navigate(url: string, state: any): void {

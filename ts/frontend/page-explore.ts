@@ -1,33 +1,23 @@
 import { Context, Book, Proof } from '../shared/core.js';
-import { Assistant } from '../shared/assistant.js';
+import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, $$, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 
-function sentenceFromProof(summary: Book, context: Context, proof: string | Proof): string {
+function formatProof(summary: Book, context: Context, proof: string | Proof): HTMLElement | null {
     if (proof === undefined)
-        return '';
+        return null;
 
     if (typeof proof == 'string')
-        return proof;
+        return create('span', {}, proof);
 
-    return `By ${navigation.anchorTheorem(proof.type, proof.theorem).outerHTML} applied to ${context[proof.type][proof.subject].name}.`;
-}
-
-function contextFromType(summary: Book, type: string): Context {
-    const context: Context = {};
-    function addType(type: string, id: string, name: string): void {
-        if (!(type in context)) context[type] = {};
-        const args: { [id: string]: string } = {};
-        for (const [arg, argType] of Object.entries(summary.types[type].parameters)) {
-            const argId = id + '.' + arg;
-            addType(argType, argId, arg);
-            args[arg] = argId;
-        }
-        context[type][id] = { id, type, name, args, adjectives: {}, proofs: {} };
-    }
-    addType(type, type, summary.types[type].name);
-    return context;
+    return create('span', {}, [
+        'By ',
+        navigation.anchorTheorem(proof.type, proof.theorem),
+        ' applied to ',
+        context[proof.type][proof.subject].name,
+        '.'
+    ]);
 }
 
 function search(summary: Book, context: Context, resultsElem: HTMLElement): void {
@@ -70,45 +60,58 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
 function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void {
     clear(resultsElem);
 
-    const assistant = new Assistant(summary);
-    const conclusions = assistant.deduce(context);
+    try {
+        const assistant = new Assistant(summary);
+        const conclusions = assistant.deduce(context);
 
-    if (conclusions.length == 0) {
-        resultsElem.append(create('p', {}, 'No new conclusions could be made.'));
-    }
-    else {
-        resultsElem.append(create('p', {}, 'The following conclusions follow from your assumptions. (TODO: spell out what they satisfy)'));
-
-        const tableElem = create('table');
-        tableElem.append(create('tr', {}, [
-            create('th', {}, 'Conclusion'),
-            create('th', {}, 'Proof')
-        ]));
-        for (const conclusion of conclusions) {
-            tableElem.append(create('tr', {}, [
-                create('td', {}, [
-                    `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
-                    navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
-                ]),
-                create('td', {}, sentenceFromProof(summary, context, conclusion.object.proofs[conclusion.adjective]))
-            ]));
+        if (conclusions.length == 0) {
+            resultsElem.append(create('p', {}, 'No new conclusions could be made.'));
         }
-        resultsElem.append(tableElem);
+        else {
+            resultsElem.append(create('p', {}, 'The following conclusions follow from your assumptions. (TODO: spell out what they satisfy)'));
+
+            const tableElem = create('table');
+            tableElem.append(create('tr', {}, [
+                create('th', {}, 'Conclusion'),
+                create('th', {}, 'Proof')
+            ]));
+            for (const conclusion of conclusions) {
+                tableElem.append(create('tr', {}, [
+                    create('td', {}, [
+                        `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
+                        navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
+                    ]),
+                    create('td', {}, formatProof(summary, context, conclusion.object.proofs[conclusion.adjective]) ?? '')
+                ]));
+            }
+            resultsElem.append(tableElem);
+        }
+    }
+    catch (err) {
+        if (err instanceof ContradictionError) {
+            resultsElem.append(create('span', { class: 'title' }, 'Contradiction!'));
+            resultsElem.append(create('p', {}, 'A contradiction follows from your assumptions. (TODO: give some details)'));
+        }
     }
 
     // scroll into view
     resultsElem.scrollIntoView({ behavior: 'smooth' });
 }
 
-
 export function pageExplore(summary: Book, options: any): HTMLElement {
     const pageElem = create('div', { class: 'page page-explore' });
 
     // "I am looking for a <select>"
-    const selectElem = create('select', {}, Object.keys(summary.types).map(id => create('option', { value: id }, summary.types[id].name))) as HTMLSelectElement;
+    const defaultOption = 'scheme';
+    const selectElem = create('select', {}, Object.keys(summary.types).map(id => {
+        const name = summary.types[id].name;
+        const attr = (id == defaultOption) ? { value: id, selected: true } : { value: id };
+        return create('option', attr, name);
+    })) as HTMLSelectElement;
     pageElem.append(create('div', { class: 'type-selection' }, [
         create('span', {}, 'I am looking for a '),
-        selectElem
+        selectElem,
+        create('a', { class: 'help' }, 'Help')
     ]));
 
     // Column of objects and column of adjectives
@@ -189,8 +192,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
     const deduceButtonElem = create('button', {}, 'Deduce');
     pageElem.append(create('div', { class: 'row-buttons' }, [
         searchButtonElem,
-        deduceButtonElem,
-        create('a', {}, 'Help (TODO)')
+        deduceButtonElem
     ]));
 
     // Append div for results
@@ -199,7 +201,8 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
 
     // Search functionality
     onChange(selectElem, function () {
-        const context = contextFromType(summary, selectElem.value)
+        const type = selectElem.value;
+        const context = summary.createContextFromType(type, type) // simply use id equal to type
         initializeWithContext(context);
         searchButtonElem.onclick = function () { search(summary, context, resultsElem); };
         deduceButtonElem.onclick = function () { deduce(summary, context, resultsElem); };

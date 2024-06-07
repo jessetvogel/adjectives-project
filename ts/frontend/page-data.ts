@@ -1,5 +1,6 @@
 import { create, onInput, $$ } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
+import navigation from './navigation.js';
 
 export function pageData(summary: any, options: any): HTMLElement {
     const page = create('div', { class: 'page page-data' });
@@ -21,10 +22,11 @@ export function pageData(summary: any, options: any): HTMLElement {
         div.append(create('span', { class: 'title', style: 'text-align: left;' }, sort.charAt(0).toUpperCase() + sort.slice(1)));
         const ul = create('ul');
         div.append(ul);
+        const anchor = (sort == 'examples' ? navigation.anchorExample : (sort == 'adjectives' ? navigation.anchorAdjective : navigation.anchorTheorem));
         for (const type in summary[sort]) {
             for (const id in summary[sort][type]) {
                 ul.append(create('li', {}, [
-                    create('a', { href: `?page=${sort.slice(0, -1)}&type=${type}&id=${id}` }, summary[sort][type][id].name),
+                    anchor(type, id),
                     create('span', {}, ' '),
                     create('span', { class: 'comment' }, `(${summary.types[type].name})`)
                 ]));

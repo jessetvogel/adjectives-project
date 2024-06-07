@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
+import { Log, PATH_JSON, PATH_QUESTIONS, PATH_SUMMARY } from './general.js';
 function updateObject(source, target) {
     let changes = false;
     for (const key in target) {
@@ -67,5 +67,8 @@ export function updateJSON(book) {
             updateJSONFile(`${PATH_JSON}/examples/${type}/${id}.json`, book.serializeExample(book.examples[type][id], true));
     // Update the summary file
     updateSummary(book);
+}
+export function updateQuestions(questions) {
+    fs.writeFileSync(PATH_QUESTIONS, JSON.stringify(questions), 'utf8');
 }
 //# sourceMappingURL=json-updater.js.map

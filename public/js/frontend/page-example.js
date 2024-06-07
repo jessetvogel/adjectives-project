@@ -1,12 +1,18 @@
 import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
-function sentenceFromProof(summary, proof) {
+function formatProof(summary, proof) {
     if (proof === undefined)
-        return '';
+        return null;
     if (typeof proof == 'string')
-        return proof;
-    return `By ${navigation.anchorTheorem(proof.type, proof.theorem).outerHTML} applied to ${navigation.anchorExample(proof.type, proof.subject).outerHTML}.`;
+        return create('span', {}, proof);
+    return create('span', {}, [
+        'By ',
+        navigation.anchorTheorem(proof.type, proof.theorem),
+        ' applied to ',
+        navigation.anchorExample(proof.type, proof.subject),
+        '.'
+    ]);
 }
 export function pageExample(summary, options) {
     const type = options === null || options === void 0 ? void 0 : options.type;
@@ -16,7 +22,7 @@ export function pageExample(summary, options) {
     const pDescription = create('p', { class: 'description' }, '');
     const tableAdjectives = create('table', { class: 'adjectives' }, '');
     fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
-        var _a, _b;
+        var _a, _b, _c;
         // Update name span
         if ('name' in data)
             setText(spanName, data.name);
@@ -49,7 +55,7 @@ export function pageExample(summary, options) {
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
-                create('td', {}, sentenceFromProof(summary, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjId]))
+                create('td', {}, (_c = formatProof(summary, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjId])) !== null && _c !== void 0 ? _c : '')
             ]));
         }
         katexTypeset(tableAdjectives);

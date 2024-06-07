@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import { Book } from '../shared/core.js'
-import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
+import { Book, Context } from '../shared/core.js'
+import { Log, PATH_JSON, PATH_QUESTIONS, PATH_SUMMARY } from './general.js';
 
 function updateObject(source: any, target: any): boolean { // returns true if any actual change was made
     let changes = false;
@@ -76,4 +76,8 @@ export function updateJSON(book: Book): void {
 
     // Update the summary file
     updateSummary(book);
+}
+
+export function updateQuestions(questions: Context[]): void {
+    fs.writeFileSync(PATH_QUESTIONS, JSON.stringify(questions), 'utf8');
 }

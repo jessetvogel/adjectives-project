@@ -484,4 +484,21 @@ export class Book {
         }
         return contents;
     }
+
+    createContextFromType(type: string, id: string): Context {
+        const context: Context = {};
+        const book: Book = this;
+        function addType(type: string, id: string, name: string): void {
+            if (!(type in context)) context[type] = {};
+            const args: { [id: string]: string } = {};
+            for (const [arg, argType] of Object.entries(book.types[type].parameters)) {
+                const argId = id + '.' + arg;
+                addType(argType, argId, arg);
+                args[arg] = argId;
+            }
+            context[type][id] = { id, type, name, args, adjectives: {}, proofs: {} };
+        }
+        addType(type, id, this.types[type].name);
+        return context;
+    }
 };

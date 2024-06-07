@@ -37,6 +37,7 @@ There are a number of scripts:
 - `script-update-json-from-yaml.js`: reads the .yaml files and updates summary.json and the other .json files accordingly with any new information that is provided. Note that it overwrites (but not erases) existing data.
 - `script-deduce.js`: tries to make as many new deductions as possible for the examples (based on the summary.json file), and updates summary.json and the relevant .json files accoringly.
 - `script-clear-json.js`: clears all generated .json files.
+- `script-generate-questions.js`: generates questions (of the form 'Does there exist a (type) satisfying these conditions?') for which there does not yet exist an example, and which cannot be disproven using the theorems.
 
 ## YAML files
 
@@ -84,7 +85,7 @@ then: f affine                                           # <object> [not] <adjec
   - Explore: allows for dynamic searching, deductions, contradictions, etc.
   - Overview: lists all objects, with id, name, type, and description if it fits
               with some filters
-  - Contribute: some way to contribute
+  - Contribute: some way to contribute (pull request to GitHub seems good)
   Furthermore:
   - Example page: display name, arguments, description, and a table of properties with their status and proofs
   - Adjective page: display name, type, description (and possibly button to show which are and which are not)
