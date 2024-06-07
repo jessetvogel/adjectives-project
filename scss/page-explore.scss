@@ -23,6 +23,7 @@
         a.help {
             margin-right: 8px;
             font-size: 1rem;
+            font-variant: small-caps;
         }
     }
 
@@ -161,12 +162,10 @@
         align-items: center;
         justify-content: center;
         gap: 32px;
-        height: 64px;
+        margin: 16px 0px;
     }
 
     .results {
-        display: flex;
-        flex-direction: column;
         padding: 0px 4px;
 
         .result {
