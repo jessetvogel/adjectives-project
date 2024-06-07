@@ -1,10 +1,10 @@
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 import { create, setText } from './util.js';
-function statementFromTheorem(summary, theorem) {
+function formatTheoremStatement(summary, theorem) {
     const statement = [];
     // given
-    statement.push(`Let $${theorem.subject}$ be a ${navigation.anchorType(theorem.type).outerHTML}.`);
+    statement.push(`Let $${theorem.subject}$ be a `, navigation.anchorType(theorem.type), '. ');
     function wordFromPath(path) {
         if (path == '')
             return `$${theorem.subject}$`;
@@ -14,35 +14,37 @@ function statementFromTheorem(summary, theorem) {
         return `the ${path.substring(i + 1)} of ${wordFromPath(path.substring(0, i))}`;
     }
     // conditions
-    const conditions = [];
+    const numberOfConditions = Object.values(theorem.conditions).map(adj => Object.keys(adj).length).reduce((partial, n) => partial + n);
+    let conditionsCount = 0;
+    statement.push('Suppose that ');
     for (const path in theorem.conditions) {
         for (const adj in theorem.conditions[path]) {
             const conditionObjectType = summary.resolvePathType(theorem.type, path);
             if (conditionObjectType == null)
                 throw new Error(`Could not resolve path '${path}' starting from type '${theorem.type}'`);
             const value = theorem.conditions[path][adj];
-            conditions.push(`${wordFromPath(path)} ${value ? 'is' : 'is not'} ${navigation.anchorAdjective(conditionObjectType, adj).outerHTML}`);
+            if (numberOfConditions > 1 && conditionsCount > 0 && conditionsCount < numberOfConditions - 1)
+                statement.push(', ');
+            if (numberOfConditions > 1 && conditionsCount == numberOfConditions - 1)
+                statement.push(' and that ');
+            statement.push(`${wordFromPath(path)} ${value ? 'is' : 'is not'} `, navigation.anchorAdjective(conditionObjectType, adj));
+            ++conditionsCount;
         }
     }
-    if (conditions.length > 0) {
-        if (conditions.length == 1)
-            statement.push(`Suppose that ${conditions[0]}.`);
-        else
-            statement.push(`Suppose that ${conditions.slice(0, conditions.length - 1).join(', ')} and that ${conditions[conditions.length - 1]}.`);
-    }
+    statement.push('. ');
     // conclusion
     const conclusionObjectType = summary.resolvePathType(theorem.type, theorem.conclusion.path);
     if (conclusionObjectType == null)
         throw new Error(`Could not resolve path '${theorem.conclusion.path}' starting from type '${theorem.type}'`);
-    statement.push(`Then ${wordFromPath(theorem.conclusion.path)} ${theorem.conclusion.value ? 'is' : 'is not'} ${navigation.anchorAdjective(conclusionObjectType, theorem.conclusion.adjective).outerHTML}.`);
-    return statement.join(' ');
+    statement.push(`Then ${wordFromPath(theorem.conclusion.path)} ${theorem.conclusion.value ? 'is' : 'is not'} `, navigation.anchorAdjective(conclusionObjectType, theorem.conclusion.adjective), '.');
+    return create('span', {}, statement);
 }
 export function pageTheorem(summary, options) {
     const type = options === null || options === void 0 ? void 0 : options.type;
     const id = options === null || options === void 0 ? void 0 : options.id;
     // TODO: regex check type and id
     const spanName = create('span', {}, '');
-    const pStatement = create('p', { class: 'statement' }, statementFromTheorem(summary, summary.theorems[type][id]));
+    const pStatement = create('p', { class: 'statement' }, formatTheoremStatement(summary, summary.theorems[type][id]));
     const pDescription = create('p', { class: 'description' }, '');
     katexTypeset(pStatement);
     fetch(`json/theorems/${type}/${id}.json`).then(response => response.json()).then(data => {
