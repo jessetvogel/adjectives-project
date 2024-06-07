@@ -13,7 +13,7 @@
   --color-background: #fcfcfc;
   --color-button: #dddddd;
   --color-button-hover: #cccccc;
-  --color-nav-background: #b3d9e0;
+  --color-nav-background: #b5d4da;
   --color-text: var(--color-black);
   --color-text-inverted: var(--color-white);
   --color-focus-background: #1a7d8e66;
@@ -169,6 +169,7 @@ input[type=text] {
 .page-explore .type-selection a.help {
   margin-right: 8px;
   font-size: 1rem;
+  font-variant: small-caps;
 }
 .page-explore .context {
   display: flex;
@@ -275,11 +276,9 @@ input[type=text] {
   align-items: center;
   justify-content: center;
   gap: 32px;
-  height: 64px;
+  margin: 16px 0px;
 }
 .page-explore .results {
-  display: flex;
-  flex-direction: column;
   padding: 0px 4px;
 }
 .page-explore .results .result {
@@ -366,7 +365,7 @@ nav button {
   padding: 0px 8px;
 }
 nav button:hover {
-  background-color: var(--color-hover-background);
+  background-color: transparent;
 }
 nav button.selected {
   background-color: var(--color-blue);

@@ -15,6 +15,46 @@ function formatProof(summary, context, proof) {
         '.'
     ]);
 }
+function formatContext(summary, context) {
+    // {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}    
+    const span = create('span');
+    // The subject is the object in the context whose id is equal to its type
+    const type = Object.keys(context).find(type => (type in context[type]));
+    if (type === undefined) { // safety sentence, but it should never happen though
+        span.append('the given assumptions');
+        return span;
+    }
+    const id = type;
+    span.append(`a ${summary.types[type].name}`);
+    function addAdjectives(prefix, type, id) {
+        if (!('adjectives' in context[type][id]) || Object.keys(context[type][id].adjectives).length == 0)
+            return false;
+        span.append(prefix);
+        const adjectivesTotal = Object.keys(context[type][id].adjectives).length;
+        let adjectivesCount = 0;
+        for (const adj in context[type][id].adjectives) {
+            if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1)
+                span.append(', ');
+            if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1)
+                span.append(' and ');
+            if (!context[type][id].adjectives[adj])
+                span.append('not ');
+            span.append(navigation.anchorAdjective(type, adj));
+            ++adjectivesCount;
+        }
+        return true;
+    }
+    let first = true; // keeps track of whether some adjectives are already written
+    if (addAdjectives(' which is ', type, id)) // subject
+        first = false;
+    if ('args' in context[type][id] && Object.keys(context[type][id].args).length > 0) { // arguments / parameters
+        for (const arg in context[type][id].args) {
+            if (addAdjectives(`${first ? ' ' : ', and '}whose ${arg} is `, summary.types[type].parameters[arg], `${id}.${arg}`))
+                first = false;
+        }
+    }
+    return span;
+}
 function search(summary, context, resultsElem) {
     clear(resultsElem);
     const assistant = new Assistant(summary);
@@ -23,7 +63,12 @@ function search(summary, context, resultsElem) {
         resultsElem.append(create('p', {}, 'No results found.'));
     }
     else {
-        resultsElem.append(create('p', {}, 'The following examples match your assumptions (TODO: spell out what they satisfy).'));
+        // The following are examples of {{ a ${type} which is [...], and whose source is [...], and whose target is [...] }}.
+        resultsElem.append(create('p', {}, [
+            'The following are examples of ',
+            formatContext(summary, context),
+            '.'
+        ]));
         const tableElem = create('table');
         { // table header
             const trElem = create('tr');
@@ -51,13 +96,19 @@ function deduce(summary, context, resultsElem) {
     var _a;
     clear(resultsElem);
     try {
+        const contextCopy = structuredClone(context); // NOTE: the conclusions must not pollute the original context
         const assistant = new Assistant(summary);
-        const conclusions = assistant.deduce(context);
+        const conclusions = assistant.deduce(contextCopy);
         if (conclusions.length == 0) {
             resultsElem.append(create('p', {}, 'No new conclusions could be made.'));
         }
         else {
-            resultsElem.append(create('p', {}, 'The following conclusions follow from your assumptions. (TODO: spell out what they satisfy)'));
+            // Given {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}, the following conclusions hold.
+            resultsElem.append(create('p', {}, [
+                'The following conclusions follow from ',
+                formatContext(summary, context),
+                '.'
+            ]));
             const tableElem = create('table');
             tableElem.append(create('tr', {}, [
                 create('th', {}, 'Conclusion'),
@@ -69,7 +120,7 @@ function deduce(summary, context, resultsElem) {
                         `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
                         navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
                     ]),
-                    create('td', {}, (_a = formatProof(summary, context, conclusion.object.proofs[conclusion.adjective])) !== null && _a !== void 0 ? _a : '')
+                    create('td', {}, (_a = formatProof(summary, contextCopy, conclusion.object.proofs[conclusion.adjective])) !== null && _a !== void 0 ? _a : '')
                 ]));
             }
             resultsElem.append(tableElem);
@@ -78,7 +129,11 @@ function deduce(summary, context, resultsElem) {
     catch (err) {
         if (err instanceof ContradictionError) {
             resultsElem.append(create('span', { class: 'title' }, 'Contradiction!'));
-            resultsElem.append(create('p', {}, 'A contradiction follows from your assumptions. (TODO: give some details)'));
+            resultsElem.append(create('p', {}, [
+                'A contradiction follows from ',
+                formatContext(summary, context),
+                '.'
+            ]));
         }
     }
     // scroll into view
