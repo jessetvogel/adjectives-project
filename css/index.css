@@ -21,7 +21,7 @@
   --font-main: "Palatino-Linotype";
   --font-typewriter: "Computer-Modern-Typewriter";
   --box-shadow-input: 0px 0px 5px rgba(0, 0, 0, 0.12);
-  --border-input: 1px solid rgba(0, 0, 0, 0.12);
+  --border-input: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 @font-face {
@@ -78,7 +78,7 @@ a {
 }
 
 button {
-  height: 40px;
+  height: 32px;
   border-radius: 4px;
   background-color: var(--color-button);
   border: var(--border-input);
@@ -111,7 +111,7 @@ table {
 table td,
 table th {
   padding: 8px;
-  border: 1px solid var(--color-black);
+  border: var(--border-input);
   text-align: center;
 }
 table th {
@@ -143,6 +143,16 @@ input[type=text] {
   font-size: inherit;
   outline: none;
   box-sizing: border-box;
+}
+
+p {
+  text-align: justify;
+}
+
+.page-example .arguments {
+  display: block;
+  text-align: center;
+  color: var(--color-gray);
 }
 
 .page-explore {
@@ -229,6 +239,7 @@ input[type=text] {
 .page-explore .context .column-objects > div {
   text-align: center;
   min-height: 24px;
+  line-height: 24px;
   padding: 8px 40px 8px 8px;
   transition: background-color 0.2s;
   position: relative;
@@ -278,8 +289,11 @@ input[type=text] {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 16px;
   margin: 16px 0px;
+}
+.page-explore .row-buttons button {
+  width: 128px;
 }
 .page-explore .results {
   padding: 0px 4px;
@@ -353,6 +367,7 @@ nav {
   align-items: center;
   justify-content: center;
   background-color: var(--color-nav-background);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
 }
 nav button {
   display: block;

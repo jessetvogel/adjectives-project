@@ -6,7 +6,9 @@ import { pageAdjective } from './page-adjective.js';
 import { pageTheorem } from './page-theorem.js';
 import { pageType } from './page-type.js';
 import { pageContribute } from './page-contribute.js';
+import { pageHelp } from './page-help.js';
 import { $$, clear, create, onClick, addClass, removeClass } from './util.js';
+import { pageQuestions } from './page-questions.js';
 let summary;
 let content;
 function navigateCallback(state) {
@@ -26,8 +28,12 @@ function navigateCallback(state) {
         case 'theorem': return setContent(pageTheorem(summary, query));
         case 'type': return setContent(pageType(summary, query));
         case 'contribute': return setContent(pageContribute());
+        case 'help': return setContent(pageHelp());
+        case 'questions': return setContent(pageQuestions(summary));
     }
-    setContent(create('div', {}, '404 Page Not Found'));
+    setContent(create('div', { class: 'page' }, [
+        create('span', { class: 'title' }, '🥺 404 Page Not Found')
+    ]));
 }
 function anchorType(id) {
     return create('a', { href: `?page=type&id=${id}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, summary.types[id].name);
@@ -40,6 +46,9 @@ function anchorExample(type, id) {
 }
 function anchorTheorem(type, id) {
     return create('a', { href: `?page=theorem&type=${type}&id=${id}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, summary.theorems[type][id].name);
+}
+function anchorPage(page, text) {
+    return create('a', { href: `?page=${page}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, text);
 }
 function init(s, c) {
     summary = s;
@@ -69,6 +78,7 @@ export default {
     anchorType,
     anchorAdjective,
     anchorExample,
-    anchorTheorem
+    anchorTheorem,
+    anchorPage
 };
 //# sourceMappingURL=navigation.js.map

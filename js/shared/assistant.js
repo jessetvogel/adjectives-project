@@ -1,7 +1,8 @@
 export class Matcher {
-    constructor(book, context) {
+    constructor(book, sourceContext, targetContext) {
         this.book = book;
-        this.context = context;
+        this.sourceContext = sourceContext;
+        this.targetContext = targetContext;
         this.map = {};
     }
     match(source, target) {
@@ -19,8 +20,8 @@ export class Matcher {
         this.map[source.type][source.id] = target; // map `id` to `target`
         for (const key in source.args) { // match arguments as well 
             const argType = this.book.types[source.type].parameters[key];
-            const argSource = this.context[argType][source.args[key]];
-            const argTarget = this.book.examples[argType][target.args[key]];
+            const argSource = this.sourceContext[argType][source.args[key]];
+            const argTarget = this.targetContext[argType][target.args[key]];
             if (!this.match(argSource, argTarget))
                 return false;
         }
@@ -30,7 +31,7 @@ export class Matcher {
         return (source.type in this.map && source.id in this.map[source.type]);
     }
     clone() {
-        const copy = new Matcher(this.book, this.context);
+        const copy = new Matcher(this.book, this.sourceContext, this.targetContext);
         for (const id in this.map)
             copy.map[id] = this.map[id];
         return copy;
@@ -101,7 +102,7 @@ export class Assistant {
                     helper(matcherCopy, i + 1);
             }
         }
-        helper(new Matcher(this.book, query), 0);
+        helper(new Matcher(this.book, query, this.book.examples), 0);
         return results;
     }
     applyTheorem(theorem, context, id, shouldApply = true) {

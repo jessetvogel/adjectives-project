@@ -20,9 +20,9 @@ export function pageAdjective(summary, options) {
     });
     return create('div', { class: 'page page-adjective' }, [
         create('span', { class: 'title' }, [
-            create('span', {}, `Adjective `),
+            // create('span', { class: 'comment' }, `Adjective `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
+            create('span', { class: 'comment' }, ` (${summary.types[type].name} adjective)`)
         ]),
         pDescription
     ]);
