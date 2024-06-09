@@ -1,5 +1,0 @@
-type: theorem
-name: morphisms with affine source and target are affine
-given: morphism f
-if: [f.source affine, f.target affine]
-then: f affine

@@ -1,5 +1,0 @@
-type: theorem
-name: closed immersions are immersions
-given: morphism f
-if: f closed-immersion
-then: f immersion

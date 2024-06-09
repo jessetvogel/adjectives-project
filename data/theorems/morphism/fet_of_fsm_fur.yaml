@@ -1,5 +1,0 @@
-type: theorem
-name: formally smooth and formally unramified morphisms are formally étale
-given: morphism f
-if: [f formally-smooth, f formally-unramified]
-then: f formally-etale

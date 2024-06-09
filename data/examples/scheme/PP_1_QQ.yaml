@@ -1,5 +1,0 @@
-type: scheme
-name: $\PP^1_\QQ$
-description: The projective line over the rational numbers.
-adjectives:
-  affine: false

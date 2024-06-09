@@ -1,5 +1,0 @@
-type: theorem
-name: definition noetherian
-given: scheme X
-if: [X locally-noetherian, X quasi-compact]
-then: X noetherian

@@ -1,5 +1,0 @@
-type: theorem
-name: smooth morphisms are regular
-given: morphism f
-if: f smooth
-then: f regular

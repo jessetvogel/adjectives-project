@@ -1,3 +1,0 @@
-type: scheme adjective
-name: integral # could omit, as it falls back to `id` by default
-description: A scheme is integral if [...]

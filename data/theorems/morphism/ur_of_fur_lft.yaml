@@ -1,5 +1,0 @@
-type: theorem
-name: formally unramified morphisms locally of finite type are unramified
-given: morphism f
-if: [f formally-unramified, f locally-of-finite-type]
-then: f unramified

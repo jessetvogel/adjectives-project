@@ -1,5 +1,0 @@
-type: theorem
-name: semi-separated morphisms are quasi-separated
-given: morphism f
-if: f semi-separated
-then: f quasi-separated

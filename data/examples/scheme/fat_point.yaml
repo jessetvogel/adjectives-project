@@ -1,6 +1,0 @@
-type: scheme
-name: $\Spec \QQ[x]/(x^2)$
-description: The scheme $\Spec \QQ[x]/(x^2)$.
-adjectives:
-  affine: true
-  reduced: false

@@ -1,6 +1,0 @@
-type: scheme
-name: $\Spec \ZZ$
-description: Spectrum of the integers $\ZZ$
-adjectives:
-  affine: true
-  integral: [true, The ring $\ZZ$ is a domain]

@@ -1,7 +1,0 @@
-type: morphism
-name: $\Spec \QQ \to \Spec \ZZ$
-with:
-  source: Spec_QQ
-  target: Spec_ZZ
-adjectives:
-  flat: true

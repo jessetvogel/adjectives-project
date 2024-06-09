@@ -1,5 +1,0 @@
-type: theorem
-name: immersions are separated
-given: morphism f
-if: f immersion
-then: f separated
