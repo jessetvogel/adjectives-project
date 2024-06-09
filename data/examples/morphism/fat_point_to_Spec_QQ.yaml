@@ -1,0 +1,8 @@
+type: morphism
+name: $\Spec \QQ[x]/(x^2) \to \Spec \QQ$
+with:
+  source: fat_point
+  target: Spec_QQ
+adjectives:
+  flat: true
+  closed-immersion: false

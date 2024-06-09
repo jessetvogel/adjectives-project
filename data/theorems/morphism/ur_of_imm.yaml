@@ -1,0 +1,5 @@
+type: theorem
+name: immersions are unramified
+given: morphism f
+if: f immersion
+then: f unramified

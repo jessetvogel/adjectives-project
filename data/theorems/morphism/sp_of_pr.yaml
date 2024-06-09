@@ -1,0 +1,5 @@
+type: theorem
+name: proper morphisms are separated
+given: morphism f
+if: f proper
+then: f separated

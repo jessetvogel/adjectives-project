@@ -2,18 +2,16 @@ import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
-function formatProof(summary, context, proof) {
+function formatProof(context, proof) {
     if (proof === undefined)
         return null;
     if (typeof proof == 'string')
         return create('span', {}, proof);
-    return create('span', {}, [
-        'By ',
-        navigation.anchorTheorem(proof.type, proof.theorem),
-        ' applied to ',
-        context[proof.type][proof.subject].name,
-        '.'
-    ]);
+    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
+    if (proof.subject.indexOf('.') >= 0) // little hack
+        span.append(` applied to ${context[proof.type][proof.subject].name}`);
+    span.append('.');
+    return span;
 }
 function formatContext(summary, context) {
     // {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}    
@@ -120,7 +118,7 @@ function deduce(summary, context, resultsElem) {
                         `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
                         navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
                     ]),
-                    create('td', {}, (_a = formatProof(summary, contextCopy, conclusion.object.proofs[conclusion.adjective])) !== null && _a !== void 0 ? _a : '')
+                    create('td', {}, (_a = formatProof(contextCopy, conclusion.object.proofs[conclusion.adjective])) !== null && _a !== void 0 ? _a : '')
                 ]));
             }
             resultsElem.append(tableElem);
@@ -188,8 +186,8 @@ export function pageExplore(summary, options) {
             const type = (_b = (_a = div.querySelector('.type')) === null || _a === void 0 ? void 0 : _a.textContent) !== null && _b !== void 0 ? _b : '';
             const id = (_d = (_c = div.querySelector('.id')) === null || _c === void 0 ? void 0 : _c.textContent) !== null && _d !== void 0 ? _d : '';
             const object = context[type][id];
-            setHTML(div.querySelector('.adjectives'), Object
-                .keys(object.adjectives)
+            setHTML(div.querySelector('.adjectives'), Object.keys(object.adjectives)
+                .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
                 .map(adj => create('span', { class: object.adjectives[adj] ? 'yes' : 'no' }, summary.adjectives[type][adj].name))
                 .map(elem => elem.outerHTML)
                 .join(', '));
@@ -199,7 +197,8 @@ export function pageExplore(summary, options) {
         if (selectedElem) {
             const type = (_f = (_e = selectedElem.querySelector('.type')) === null || _e === void 0 ? void 0 : _e.textContent) !== null && _f !== void 0 ? _f : '';
             const id = (_h = (_g = selectedElem.querySelector('.id')) === null || _g === void 0 ? void 0 : _g.textContent) !== null && _h !== void 0 ? _h : '';
-            for (const adj in summary.adjectives[type]) {
+            const adjs = Object.keys(summary.adjectives[type]).sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' })); // alphabetically
+            for (const adj of adjs) {
                 const itemClass = (context[type][id].adjectives[adj] == true) ? 'yes' : ((context[type][id].adjectives[adj] == false) ? 'no' : '');
                 const itemElem = create('div', { class: itemClass }, create('label', {}, summary.adjectives[type][adj].name));
                 onClick(itemElem, function () {

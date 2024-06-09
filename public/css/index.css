@@ -88,7 +88,7 @@ button {
   font-family: var(--font-main);
   font-size: 1rem;
   text-align: center;
-  transition: 0.2s;
+  transition: background-color 0.2s, color 0.2s;
   cursor: pointer;
 }
 button:hover {
@@ -133,7 +133,6 @@ select {
   box-sizing: border-box;
   background-color: var(--color-white);
   font-family: var(--font-main);
-  font-size: inherit;
 }
 
 input[type=text] {
@@ -165,6 +164,7 @@ input[type=text] {
   height: 40px;
   padding-left: 8px;
   margin-right: auto;
+  font-size: 1rem;
 }
 .page-explore .type-selection a.help {
   margin-right: 8px;
@@ -240,6 +240,9 @@ input[type=text] {
 .page-explore .context .column-objects > div.selected {
   background-color: var(--color-blue);
   color: var(--color-text-inverted);
+}
+.page-explore .context .column-objects > div.selected .adjectives {
+  color: var(--color-light-gray);
 }
 .page-explore .context .column-objects > div.selected .adjectives .yes {
   color: var(--color-light-green);
@@ -383,6 +386,10 @@ nav button.selected {
   background-size: 60%;
   background-repeat: no-repeat;
   filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.12));
+  transition: filter 0.2;
+}
+#button-home.selected {
+  filter: drop-shadow(0px 0px 5px white);
 }
 
 .page {

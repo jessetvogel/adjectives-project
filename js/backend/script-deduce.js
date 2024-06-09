@@ -35,7 +35,10 @@ function main() {
         // Make deductions
         const assistant = new Assistant(book);
         Log.action(`Deducing`);
-        const conclusions = assistant.deduce(book.examples, options);
+        const conclusions = [];
+        let c;
+        while ((c = assistant.deduce(book.examples, options)).length > 0)
+            conclusions.push(...c);
         for (const conclusion of conclusions)
             Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
         // Save conclusions

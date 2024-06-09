@@ -1,0 +1,5 @@
+type: theorem
+name: finite morphisms are affine
+given: morphism f
+if: f finite
+then: f affine

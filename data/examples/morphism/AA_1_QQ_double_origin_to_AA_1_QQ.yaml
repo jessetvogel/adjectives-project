@@ -1,0 +1,8 @@
+type: morphism
+name: affine line with double origin to affine line
+description: The projection of the affine line with double origin over the rational numbers to the affine line.
+with:
+  source: AA_1_QQ_double_origin
+  target: AA_1_QQ
+adjectives:
+  separated: false

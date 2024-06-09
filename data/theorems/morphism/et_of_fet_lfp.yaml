@@ -1,0 +1,5 @@
+type: theorem
+name: formally étale morphisms locally of finite presentation are étale
+given: morphism f
+if: [f formally-etale, f locally-of-finite-presentation]
+then: f etale

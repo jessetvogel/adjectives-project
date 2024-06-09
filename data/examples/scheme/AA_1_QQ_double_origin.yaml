@@ -1,0 +1,7 @@
+type: scheme
+name: affine line with double origin
+description: The affine line with double origin over the rational numbers.
+adjectives:
+  affine: false
+  integral: true
+  regular: true

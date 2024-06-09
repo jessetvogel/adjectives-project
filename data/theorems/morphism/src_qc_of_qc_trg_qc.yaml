@@ -1,0 +1,5 @@
+type: theorem
+name: quasi-compact morphisms with quasi-compact target have quasi-compact source
+given: morphism f
+if: [f quasi-compact, f.target quasi-compact]
+then: f.source quasi-compact

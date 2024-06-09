@@ -1,0 +1,10 @@
+type: morphism
+name: squaring map on affine line
+with:
+  source: AA_1_QQ
+  target: AA_1_QQ
+description: The morphism $\AA^1_\QQ \to \AA^1_\QQ$ given by $x \mapsto x^2$.
+adjectives:
+  flat: true
+  smooth: false
+  locally-of-finite-presentation: true

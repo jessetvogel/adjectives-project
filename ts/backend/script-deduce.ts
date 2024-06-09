@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import { Book } from '../shared/core.js';
-import { Assistant, DeduceOptions } from '../shared/assistant.js';
+import { Assistant, Conclusion, DeduceOptions } from '../shared/assistant.js';
 import { updateJSON } from './json-updater.js';
 import { Log, PATH_SUMMARY } from './general.js';
 
@@ -39,7 +39,10 @@ function main() {
         // Make deductions
         const assistant = new Assistant(book);
         Log.action(`Deducing`);
-        const conclusions = assistant.deduce(book.examples, options);
+        const conclusions: Conclusion[] = [];
+        let c: Conclusion[];
+        while ((c = assistant.deduce(book.examples, options)).length > 0)
+            conclusions.push(...c);
         for (const conclusion of conclusions)
             Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
 

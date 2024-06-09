@@ -97,6 +97,8 @@ then: f affine                                           # <object> [not] <adjec
 
 ## TODO
 
-- snake_case to camelCase
-- HTMLElement variables should end in `Elem`
-- 
+- Make separate repository of /data and add it as a git submodule
+- Make README.md
+- Create help page
+- Create contribute page
+- Copy data from old project

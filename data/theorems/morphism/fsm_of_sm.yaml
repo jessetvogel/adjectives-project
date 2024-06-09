@@ -1,0 +1,5 @@
+type: theorem
+name: smooth morphisms are formally smooth
+given: morphism f
+if: f smooth
+then: f formally-smooth

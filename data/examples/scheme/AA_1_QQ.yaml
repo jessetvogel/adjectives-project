@@ -3,3 +3,4 @@ name: $\AA^1_\QQ$
 description: The affine line over the rational numbers.
 adjectives:
   affine: true
+  integral: true

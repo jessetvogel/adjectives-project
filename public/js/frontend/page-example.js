@@ -1,18 +1,18 @@
 import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
-function formatProof(summary, proof) {
+function formatProof(type, id, proof) {
     if (proof === undefined)
         return null;
     if (typeof proof == 'string')
         return create('span', {}, proof);
-    return create('span', {}, [
-        'By ',
-        navigation.anchorTheorem(proof.type, proof.theorem),
-        ' applied to ',
-        navigation.anchorExample(proof.type, proof.subject),
-        '.'
-    ]);
+    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
+    if (proof.type != type || proof.subject != id) {
+        span.append(' applied to');
+        span.append(navigation.anchorExample(proof.type, proof.subject));
+    }
+    span.append('.');
+    return span;
 }
 export function pageExample(summary, options) {
     const type = options === null || options === void 0 ? void 0 : options.type;
@@ -55,7 +55,7 @@ export function pageExample(summary, options) {
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
-                create('td', {}, (_c = formatProof(summary, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjId])) !== null && _c !== void 0 ? _c : '')
+                create('td', {}, (_c = formatProof(type, id, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjId])) !== null && _c !== void 0 ? _c : '')
             ]));
         }
         katexTypeset(tableAdjectives);

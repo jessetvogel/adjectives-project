@@ -42,7 +42,7 @@ function main() {
         Log.success('Done');
     }
     catch (err) {
-        Log.error(err.toString());
+        Log.error(err.stack);
     }
 }
 main();

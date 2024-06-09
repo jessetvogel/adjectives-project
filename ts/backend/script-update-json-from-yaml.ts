@@ -45,7 +45,7 @@ function main() {
         // Done
         Log.success('Done');
     } catch (err: any) {
-        Log.error(err.toString());
+        Log.error(err.stack);
     }
 }
 

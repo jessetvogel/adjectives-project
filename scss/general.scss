@@ -48,7 +48,7 @@ button {
     font-family: var(--font-main);
     font-size: 1rem;
     text-align: center;
-    transition: 0.2s;
+    transition: background-color 0.2s, color 0.2s;
     cursor: pointer;
 
     &:hover {
@@ -98,7 +98,6 @@ select {
     box-sizing: border-box;
     background-color: var(--color-white);
     font-family: var(--font-main);
-    font-size: inherit;
 }
 
 input[type="text"] {

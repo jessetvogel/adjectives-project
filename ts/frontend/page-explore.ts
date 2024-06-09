@@ -4,22 +4,20 @@ import { create, clear, onClick, $$, hasClass, addClass, removeClass, setHTML, o
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 
-function formatProof(summary: Book, context: Context, proof: string | Proof): HTMLElement | null {
+function formatProof(context: Context, proof: string | Proof): HTMLElement | null {
     if (proof === undefined)
         return null;
 
     if (typeof proof == 'string')
         return create('span', {}, proof);
 
-    return create('span', {}, [
-        'By ',
-        navigation.anchorTheorem(proof.type, proof.theorem),
-        ' applied to ',
-        context[proof.type][proof.subject].name,
-        '.'
-    ]);
-}
+    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
+    if (proof.subject.indexOf('.') >= 0) // little hack
+        span.append(` applied to ${context[proof.type][proof.subject].name}`);
+    span.append('.');
 
+    return span;
+}
 
 function formatContext(summary: Book, context: Context): HTMLElement {
     // {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}    
@@ -140,7 +138,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
                         `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
                         navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
                     ]),
-                    create('td', {}, formatProof(summary, contextCopy, conclusion.object.proofs[conclusion.adjective]) ?? '')
+                    create('td', {}, formatProof(contextCopy, conclusion.object.proofs[conclusion.adjective]) ?? '')
                 ]));
             }
             resultsElem.append(tableElem);
@@ -214,11 +212,12 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
             const type = div.querySelector('.type')?.textContent ?? '';
             const id = div.querySelector('.id')?.textContent ?? '';
             const object = context[type][id];
-            setHTML(div.querySelector('.adjectives') as HTMLElement, Object
-                .keys(object.adjectives)
-                .map(adj => create('span', { class: object.adjectives[adj] ? 'yes' : 'no' }, summary.adjectives[type][adj].name))
-                .map(elem => elem.outerHTML)
-                .join(', ')
+            setHTML(div.querySelector('.adjectives') as HTMLElement,
+                Object.keys(object.adjectives)
+                    .sort((a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+                    .map(adj => create('span', { class: object.adjectives[adj] ? 'yes' : 'no' }, summary.adjectives[type][adj].name))
+                    .map(elem => elem.outerHTML)
+                    .join(', ')
             );
         }
 
@@ -227,7 +226,8 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         if (selectedElem) {
             const type = selectedElem.querySelector('.type')?.textContent ?? '';
             const id = selectedElem.querySelector('.id')?.textContent ?? '';
-            for (const adj in summary.adjectives[type]) {
+            const adjs = Object.keys(summary.adjectives[type]).sort((a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' })); // alphabetically
+            for (const adj of adjs) {
                 const itemClass = (context[type][id].adjectives[adj] == true) ? 'yes' : ((context[type][id].adjectives[adj] == false) ? 'no' : '');
                 const itemElem = create('div', { class: itemClass }, create('label', {}, summary.adjectives[type][adj].name));
                 onClick(itemElem, function () {

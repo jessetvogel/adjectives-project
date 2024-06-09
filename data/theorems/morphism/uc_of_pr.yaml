@@ -1,0 +1,5 @@
+type: theorem
+name: proper morphisms are universally closed
+given: morphism f
+if: f proper
+then: f universally-closed

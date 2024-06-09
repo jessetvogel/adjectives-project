@@ -57,6 +57,11 @@ nav {
     background-size: 60%;
     background-repeat: no-repeat;
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.12));
+    transition: filter 0.2;
+
+    &.selected {
+        filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 1.0));
+    }
 }
 
 .page {
