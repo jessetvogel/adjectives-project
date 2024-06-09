@@ -276,7 +276,7 @@ export class Book {
                         throw new Error(`Theorem '${id}' refers to invalid path '${path}' in its conditions`);
                     for (const key in theorem.conditions[path]) {
                         if (!(key in this.adjectives[pathType]))
-                            throw new Error(`Theorem '${id}' refers to unknown adjective '${key}' for '${path}' of type '${pathType}'`);
+                            throw new Error(`Theorem '${id}' refers to unknown adjective '${key}' for '${theorem.subject}${path}' of type '${pathType}'`);
                     }
                 }
                 // verify theorem conclusion
@@ -284,7 +284,7 @@ export class Book {
                 if (conclusionPathType == null)
                     throw new Error(`Theorem '${id}' refers to invalid path '${theorem.conclusion.path}' in its conclusion`);
                 if (!(theorem.conclusion.adjective in this.adjectives[conclusionPathType]))
-                    throw new Error(`Theorem '${id}' refers to unknown adjective '${theorem.conclusion.adjective}' for '${theorem.conclusion.path}' of type '${conclusionPathType}'`);
+                    throw new Error(`Theorem '${id}' refers to unknown adjective '${theorem.conclusion.adjective}' for '${theorem.subject}${theorem.conclusion.path}' of type '${conclusionPathType}'`);
             }
         }
         for (const type in this.examples) { // verify examples

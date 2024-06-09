@@ -105,7 +105,7 @@ export class Assistant {
         return results;
     }
     applyTheorem(theorem, context, id, shouldApply = true) {
-        var _a;
+        var _a, _b;
         // check type
         const type = theorem.type;
         if (!(id in context[type]))
@@ -148,6 +148,8 @@ export class Assistant {
                 throw new Error(`Could not resolve path '${conditionThatDoesNotHold.path}' on object '${id}' of type '${type}'`);
             const conclusionAdjective = conditionThatDoesNotHold.adjective;
             const conclusionValue = !theorem.conditions[conditionThatDoesNotHold.path][conclusionAdjective]; // NOTE: invert the boolean
+            if (((_b = conclusionObject.adjectives) === null || _b === void 0 ? void 0 : _b[conclusionAdjective]) == conclusionValue) // if the conclusion was already known, simply return
+                return null;
             conclusion = { object: conclusionObject, adjective: conclusionAdjective, value: conclusionValue };
         }
         // apply the conclusion (if so indicated) and return it
@@ -164,19 +166,25 @@ export class Assistant {
     deduce(context, options) {
         // TODO: repeat if found a theorem!
         const conclusions = [];
-        for (const type in context) { // for every object in the context ...
-            if ((options === null || options === void 0 ? void 0 : options.types) && !options.types.includes(type))
-                continue; // skip if not in options
-            for (const id in context[type]) {
-                if ((options === null || options === void 0 ? void 0 : options.ids) && !options.ids.includes(id))
+        let updates = true; // keep track of if any theorems are applied
+        while (updates) {
+            updates = false;
+            for (const type in context) { // for every object in the context ...
+                if ((options === null || options === void 0 ? void 0 : options.types) && !options.types.includes(type))
                     continue; // skip if not in options
-                if (!(type in this.book.theorems))
-                    continue;
-                const theorems = this.book.theorems[type];
-                for (const theoremId in theorems) { // ... and for every theorem of the corresponding type ...
-                    const conclusion = this.applyTheorem(theorems[theoremId], context, id);
-                    if (conclusion != null)
-                        conclusions.push(conclusion);
+                for (const id in context[type]) {
+                    if ((options === null || options === void 0 ? void 0 : options.ids) && !options.ids.includes(id))
+                        continue; // skip if not in options
+                    if (!(type in this.book.theorems))
+                        continue;
+                    const theorems = this.book.theorems[type];
+                    for (const theoremId in theorems) { // ... and for every theorem of the corresponding type ...
+                        const conclusion = this.applyTheorem(theorems[theoremId], context, id);
+                        if (conclusion != null) {
+                            conclusions.push(conclusion);
+                            updates = true;
+                        }
+                    }
                 }
             }
         }
