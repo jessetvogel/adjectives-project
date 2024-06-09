@@ -97,6 +97,7 @@
             > div {
                 text-align: center;
                 min-height: 24px;
+                line-height: 24px;
                 padding: 8px 40px 8px 8px;
                 transition: background-color 0.2s;
                 position: relative;
@@ -164,8 +165,12 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 32px;
+        gap: 16px;
         margin: 16px 0px;
+
+        button {
+            width: 128px;
+        }
     }
 
     .results {

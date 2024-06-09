@@ -2,6 +2,7 @@ import { Context, Book, Proof } from '../shared/core.js';
 import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, $$, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
+import { formatContext } from './formatter.js';
 import navigation from './navigation.js';
 
 function formatProof(context: Context, proof: string | Proof): HTMLElement | null {
@@ -15,53 +16,6 @@ function formatProof(context: Context, proof: string | Proof): HTMLElement | nul
     if (proof.subject.indexOf('.') >= 0) // little hack
         span.append(` applied to ${context[proof.type][proof.subject].name}`);
     span.append('.');
-
-    return span;
-}
-
-function formatContext(summary: Book, context: Context): HTMLElement {
-    // {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}    
-    const span = create('span');
-
-    // The subject is the object in the context whose id is equal to its type
-    const type = Object.keys(context).find(type => (type in context[type]));
-    if (type === undefined) { // safety sentence, but it should never happen though
-        span.append('the given assumptions');
-        return span;
-    }
-    const id = type;
-
-    span.append(`a ${summary.types[type].name}`);
-
-    function addAdjectives(prefix: string, type: string, id: string): boolean {
-        if (!('adjectives' in context[type][id]) || Object.keys(context[type][id].adjectives).length == 0)
-            return false;
-        span.append(prefix);
-        const adjectivesTotal = Object.keys(context[type][id].adjectives).length;
-        let adjectivesCount = 0;
-        for (const adj in context[type][id].adjectives) {
-            if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1)
-                span.append(', ');
-            if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1)
-                span.append(' and ');
-            if (!context[type][id].adjectives[adj])
-                span.append('not ');
-            span.append(navigation.anchorAdjective(type, adj));
-            ++adjectivesCount;
-        }
-        return true;
-    }
-
-    let first = true; // keeps track of whether some adjectives are already written
-    if (addAdjectives(' which is ', type, id))  // subject
-        first = false;
-
-    if ('args' in context[type][id] && Object.keys(context[type][id].args).length > 0) { // arguments / parameters
-        for (const arg in context[type][id].args) {
-            if (addAdjectives(`${first ? ' ' : ', and '}whose ${arg} is `, summary.types[type].parameters[arg], `${id}.${arg}`))
-                first = false;
-        }
-    }
 
     return span;
 }
@@ -169,10 +123,13 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         const attr = (id == defaultOption) ? { value: id, selected: true } : { value: id };
         return create('option', attr, name);
     })) as HTMLSelectElement;
+    const aHelp = navigation.anchorPage('help', 'Help') as HTMLAnchorElement;
+    aHelp.target = '_blank';
+    addClass(aHelp, 'help');
     pageElem.append(create('div', { class: 'type-selection' }, [
         create('span', {}, 'I am looking for a '),
         selectElem,
-        create('a', { class: 'help' }, 'Help')
+        aHelp // .outerHTML // removes onclick
     ]));
 
     // Column of objects and column of adjectives

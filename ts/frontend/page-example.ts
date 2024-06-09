@@ -1,5 +1,5 @@
 import { Book, Proof } from '../shared/core.js';
-import { create, setText } from './util.js';
+import { clear, create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 
@@ -24,7 +24,8 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     const id = options?.id;
 
     // TODO: regex check type and id
-    const spanName = create('span', {}, '');
+    const spanName = create('span', {});
+    const spanArguments = create('span', { class: 'arguments' });
     const pDescription = create('p', { class: 'description' }, '');
     const tableAdjectives = create('table', { class: 'adjectives' }, '');
 
@@ -32,6 +33,22 @@ export function pageExample(summary: Book, options: any): HTMLElement {
         // Update name span
         if ('name' in data) setText(spanName, data.name);
         katexTypeset(spanName);
+
+        // Update arguments span
+        console.log(data);
+        if ('with' in data) {
+            clear(spanArguments);
+            const args = Object.keys(data.with);
+            for (let i = 0; i < args.length; ++i) {
+                if (i == 0) spanArguments.append('with ');
+                if (i > 0 && i < args.length - 1) spanArguments.append(', ');
+                if (i > 0 && i == args.length - 1) spanArguments.append(' and ');
+                const arg = args[i];
+                spanArguments.append(arg, ' ');
+                spanArguments.append(navigation.anchorExample(summary.types[type].parameters[arg], data.with[arg]));
+            }
+            katexTypeset(spanArguments);
+        }
 
         // Update description paragraph
         if ('description' in data) {
@@ -52,6 +69,8 @@ export function pageExample(summary: Book, options: any): HTMLElement {
         adjectiveValuePairs.sort((a, b) => {
             if (a.value == true && b.value != true) return -1;
             if (a.value != true && b.value == true) return 1;
+            if (a.value == false && b.value == undefined) return -1;
+            if (a.value == undefined && b.value == false) return 1;
             return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
         });
         for (const x of adjectiveValuePairs) {
@@ -72,10 +91,11 @@ export function pageExample(summary: Book, options: any): HTMLElement {
 
     return create('div', { class: 'page page-example' }, [
         create('span', { class: 'title' }, [
-            create('span', {}, `Example `),
+            // create('span', { class: 'comment' }, `Example `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
+            create('span', { class: 'comment' }, ` (${summary.types[type].name} example)`)
         ]),
+        spanArguments,
         pDescription,
         tableAdjectives
     ]);

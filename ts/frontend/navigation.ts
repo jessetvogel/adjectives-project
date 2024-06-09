@@ -6,9 +6,11 @@ import { pageAdjective } from './page-adjective.js';
 import { pageTheorem } from './page-theorem.js';
 import { pageType } from './page-type.js';
 import { pageContribute } from './page-contribute.js';
+import { pageHelp } from './page-help.js';
 
 import { $$, clear, create, onClick, addClass, removeClass } from './util.js';
 import { Book } from '../shared/core.js';
+import { pageQuestions } from './page-questions.js';
 
 let summary: Book;
 let content: HTMLElement;
@@ -31,8 +33,12 @@ function navigateCallback(state: any): void {
         case 'theorem': return setContent(pageTheorem(summary, query))
         case 'type': return setContent(pageType(summary, query))
         case 'contribute': return setContent(pageContribute())
+        case 'help': return setContent(pageHelp())
+        case 'questions': return setContent(pageQuestions(summary))
     }
-    setContent(create('div', {}, '404 Page Not Found'));
+    setContent(create('div', { class: 'page' }, [
+        create('span', { class: 'title' }, '🥺 404 Page Not Found')
+    ]));
 }
 
 function anchorType(id: string): HTMLElement {
@@ -49,6 +55,10 @@ function anchorExample(type: string, id: string): HTMLElement {
 
 function anchorTheorem(type: string, id: string): HTMLElement {
     return create('a', { href: `?page=theorem&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.theorems[type][id].name);
+}
+
+function anchorPage(page: string, text: string) {
+    return create('a', { href: `?page=${page}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, text);
 }
 
 function init(s: Book, c: HTMLElement): void {
@@ -84,5 +94,6 @@ export default {
     anchorType,
     anchorAdjective,
     anchorExample,
-    anchorTheorem
+    anchorTheorem,
+    anchorPage
 };

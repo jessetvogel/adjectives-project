@@ -37,7 +37,7 @@ a {
 }
 
 button {
-    height: 40px;
+    height: 32px;
     border-radius: 4px;
     background-color: var(--color-button);
     // box-shadow: var(--box-shadow-input);
@@ -48,7 +48,9 @@ button {
     font-family: var(--font-main);
     font-size: 1rem;
     text-align: center;
-    transition: background-color 0.2s, color 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
     cursor: pointer;
 
     &:hover {
@@ -72,7 +74,7 @@ table {
     td,
     th {
         padding: 8px;
-        border: 1px solid var(--color-black);
+        border: var(--border-input); // 1px solid var(--color-black);
         text-align: center;
     }
 
@@ -108,4 +110,8 @@ input[type="text"] {
     font-size: inherit;
     outline: none;
     box-sizing: border-box;
+}
+
+p {
+    text-align: justify;
 }

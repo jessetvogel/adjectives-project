@@ -3,12 +3,14 @@ import * as core from './core.js';
 export class Matcher {
 
     book: core.Book;
-    context: core.Context;
+    sourceContext: core.Context;
+    targetContext: core.Context;
     map: core.Context;
 
-    constructor(book: core.Book, context: core.Context) {
+    constructor(book: core.Book, sourceContext: core.Context, targetContext: core.Context) {
         this.book = book;
-        this.context = context;
+        this.sourceContext = sourceContext;
+        this.targetContext = targetContext;
         this.map = {};
     }
 
@@ -32,8 +34,8 @@ export class Matcher {
 
         for (const key in source.args) { // match arguments as well 
             const argType = this.book.types[source.type].parameters[key];
-            const argSource = this.context[argType][source.args[key]];
-            const argTarget = this.book.examples[argType][target.args[key]];
+            const argSource = this.sourceContext[argType][source.args[key]];
+            const argTarget = this.targetContext[argType][target.args[key]];
             if (!this.match(argSource, argTarget))
                 return false;
         }
@@ -46,7 +48,7 @@ export class Matcher {
     }
 
     clone(): Matcher {
-        const copy = new Matcher(this.book, this.context);
+        const copy = new Matcher(this.book, this.sourceContext, this.targetContext);
         for (const id in this.map)
             copy.map[id] = this.map[id];
         return copy;
@@ -132,7 +134,7 @@ export class Assistant {
             }
         }
 
-        helper(new Matcher(this.book, query), 0);
+        helper(new Matcher(this.book, query, this.book.examples), 0);
 
         return results;
     }

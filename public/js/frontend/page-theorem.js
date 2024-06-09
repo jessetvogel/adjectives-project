@@ -61,9 +61,9 @@ export function pageTheorem(summary, options) {
     });
     return create('div', { class: 'page page-theorem' }, [
         create('span', { class: 'title' }, [
-            create('span', {}, `Theorem `),
+            // create('span', { class: 'comment' }, `Theorem `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name})`)
+            create('span', { class: 'comment' }, ` (${summary.types[type].name} theorem)`)
         ]),
         pStatement,
         pDescription

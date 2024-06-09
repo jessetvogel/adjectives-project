@@ -81,7 +81,7 @@ function main() {
                 if (i == j) continue;
                 const A = questionsDeduced[i];
                 const B = questions[j]; // use this so that we need to check fewer conditions
-                const matcher = new Matcher(summary, B);
+                const matcher = new Matcher(summary, B, A);
                 if (matcher.match(B[type][id], A[type][id])) { // check if A => B
                     questions.splice(j, 1); // remove B
                     questionsDeduced.splice(j, 1); // remove B
