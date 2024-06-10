@@ -35,20 +35,31 @@ function navigateCallback(state) {
         create('span', { class: 'title' }, '🥺 Page not found..')
     ]));
 }
+function anchorWrapper(a) {
+    onClick(a, function (event) {
+        event.preventDefault();
+        navigate(this.href, {});
+    });
+    return a;
+}
 function anchorType(id) {
-    return create('a', { href: `?page=type&id=${id}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, summary.types[id].name);
+    var _a, _b, _c;
+    return anchorWrapper(create('a', { href: `?page=type&id=${id}` }, (_c = (_b = (_a = summary === null || summary === void 0 ? void 0 : summary.types) === null || _a === void 0 ? void 0 : _a[id]) === null || _b === void 0 ? void 0 : _b.name) !== null && _c !== void 0 ? _c : create('span', { class: 'invalid tt' }, id)));
 }
 function anchorAdjective(type, id) {
-    return create('a', { href: `?page=adjective&type=${type}&id=${id}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, summary.adjectives[type][id].name);
+    var _a, _b, _c, _d;
+    return anchorWrapper(create('a', { href: `?page=adjective&type=${type}&id=${id}` }, (_d = (_c = (_b = (_a = summary.adjectives) === null || _a === void 0 ? void 0 : _a[type]) === null || _b === void 0 ? void 0 : _b[id]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : create('span', { class: 'invalid tt' }, id)));
 }
 function anchorExample(type, id) {
-    return create('a', { href: `?page=example&type=${type}&id=${id}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, summary.examples[type][id].name);
+    var _a, _b, _c, _d;
+    return anchorWrapper(create('a', { href: `?page=example&type=${type}&id=${id}` }, (_d = (_c = (_b = (_a = summary.examples) === null || _a === void 0 ? void 0 : _a[type]) === null || _b === void 0 ? void 0 : _b[id]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : create('span', { class: 'invalid tt' }, id)));
 }
 function anchorTheorem(type, id) {
-    return create('a', { href: `?page=theorem&type=${type}&id=${id}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, summary.theorems[type][id].name);
+    var _a, _b, _c, _d;
+    return anchorWrapper(create('a', { href: `?page=theorem&type=${type}&id=${id}` }, (_d = (_c = (_b = (_a = summary.theorems) === null || _a === void 0 ? void 0 : _a[type]) === null || _b === void 0 ? void 0 : _b[id]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : create('span', { class: 'invalid tt' }, id)));
 }
 function anchorPage(page, text) {
-    return create('a', { href: `?page=${page}`, '@click': function (event) { event.preventDefault(); navigate(this.href, {}); } }, text);
+    return anchorWrapper(create('a', { href: `?page=${page}` }, text));
 }
 function init(s, c) {
     summary = s;
