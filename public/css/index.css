@@ -154,6 +154,10 @@ p {
   text-align: justify;
 }
 
+.hidden {
+  display: none;
+}
+
 .page-example .arguments {
   display: block;
   text-align: center;

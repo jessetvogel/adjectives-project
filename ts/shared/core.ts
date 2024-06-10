@@ -10,8 +10,8 @@ export type Adjective = {
     name: string, // closed immersion
 };
 
-type TheoremConditions = { [path: string]: { [id: string]: boolean } };
-type TheoremConclusion = { path: string, adjective: string, value: boolean };
+export type TheoremConditions = { [path: string]: { [id: string]: boolean } };
+export type TheoremConclusion = { path: string, adjective: string, value: boolean };
 
 export type Theorem = {
     id: string,   // qc_of_af
