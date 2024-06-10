@@ -1,51 +1,41 @@
-import { clear, create, setText } from './util.js';
+import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
+import { formatProof } from './formatter.js';
 import navigation from './navigation.js';
-function formatProof(type, id, proof) {
-    if (proof === undefined)
-        return null;
-    if (typeof proof == 'string')
-        return create('span', {}, proof);
-    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
-    if (proof.type != type || proof.subject != id) {
-        span.append(' applied to');
-        span.append(navigation.anchorExample(proof.type, proof.subject));
-    }
-    span.append('.');
-    return span;
-}
 export function pageExample(summary, options) {
+    const page = create('div', { class: 'page page-example' });
     const type = options === null || options === void 0 ? void 0 : options.type;
     const id = options === null || options === void 0 ? void 0 : options.id;
-    // TODO: regex check type and id
+    if (type === undefined || id === undefined || !(type in summary.examples) || !(id in summary.examples[type])) {
+        page.append(create('span', { class: 'title' }, `🥺 Example not found..`));
+        return page;
+    }
     const spanName = create('span', {});
-    const spanArguments = create('span', { class: 'arguments' });
+    const spanSubtitle = create('span', { class: 'subtitle' });
     const pDescription = create('p', { class: 'description' }, '');
     const tableAdjectives = create('table', { class: 'adjectives' }, '');
+    // Update subtitle
+    spanSubtitle.append(`(${summary.types[type].name}`);
+    const args = Object.keys(summary.examples[type][id].args);
+    for (let i = 0; i < args.length; ++i) {
+        if (i == 0)
+            spanSubtitle.append(' with ');
+        if (i > 0 && i < args.length - 1)
+            spanSubtitle.append(', ');
+        if (i > 0 && i == args.length - 1)
+            spanSubtitle.append(' and ');
+        const arg = args[i];
+        spanSubtitle.append(arg, ' ');
+        spanSubtitle.append(navigation.anchorExample(summary.types[type].parameters[arg], summary.examples[type][id].args[arg]));
+    }
+    spanSubtitle.append(')');
+    katexTypeset(spanSubtitle);
     fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
         var _a, _b, _c;
         // Update name span
         if ('name' in data)
             setText(spanName, data.name);
         katexTypeset(spanName);
-        // Update arguments span
-        console.log(data);
-        if ('with' in data) {
-            clear(spanArguments);
-            const args = Object.keys(data.with);
-            for (let i = 0; i < args.length; ++i) {
-                if (i == 0)
-                    spanArguments.append('with ');
-                if (i > 0 && i < args.length - 1)
-                    spanArguments.append(', ');
-                if (i > 0 && i == args.length - 1)
-                    spanArguments.append(' and ');
-                const arg = args[i];
-                spanArguments.append(arg, ' ');
-                spanArguments.append(navigation.anchorExample(summary.types[type].parameters[arg], data.with[arg]));
-            }
-            katexTypeset(spanArguments);
-        }
         // Update description paragraph
         if ('description' in data) {
             setText(pDescription, data.description);
@@ -85,15 +75,14 @@ export function pageExample(summary, options) {
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
-    return create('div', { class: 'page page-example' }, [
+    page.append(...[
         create('span', { class: 'title' }, [
-            // create('span', { class: 'comment' }, `Example `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name} example)`)
+            spanSubtitle
         ]),
-        spanArguments,
         pDescription,
         tableAdjectives
     ]);
+    return page;
 }
 //# sourceMappingURL=page-example.js.map

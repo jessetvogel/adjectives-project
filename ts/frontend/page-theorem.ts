@@ -48,12 +48,17 @@ function formatTheoremStatement(summary: Book, theorem: Theorem): HTMLElement {
 }
 
 export function pageTheorem(summary: Book, options: any): HTMLElement {
+    const page = create('div', { class: 'page page-theorem' });
+
     const type = options?.type;
     const id = options?.id;
-
-    // TODO: regex check type and id
+    if (type === undefined || id === undefined || !(type in summary.theorems) || !(id in summary.theorems[type])) {
+        page.append(create('span', { class: 'title' }, `🥺 Theorem not found..`));
+        return page;
+    }
 
     const spanName = create('span', {}, '');
+    const spanSubtitle = create('span', { class: 'subtitle' }, ` (${summary.types[type].name} theorem)`);
     const pStatement = create('p', { class: 'statement' }, formatTheoremStatement(summary, summary.theorems[type][id]));
     const pDescription = create('p', { class: 'description' }, '');
 
@@ -71,13 +76,15 @@ export function pageTheorem(summary: Book, options: any): HTMLElement {
         console.log(`[ERROR] ${error}`);
     });
 
-    return create('div', { class: 'page page-theorem' }, [
+    page.append(...[
         create('span', { class: 'title' }, [
             // create('span', { class: 'comment' }, `Theorem `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name} theorem)`)
+            spanSubtitle
         ]),
         pStatement,
         pDescription
     ]);
+
+    return page;
 }

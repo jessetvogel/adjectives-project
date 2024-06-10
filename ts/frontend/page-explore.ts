@@ -1,23 +1,53 @@
-import { Context, Book, Proof } from '../shared/core.js';
+import { Context, Book } from '../shared/core.js';
 import { Assistant, ContradictionError } from '../shared/assistant.js';
-import { create, clear, onClick, $$, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
+import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
-import { formatContext } from './formatter.js';
+import { formatContext, formatProof } from './formatter.js';
 import navigation from './navigation.js';
 
-function formatProof(context: Context, proof: string | Proof): HTMLElement | null {
-    if (proof === undefined)
+function serializeContext(context: Context): string {
+    const data: any = {};
+    /* 
+     * {
+     *   type: "morphism",
+     *   " affine": true,
+     *   ".source affine": false
+     * }
+     */
+
+    data.type = Object.keys(context).find(type => Object.keys(context[type]).some(id => id.indexOf('.') == -1)); // subject is the object in the context whose id does not contain a period
+    for (const type in context) {
+        for (const id in context[type]) {
+            const path = id.substring(data.type.length);
+            for (const adj in context[type][id].adjectives)
+                data[`${path} ${adj}`] = context[type][id].adjectives[adj];
+        }
+    }
+
+    return btoa(JSON.stringify(data));
+}
+
+function deserializeContext(summary: Book, str: string): [string, Context] | null {
+    try {
+        const data: any = JSON.parse(atob(str));
+        const type = data.type;
+        delete data.type; // for convenience
+        const context = summary.createContextFromType(type, type);
+        const subject = context[type][type];
+        for (const key in data) {
+            const parts = key.split(' ');
+            if (parts.length != 2) throw new Error(`Invalid key '${key}'`);
+            const [path, adj] = parts;
+            const object = summary.resolvePath(context, subject, path);
+            if (object == null) throw new Error(`Could not resolve '${path}' on type '${type}'`);
+            if (typeof data[key] != 'boolean') throw new Error(`Invalid value for '${path}'`);
+            object.adjectives[adj] = data[key];
+        }
+        return [type, context];
+    } catch (err) {
+        console.log(err.toString());
         return null;
-
-    if (typeof proof == 'string')
-        return create('span', {}, proof);
-
-    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
-    if (proof.subject.indexOf('.') >= 0) // little hack
-        span.append(` applied to ${context[proof.type][proof.subject].name}`);
-    span.append('.');
-
-    return span;
+    }
 }
 
 function search(summary: Book, context: Context, resultsElem: HTMLElement): void {
@@ -92,7 +122,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
                         `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
                         navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
                     ]),
-                    create('td', {}, formatProof(contextCopy, conclusion.object.proofs[conclusion.adjective]) ?? '')
+                    create('td', {}, formatProof(conclusion.object.type, conclusion.object.id, conclusion.object.proofs[conclusion.adjective], contextCopy) ?? '')
                 ]));
             }
             resultsElem.append(tableElem);
@@ -205,6 +235,8 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
                 adjectivesElem.append(itemElem);
             }
         }
+
+        window.history.replaceState({}, '', `?page=explore&q=${serializeContext(context)}`);
     }
 
     // Append row of buttons and help link: " [Search] [Deduce] _Help_ "
@@ -229,6 +261,15 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
     });
 
     selectElem.dispatchEvent(new Event('change')); // to initialize the view
+
+    if ('q' in options) {
+        const x = deserializeContext(summary, options.q);
+        if (x != null) {
+            const [type, context] = x;
+            selectElem.value = type;
+            initializeWithContext(context);
+        }
+    }
 
     return pageElem;
 }

@@ -84,7 +84,7 @@ export function pageQuestions(summary) {
     // description
     page.append(create('p', {}, 'The questions below could not be answered with \'yes\' by the examples, or with \'no\' using the theorems.'));
     // table
-    const table = create('table');
+    const table = create('table', { style: 'margin-bottom: 4px;' });
     table.append(create('tr', {}, create('th', {}, 'Questions')));
     const qs = [];
     qs.push(...questions(summary, 'scheme'));

@@ -3,12 +3,17 @@ import { katexTypeset } from './katex-typeset.js';
 import { create, setText } from './util.js';
 
 export function pageAdjective(summary: Book, options: any): HTMLElement {
+    const page = create('div', { class: 'page page-adjective' });
+
     const type = options?.type;
     const id = options?.id;
-
-    // TODO: regex check type and id
+    if (type === undefined || id === undefined || !(type in summary.adjectives) || !(id in summary.adjectives[type])) {
+        page.append(create('span', { class: 'title' }, `🥺 Adjective not found..`));
+        return page;
+    }
 
     const spanName = create('span', {}, '');
+    const spanSubtitle = create('span', { class: 'subtitle' }, ` (${summary.types[type].name} adjective)`);
     const pDescription = create('p', { class: 'description' }, '');
 
     fetch(`json/adjectives/${type}/${id}.json`).then(response => response.json()).then(data => {
@@ -23,12 +28,16 @@ export function pageAdjective(summary: Book, options: any): HTMLElement {
         console.log(`[ERROR] ${error}`);
     });
 
+
+
     return create('div', { class: 'page page-adjective' }, [
         create('span', { class: 'title' }, [
             // create('span', { class: 'comment' }, `Adjective `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name} adjective)`)
+            spanSubtitle
         ]),
         pDescription
     ]);
+
+    return page;
 }

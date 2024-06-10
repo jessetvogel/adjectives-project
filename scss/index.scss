@@ -61,7 +61,7 @@ nav {
     transition: filter 0.2;
 
     &.selected {
-        filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 1.0));
+        filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 1));
     }
 }
 
@@ -69,4 +69,16 @@ nav {
     margin: auto;
     max-width: 960px;
     padding: 0px 4px;
+}
+
+.page-home,
+.page-help,
+.page-contribute {
+    p,
+    ul,
+    ol {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

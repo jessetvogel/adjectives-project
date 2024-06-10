@@ -40,10 +40,15 @@ function formatTheoremStatement(summary, theorem) {
     return create('span', {}, statement);
 }
 export function pageTheorem(summary, options) {
+    const page = create('div', { class: 'page page-theorem' });
     const type = options === null || options === void 0 ? void 0 : options.type;
     const id = options === null || options === void 0 ? void 0 : options.id;
-    // TODO: regex check type and id
+    if (type === undefined || id === undefined || !(type in summary.theorems) || !(id in summary.theorems[type])) {
+        page.append(create('span', { class: 'title' }, `🥺 Theorem not found..`));
+        return page;
+    }
     const spanName = create('span', {}, '');
+    const spanSubtitle = create('span', { class: 'subtitle' }, ` (${summary.types[type].name} theorem)`);
     const pStatement = create('p', { class: 'statement' }, formatTheoremStatement(summary, summary.theorems[type][id]));
     const pDescription = create('p', { class: 'description' }, '');
     katexTypeset(pStatement);
@@ -59,14 +64,15 @@ export function pageTheorem(summary, options) {
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
-    return create('div', { class: 'page page-theorem' }, [
+    page.append(...[
         create('span', { class: 'title' }, [
             // create('span', { class: 'comment' }, `Theorem `),
             spanName,
-            create('span', { class: 'comment' }, ` (${summary.types[type].name} theorem)`)
+            spanSubtitle
         ]),
         pStatement,
         pDescription
     ]);
+    return page;
 }
 //# sourceMappingURL=page-theorem.js.map

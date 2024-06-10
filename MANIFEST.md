@@ -102,3 +102,4 @@ then: f affine                                           # <object> [not] <adjec
 - Create help page
 - Create contribute page
 - Copy data from old project
+- Check for redundant theorems

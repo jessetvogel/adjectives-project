@@ -37,7 +37,7 @@ function navigateCallback(state: any): void {
         case 'questions': return setContent(pageQuestions(summary))
     }
     setContent(create('div', { class: 'page' }, [
-        create('span', { class: 'title' }, '🥺 404 Page Not Found')
+        create('span', { class: 'title' }, '🥺 Page not found..')
     ]));
 }
 
@@ -71,8 +71,14 @@ function init(s: Book, c: HTMLElement): void {
     // initialize navigation buttons
     for (const button of $$('nav button')) {
         const match = button.id.match(/^button-(\w+)$/);
-        if (match)
-            onClick(button, () => navigate(`?page=${match[1]}`, {}));
+        if (match) {
+            const page = match[1];
+            onClick(button, () => {
+                const query = Object.fromEntries(new URLSearchParams(window.location.search));
+                if (!('page' in query) || query.page != page) // prevent going to a page we are already one
+                    navigate(`?page=${match[1]}`, {});
+            });
+        }
     }
 }
 

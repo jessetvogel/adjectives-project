@@ -1,4 +1,4 @@
-import { Book, Context } from '../shared/core.js';
+import { Book, Context, Proof } from '../shared/core.js';
 import navigation from './navigation.js';
 import { create } from './util.js';
 
@@ -46,5 +46,24 @@ export function formatContext(summary: Book, context: Context): HTMLElement {
         }
     }
 
+    return span;
+}
+
+export function formatProof(type: string, id: string, proof: string | Proof, context?: Context): HTMLElement | null {
+    if (proof === undefined)
+        return null;
+
+    if (typeof proof == 'string')
+        return create('span', {}, proof);
+
+    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
+    if (proof.type != type || proof.subject != id) {
+        span.append(' applied to ');
+        if (context === undefined)
+            span.append(navigation.anchorExample(proof.type, proof.subject));
+        else
+            span.append(context[proof.type][proof.subject].name);
+    }
+    span.append('.');
     return span;
 }
