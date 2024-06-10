@@ -1,43 +1,40 @@
+import { formatTheoremStatement } from './formatter.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 import { create, setText } from './util.js';
-function formatTheoremStatement(summary, theorem) {
-    const statement = [];
-    // given
-    statement.push(`Let $${theorem.subject}$ be a `, navigation.anchorType(theorem.type), '. ');
-    function wordFromPath(path) {
-        if (path == '')
-            return `$${theorem.subject}$`;
-        if (!path.startsWith('.'))
-            return path;
-        const i = path.lastIndexOf('.');
-        return `the ${path.substring(i + 1)} of ${wordFromPath(path.substring(0, i))}`;
-    }
-    // conditions
-    const numberOfConditions = Object.values(theorem.conditions).map(adj => Object.keys(adj).length).reduce((partial, n) => partial + n);
-    let conditionsCount = 0;
-    statement.push('Suppose that ');
-    for (const path in theorem.conditions) {
-        for (const adj in theorem.conditions[path]) {
-            const conditionObjectType = summary.resolvePathType(theorem.type, path);
-            if (conditionObjectType == null)
-                throw new Error(`Could not resolve path '${path}' starting from type '${theorem.type}'`);
-            const value = theorem.conditions[path][adj];
-            if (numberOfConditions > 1 && conditionsCount > 0 && conditionsCount < numberOfConditions - 1)
-                statement.push(', ');
-            if (numberOfConditions > 1 && conditionsCount == numberOfConditions - 1)
-                statement.push(' and that ');
-            statement.push(`${wordFromPath(path)} ${value ? 'is' : 'is not'} `, navigation.anchorAdjective(conditionObjectType, adj));
-            ++conditionsCount;
+// Find examples which satisfy the theorem conclusion, but not the theorem conditions
+function counterexamples(summary, theorem) {
+    var _a, _b;
+    const type = theorem.type;
+    const results = [];
+    for (const id in summary.examples[type]) {
+        const subject = summary.examples[type][id];
+        const object = summary.resolvePath(summary.examples, subject, theorem.conclusion.path);
+        if (object == null)
+            throw new Error(`Could not resolve '${theorem.conclusion.path}'`);
+        if (!(theorem.conclusion.adjective in object.adjectives) || object.adjectives[theorem.conclusion.adjective] != theorem.conclusion.value)
+            continue; // if theorem conclusion does not apply, continue
+        // Check theorem conditions
+        let hasFalse = false, hasNull = false;
+        const values = {};
+        values[theorem.conclusion.path] = { [theorem.conclusion.adjective]: theorem.conclusion.value };
+        for (const path in theorem.conditions) {
+            const object = summary.resolvePath(summary.examples, subject, path);
+            if (object == null)
+                throw new Error(`Could not resolve '${path}'`);
+            for (const adj in theorem.conditions[path]) {
+                if (!(path in values))
+                    values[path] = {};
+                const value = (_b = (_a = object === null || object === void 0 ? void 0 : object.adjectives) === null || _a === void 0 ? void 0 : _a[adj]) !== null && _b !== void 0 ? _b : null;
+                hasFalse || (hasFalse = value == false);
+                hasNull || (hasNull = value == null);
+                values[path][adj] = value;
+            }
         }
+        if (hasFalse && !hasNull)
+            results.push([subject, values]);
     }
-    statement.push('. ');
-    // conclusion
-    const conclusionObjectType = summary.resolvePathType(theorem.type, theorem.conclusion.path);
-    if (conclusionObjectType == null)
-        throw new Error(`Could not resolve path '${theorem.conclusion.path}' starting from type '${theorem.type}'`);
-    statement.push(`Then ${wordFromPath(theorem.conclusion.path)} ${theorem.conclusion.value ? 'is' : 'is not'} `, navigation.anchorAdjective(conclusionObjectType, theorem.conclusion.adjective), '.');
-    return create('span', {}, statement);
+    return results;
 }
 export function pageTheorem(summary, options) {
     const page = create('div', { class: 'page page-theorem' });
@@ -47,9 +44,10 @@ export function pageTheorem(summary, options) {
         page.append(create('span', { class: 'title' }, `🥺 Theorem not found..`));
         return page;
     }
+    const theorem = summary.theorems[type][id];
     const spanName = create('span', {}, '');
     const spanSubtitle = create('span', { class: 'subtitle' }, ` (${summary.types[type].name} theorem)`);
-    const pStatement = create('p', { class: 'statement' }, formatTheoremStatement(summary, summary.theorems[type][id]));
+    const pStatement = create('p', { class: 'statement' }, formatTheoremStatement(summary, theorem));
     const pDescription = create('p', { class: 'description' }, '');
     katexTypeset(pStatement);
     fetch(`json/theorems/${type}/${id}.json`).then(response => response.json()).then(data => {
@@ -64,14 +62,40 @@ export function pageTheorem(summary, options) {
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
+    // TABLE OF THEOREMS TO PROVE THE CONVERSE OF THE THEOREM
+    // TODO
+    // TABLE OF COUNTEREXAMPLES TO THE CONVERSE OF THE THEOREM
+    const divCounterexamples = create('div', { class: 'counterexamples' });
+    const counterexamples_ = counterexamples(summary, theorem);
+    if (counterexamples_.length > 0) {
+        divCounterexamples.append(create('p', {}, 'The converse statement does not hold, as can be seen from the following counterexamples.'));
+        const tableCounterexamples = create('table');
+        const columns = []; // array of adjectives and paths corresponding to the columns of the table
+        columns.push({ path: theorem.conclusion.path, adjective: theorem.conclusion.adjective });
+        for (const path in theorem.conditions)
+            for (const adjective in theorem.conditions[path])
+                columns.push({ path, adjective });
+        tableCounterexamples.append(create('tr', {}, [
+            create('th', {}, 'Counterexample'),
+            ...columns.map(x => create('th', {}, `${x.path.substring(1)} ${x.adjective}`))
+        ]));
+        for (const [example, values] of counterexamples_) {
+            tableCounterexamples.append(create('tr', {}, [
+                create('td', {}, navigation.anchorExample(example.type, example.id)),
+                ...columns.map(x => create('td', {}, values[x.path][x.adjective] ? 'true' : 'false'))
+            ]));
+        }
+        divCounterexamples.append(tableCounterexamples);
+        katexTypeset(tableCounterexamples);
+    }
     page.append(...[
         create('span', { class: 'title' }, [
-            // create('span', { class: 'comment' }, `Theorem `),
             spanName,
             spanSubtitle
         ]),
         pStatement,
-        pDescription
+        pDescription,
+        divCounterexamples
     ]);
     return page;
 }

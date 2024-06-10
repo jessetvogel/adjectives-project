@@ -25,7 +25,6 @@ export function pageAdjective(summary, options) {
     });
     return create('div', { class: 'page page-adjective' }, [
         create('span', { class: 'title' }, [
-            // create('span', { class: 'comment' }, `Adjective `),
             spanName,
             spanSubtitle
         ]),
