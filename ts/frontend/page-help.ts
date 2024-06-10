@@ -15,12 +15,12 @@ export function pageHelp(): HTMLElement {
             create('li', {}, 'Go the the explore page, and make sure \'<b>scheme</b>\' is selected in the drop-down menu.'),
             create('li', {}, 'Click twice on \'<b>separated</b>\' to indicate that the scheme should not be separated.'),
             create('li', {}, 'Click the <button>Search</button> button.'),
-            create('li', {}, ['You will now see a list of schemes which are not separated (for instance ', navigation.anchorExample('scheme', 'AA_1_QQ_double_origin'), ').']),
+            create('li', {}, ['You will now see a list of schemes which are not separated (for instance ', navigation.anchorExample('scheme', 'AA-1-QQ-double-origin'), ').']),
         ]),
         create('p', {}, 'Now suppose we are also interested in what additional properties non-separated schemes have.'),
         create('ol', { start: 5 }, [
             create('li', {}, 'Click the <button>Deduce</button> button.'),
-            create('li', {}, ['You will now see a list of conclusions that apply to a non-separated scheme, together with the theorem from which that conclusion follows. For instance, the scheme is also not ', navigation.anchorAdjective('scheme', 'affine'), ' because ', navigation.anchorTheorem('scheme', 'sp_of_af'), '.'])
+            create('li', {}, ['You will now see a list of conclusions that apply to a non-separated scheme, together with the theorem from which that conclusion follows. For instance, the scheme is also not ', navigation.anchorAdjective('scheme', 'affine'), ' because ', navigation.anchorTheorem('scheme', 'sp-of-af'), '.'])
         ])
     ]);
 

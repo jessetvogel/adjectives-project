@@ -41,24 +41,31 @@ function navigateCallback(state: any): void {
     ]));
 }
 
-function anchorType(id: string): HTMLElement {
-    return create('a', { href: `?page=type&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.types[id].name);
+function anchorWrapper(a: HTMLAnchorElement): HTMLAnchorElement {
+    onClick(a, function (event: MouseEvent) {
+        event.preventDefault(); navigate((this as HTMLAnchorElement).href, {});
+    });
+    return a;
 }
 
-function anchorAdjective(type: string, id: string): HTMLElement {
-    return create('a', { href: `?page=adjective&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.adjectives[type][id].name);
+function anchorType(id: string): HTMLAnchorElement {
+    return anchorWrapper(create('a', { href: `?page=type&id=${id}` }, summary?.types?.[id]?.name ?? create('span', { class: 'invalid tt' }, id)) as HTMLAnchorElement);
 }
 
-function anchorExample(type: string, id: string): HTMLElement {
-    return create('a', { href: `?page=example&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.examples[type][id].name);
+function anchorAdjective(type: string, id: string): HTMLAnchorElement {
+    return anchorWrapper(create('a', { href: `?page=adjective&type=${type}&id=${id}` }, summary.adjectives?.[type]?.[id]?.name ?? create('span', { class: 'invalid tt' }, id)) as HTMLAnchorElement);
 }
 
-function anchorTheorem(type: string, id: string): HTMLElement {
-    return create('a', { href: `?page=theorem&type=${type}&id=${id}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, summary.theorems[type][id].name);
+function anchorExample(type: string, id: string): HTMLAnchorElement {
+    return anchorWrapper(create('a', { href: `?page=example&type=${type}&id=${id}` }, summary.examples?.[type]?.[id]?.name ?? create('span', { class: 'invalid tt' }, id)) as HTMLAnchorElement);
 }
 
-function anchorPage(page: string, text: string) {
-    return create('a', { href: `?page=${page}`, '@click': function (event: MouseEvent) { event.preventDefault(); navigate(this.href, {}); } }, text);
+function anchorTheorem(type: string, id: string): HTMLAnchorElement {
+    return anchorWrapper(create('a', { href: `?page=theorem&type=${type}&id=${id}` }, summary.theorems?.[type]?.[id]?.name ?? create('span', { class: 'invalid tt' }, id)) as HTMLAnchorElement);
+}
+
+function anchorPage(page: string, text: string): HTMLAnchorElement {
+    return anchorWrapper(create('a', { href: `?page=${page}` }, text) as HTMLAnchorElement);
 }
 
 function init(s: Book, c: HTMLElement): void {

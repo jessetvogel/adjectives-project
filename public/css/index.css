@@ -57,10 +57,6 @@ span.comment {
 }
 
 span.tt {
-  background-color: var(--color-light-gray);
-  color: var(--color-dark-gray);
-  padding: 0.1em 0.2em;
-  margin: 0em 0.2em;
   font-family: var(--font-typewriter);
   text-decoration: none;
 }
@@ -75,6 +71,10 @@ span.title .subtitle {
   display: block;
   font-size: 1rem;
   color: var(--color-gray);
+}
+
+span.invalid {
+  color: var(--color-red);
 }
 
 a {
