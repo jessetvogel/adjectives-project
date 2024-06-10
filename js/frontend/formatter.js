@@ -40,4 +40,20 @@ export function formatContext(summary, context) {
     }
     return span;
 }
+export function formatProof(type, id, proof, context) {
+    if (proof === undefined)
+        return null;
+    if (typeof proof == 'string')
+        return create('span', {}, proof);
+    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
+    if (proof.type != type || proof.subject != id) {
+        span.append(' applied to ');
+        if (context === undefined)
+            span.append(navigation.anchorExample(proof.type, proof.subject));
+        else
+            span.append(context[proof.type][proof.subject].name);
+    }
+    span.append('.');
+    return span;
+}
 //# sourceMappingURL=formatter.js.map

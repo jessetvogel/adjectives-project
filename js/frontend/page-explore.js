@@ -1,18 +1,52 @@
 import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
-import { formatContext } from './formatter.js';
+import { formatContext, formatProof } from './formatter.js';
 import navigation from './navigation.js';
-function formatProof(context, proof) {
-    if (proof === undefined)
+function serializeContext(context) {
+    const data = {};
+    /*
+     * {
+     *   type: "morphism",
+     *   " affine": true,
+     *   ".source affine": false
+     * }
+     */
+    data.type = Object.keys(context).find(type => Object.keys(context[type]).some(id => id.indexOf('.') == -1)); // subject is the object in the context whose id does not contain a period
+    for (const type in context) {
+        for (const id in context[type]) {
+            const path = id.substring(data.type.length);
+            for (const adj in context[type][id].adjectives)
+                data[`${path} ${adj}`] = context[type][id].adjectives[adj];
+        }
+    }
+    return btoa(JSON.stringify(data));
+}
+function deserializeContext(summary, str) {
+    try {
+        const data = JSON.parse(atob(str));
+        const type = data.type;
+        delete data.type; // for convenience
+        const context = summary.createContextFromType(type, type);
+        const subject = context[type][type];
+        for (const key in data) {
+            const parts = key.split(' ');
+            if (parts.length != 2)
+                throw new Error(`Invalid key '${key}'`);
+            const [path, adj] = parts;
+            const object = summary.resolvePath(context, subject, path);
+            if (object == null)
+                throw new Error(`Could not resolve '${path}' on type '${type}'`);
+            if (typeof data[key] != 'boolean')
+                throw new Error(`Invalid value for '${path}'`);
+            object.adjectives[adj] = data[key];
+        }
+        return [type, context];
+    }
+    catch (err) {
+        console.log(err.toString());
         return null;
-    if (typeof proof == 'string')
-        return create('span', {}, proof);
-    const span = create('span', {}, ['By ', navigation.anchorTheorem(proof.type, proof.theorem)]);
-    if (proof.subject.indexOf('.') >= 0) // little hack
-        span.append(` applied to ${context[proof.type][proof.subject].name}`);
-    span.append('.');
-    return span;
+    }
 }
 function search(summary, context, resultsElem) {
     clear(resultsElem);
@@ -79,7 +113,7 @@ function deduce(summary, context, resultsElem) {
                         `${conclusion.object.name} ${conclusion.value ? 'is' : 'is not'} `,
                         navigation.anchorAdjective(conclusion.object.type, conclusion.adjective)
                     ]),
-                    create('td', {}, (_a = formatProof(contextCopy, conclusion.object.proofs[conclusion.adjective])) !== null && _a !== void 0 ? _a : '')
+                    create('td', {}, (_a = formatProof(conclusion.object.type, conclusion.object.id, conclusion.object.proofs[conclusion.adjective], contextCopy)) !== null && _a !== void 0 ? _a : '')
                 ]));
             }
             resultsElem.append(tableElem);
@@ -184,6 +218,7 @@ export function pageExplore(summary, options) {
                 adjectivesElem.append(itemElem);
             }
         }
+        window.history.replaceState({}, '', `?page=explore&q=${serializeContext(context)}`);
     }
     // Append row of buttons and help link: " [Search] [Deduce] _Help_ "
     const searchButtonElem = create('button', {}, 'Search');
@@ -204,6 +239,14 @@ export function pageExplore(summary, options) {
         deduceButtonElem.onclick = function () { deduce(summary, context, resultsElem); };
     });
     selectElem.dispatchEvent(new Event('change')); // to initialize the view
+    if ('q' in options) {
+        const x = deserializeContext(summary, options.q);
+        if (x != null) {
+            const [type, context] = x;
+            selectElem.value = type;
+            initializeWithContext(context);
+        }
+    }
     return pageElem;
 }
 //# sourceMappingURL=page-explore.js.map

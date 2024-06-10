@@ -71,6 +71,11 @@ span.title {
   margin: 24px 0px;
   text-align: center;
 }
+span.title .subtitle {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-gray);
+}
 
 a {
   color: var(--color-blue);
@@ -411,6 +416,20 @@ nav button.selected {
   margin: auto;
   max-width: 960px;
   padding: 0px 4px;
+}
+
+.page-home p,
+.page-home ul,
+.page-home ol,
+.page-help p,
+.page-help ul,
+.page-help ol,
+.page-contribute p,
+.page-contribute ul,
+.page-contribute ol {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /*# sourceMappingURL=index.css.map */
