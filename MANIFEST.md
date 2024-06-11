@@ -52,9 +52,7 @@ There are a number of scripts:
 
 ## TODO
 
-- Make separate repository of /data and add it as a git submodule
-- Make README.md
-- Create help page
 - Create contribute page
 - Copy data from old project
 - Check for redundant theorems
+- On theorem page, show where theorems are applied

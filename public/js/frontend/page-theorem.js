@@ -77,7 +77,13 @@ export function pageTheorem(summary, options) {
                 columns.push({ path, adjective });
         tableCounterexamples.append(create('tr', {}, [
             create('th', {}, 'Counterexample'),
-            ...columns.map(x => create('th', {}, `${x.path.substring(1)} ${x.adjective}`))
+            ...columns.map(x => {
+                const adjType = summary.resolvePathType(theorem.type, x.path);
+                if (adjType == null)
+                    throw new Error(`Could not resolve '${x.path}' on type '${theorem.type}'`);
+                const adjName = summary.adjectives[adjType][x.adjective].name;
+                return create('th', {}, `${x.path.substring(1)} ${adjName}`);
+            })
         ]));
         for (const [example, values] of counterexamples_) {
             tableCounterexamples.append(create('tr', {}, [
