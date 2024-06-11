@@ -56,7 +56,7 @@ span.comment {
   color: gray;
 }
 
-span.tt {
+.tt {
   font-family: var(--font-typewriter);
   text-decoration: none;
 }

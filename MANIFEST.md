@@ -1,9 +1,5 @@
 # The Adjectives Project
 
-## Introduction
-
-
-
 ## Architecture
 
 All user data is stored in .yaml files (for readability and ease-of-use) in the /data folder.
@@ -39,45 +35,6 @@ There are a number of scripts:
 - `script-clear-json.js`: clears all generated .json files.
 - `script-generate-questions.js`: generates questions (of the form 'Does there exist a (type) satisfying these conditions?') for which there does not yet exist an example, and which cannot be disproven using the theorems.
 
-## YAML files
-
-The `id` of every type, adjective, theorem or example is given by the filename. For instance, `Spec-ZZ.yaml` is given the id `Spec-ZZ`.
-
-```yaml
-# yaml file for types
-type: type
-name: morphism                   # optional: id by default
-parameters:                      # optional
-  source: scheme
-  target: scheme
-description: A morphism is [...] # optional
-```
-
-```yaml
-# yaml file for adjectives
-type: scheme adjective                   # '<type> adjective'
-name: affine                             # optional: id by default
-description: A scheme is affine if [...] # optional
-```
-
-```yaml
-# yaml file for examples
-type: scheme
-name: $\Spec \ZZ$                               # optional: id by default
-description: The spectrum of the integers       # optional
-adjectives:                                     # optional
-  affine: true                                  # either true/false ...
-  integral: [true, The ring $\ZZ$ is a domain.] # ... or [true/false, <proof>]
-```
-
-```yaml
-# yaml file for theorems
-type: theorem
-name: morphisms with affine source and target are affine # optional: id by default
-given: morphism f                                        # <type> <placeholder>
-if: [f.source affine, f.target affine]                   # <object> [not] <adjective>
-then: f affine                                           # <object> [not] <adjective>
-```
 
 ## Client
 
@@ -92,8 +49,6 @@ then: f affine                                           # <object> [not] <adjec
   - Theorem page: display name, type, description. Auto-generate the theorem statement in human-readable format.
     - Show list of counterexamples for the converse statement
   - Type page: display name, parameters
-
-- `admin.html`: admin panel, where the admin can edit the yaml files, and execute a number of scripts
 
 ## TODO
 

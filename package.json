@@ -9,8 +9,7 @@
     "update-json-from-yaml": "node --enable-source-maps ./js/backend/script-update-json-from-yaml.js",
     "clear-json": "node --enable-source-maps ./js/backend/script-clear-json.js",
     "deduce": "node --enable-source-maps ./js/backend/script-deduce.js",
-    "generate-questions": "node --enable-source-maps ./js/backend/script-generate-questions.js",
-    "script": "node --enable-source-maps ./js/backend/script.js"
+    "generate-questions": "node --enable-source-maps ./js/backend/script-generate-questions.js"
   },
   "author": "Jesse Vogel",
   "license": "MIT",
