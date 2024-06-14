@@ -146,6 +146,9 @@ export class Book {
             else if (Array.isArray(value) && value.length == 2 && typeof value[0] == 'boolean' && typeof value[1] == 'string') {
                 adjectives[key] = value[0];
                 proofs[key] = value[1].trim();
+            }
+            else if (Array.isArray(value) && value.length == 1 && typeof value[0] == 'boolean') {
+                adjectives[key] = value[0];
                 // } else if (typeof value == 'string' && (value.startsWith('true') || value.startsWith('false'))) {
                 //     const v = value.startsWith('true');
                 //     adjectives[key] = v;
