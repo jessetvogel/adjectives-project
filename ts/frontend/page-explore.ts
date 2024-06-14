@@ -189,6 +189,10 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
             }
         }
         (objectsElem.firstChild as HTMLElement).click(); // select the first object
+
+        // Search and Deduce onclick handlers
+        searchButtonElem.onclick = function () { search(summary, context, resultsElem); };
+        deduceButtonElem.onclick = function () { deduce(summary, context, resultsElem); };
     }
 
     function updateWithContext(context: Context) {
@@ -251,16 +255,14 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
     const resultsElem = create('div', { class: 'results' });
     pageElem.append(resultsElem);
 
-    // Search functionality
+    // If select value changes, re-initialize the context
     onChange(selectElem, function () {
         const type = selectElem.value;
         const context = summary.createContextFromType(type, type) // simply use id equal to type
         initializeWithContext(context);
-        searchButtonElem.onclick = function () { search(summary, context, resultsElem); };
-        deduceButtonElem.onclick = function () { deduce(summary, context, resultsElem); };
-    });
 
-    selectElem.dispatchEvent(new Event('change')); // to initialize the view
+    });
+    selectElem.dispatchEvent(new Event('change')); // trigger initalization
 
     if ('q' in options) {
         const x = deserializeContext(summary, options.q);
