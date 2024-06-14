@@ -1,0 +1,1 @@
+{"type":"theorem","name":"closed immersions are proper","given":"morphism f","if":["f closed-immersion"],"then":"f proper"}

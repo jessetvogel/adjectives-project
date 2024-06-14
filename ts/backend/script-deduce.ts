@@ -59,7 +59,8 @@ function main() {
         Log.success('Done');
     }
     catch (err: any) {
-        Log.error(err.toString());
+        Log.error(err.stack);
+        process.exit(1);
     }
 }
 

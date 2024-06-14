@@ -1,0 +1,1 @@
+{"type":"theorem","name":"finite morphisms are quasi-finite","given":"morphism f","if":["f finite"],"then":"f quasi-finite"}

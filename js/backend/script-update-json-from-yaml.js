@@ -43,6 +43,7 @@ function main() {
     }
     catch (err) {
         Log.error(err.stack);
+        process.exit(1);
     }
 }
 main();

@@ -1,0 +1,1 @@
+{"type":"theorem","name":"affine morphisms with affine target have affine source","given":"morphism f","if":["f affine","f.target affine"],"then":"f.source affine"}

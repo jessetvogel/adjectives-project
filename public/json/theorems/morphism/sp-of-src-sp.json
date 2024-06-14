@@ -1,0 +1,1 @@
+{"type":"theorem","name":"morphisms with separated source are separated","given":"morphism f","if":["f.source separated"],"then":"f separated"}

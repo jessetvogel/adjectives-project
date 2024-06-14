@@ -1,0 +1,1 @@
+{"type":"theorem","name":"morphisms of finite presentation are locally of finite presentation","given":"morphism f","if":["f of-finite-presentation"],"then":"f locally-of-finite-presentation"}

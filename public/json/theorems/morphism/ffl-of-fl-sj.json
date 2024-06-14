@@ -1,0 +1,1 @@
+{"type":"theorem","name":"definition faithfully flat","given":"morphism f","if":["f flat","f surjective"],"then":"f faithfully-flat"}

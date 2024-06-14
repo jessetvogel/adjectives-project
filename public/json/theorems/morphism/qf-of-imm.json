@@ -1,0 +1,1 @@
+{"type":"theorem","name":"immersions are quasi-finite","given":"morphism f","if":["f immersion"],"then":"f quasi-finite"}

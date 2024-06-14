@@ -1,0 +1,1 @@
+{"type":"theorem","name":"homeomorphisms are open","given":"morphism f","if":["f homeomorphism"],"then":"f open"}

@@ -1,0 +1,1 @@
+{"type":"theorem","name":"Cohen-Macaulay schemes are locally noetherian","given":"scheme X","if":["X cohen-macaulay"],"then":"X locally-noetherian"}

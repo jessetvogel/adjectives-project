@@ -145,7 +145,11 @@ export class Book {
             if (typeof value == 'boolean') { }
             else if (Array.isArray(value) && value.length == 2 && typeof value[0] == 'boolean' && typeof value[1] == 'string') {
                 adjectives[key] = value[0];
-                proofs[key] = value[1];
+                proofs[key] = value[1].trim();
+                // } else if (typeof value == 'string' && (value.startsWith('true') || value.startsWith('false'))) {
+                //     const v = value.startsWith('true');
+                //     adjectives[key] = v;
+                //     proofs[key] = value.substring(v.toString().length).trim();
             }
             else
                 throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective '${key}'`);
