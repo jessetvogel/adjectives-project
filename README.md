@@ -4,7 +4,7 @@ The Adjectives Project is a website that collects interesting examples and theor
 
 The website can be used to find examples of schemes and morphisms with certain adjectives. It also uses the theorems to automatically make deductions about the properties of the schemes and morphisms.
 
-<!-- The website can be visited at [jessetvogel.nl/adjectives-project](https://jessetvogel.nl/adjectives-project). -->
+The website can be visited at [jessetvogel.nl/adjectives-project](https://jessetvogel.nl/adjectives-project).
 
 ## Setup and usage
 
