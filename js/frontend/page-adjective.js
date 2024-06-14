@@ -23,7 +23,7 @@ export function pageAdjective(summary, options) {
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
-    return create('div', { class: 'page page-adjective' }, [
+    page.append(...[
         create('span', { class: 'title' }, [
             spanName,
             spanSubtitle
