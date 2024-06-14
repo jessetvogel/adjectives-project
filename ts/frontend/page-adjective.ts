@@ -29,8 +29,7 @@ export function pageAdjective(summary: Book, options: any): HTMLElement {
     });
 
 
-
-    return create('div', { class: 'page page-adjective' }, [
+    page.append(...[
         create('span', { class: 'title' }, [
             spanName,
             spanSubtitle

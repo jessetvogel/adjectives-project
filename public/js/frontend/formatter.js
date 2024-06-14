@@ -40,6 +40,34 @@ export function formatContext(summary, context) {
     }
     return span;
 }
+function formatFromPath(theorem, path) {
+    if (path == '')
+        return `$${theorem.subject}$`;
+    if (!path.startsWith('.'))
+        return path;
+    const i = path.lastIndexOf('.');
+    return `the ${path.substring(i + 1)} of ${formatFromPath(theorem, path.substring(0, i))}`;
+}
+export function formatConditions(summary, theorem, conditions) {
+    const span = create('span');
+    const numberOfConditions = Object.values(conditions).map(adj => Object.keys(adj).length).reduce((partial, n) => partial + n);
+    let conditionsCount = 0;
+    for (const path in conditions) {
+        for (const adj in conditions[path]) {
+            const conditionObjectType = summary.resolvePathType(theorem.type, path);
+            if (conditionObjectType == null)
+                throw new Error(`Could not resolve path '${path}' starting from type '${theorem.type}'`);
+            const value = conditions[path][adj];
+            if (numberOfConditions > 1 && conditionsCount > 0 && conditionsCount < numberOfConditions - 1)
+                span.append(', ');
+            if (numberOfConditions > 1 && conditionsCount == numberOfConditions - 1)
+                span.append(' and ');
+            span.append(`${formatFromPath(theorem, path)} ${value ? 'is' : 'is not'} `, navigation.anchorAdjective(conditionObjectType, adj));
+            ++conditionsCount;
+        }
+    }
+    return span;
+}
 export function formatProof(type, id, proof, context) {
     if (proof === undefined)
         return null;
@@ -57,41 +85,10 @@ export function formatProof(type, id, proof, context) {
     return span;
 }
 export function formatTheoremStatement(summary, theorem) {
-    const statement = [];
-    // given
-    statement.push(`Let $${theorem.subject}$ be a `, navigation.anchorType(theorem.type), '. ');
-    function wordFromPath(path) {
-        if (path == '')
-            return `$${theorem.subject}$`;
-        if (!path.startsWith('.'))
-            return path;
-        const i = path.lastIndexOf('.');
-        return `the ${path.substring(i + 1)} of ${wordFromPath(path.substring(0, i))}`;
-    }
-    // conditions
-    const numberOfConditions = Object.values(theorem.conditions).map(adj => Object.keys(adj).length).reduce((partial, n) => partial + n);
-    let conditionsCount = 0;
-    statement.push('Suppose that ');
-    for (const path in theorem.conditions) {
-        for (const adj in theorem.conditions[path]) {
-            const conditionObjectType = summary.resolvePathType(theorem.type, path);
-            if (conditionObjectType == null)
-                throw new Error(`Could not resolve path '${path}' starting from type '${theorem.type}'`);
-            const value = theorem.conditions[path][adj];
-            if (numberOfConditions > 1 && conditionsCount > 0 && conditionsCount < numberOfConditions - 1)
-                statement.push(', ');
-            if (numberOfConditions > 1 && conditionsCount == numberOfConditions - 1)
-                statement.push(' and that ');
-            statement.push(`${wordFromPath(path)} ${value ? 'is' : 'is not'} `, navigation.anchorAdjective(conditionObjectType, adj));
-            ++conditionsCount;
-        }
-    }
-    statement.push('. ');
-    // conclusion
-    const conclusionObjectType = summary.resolvePathType(theorem.type, theorem.conclusion.path);
-    if (conclusionObjectType == null)
-        throw new Error(`Could not resolve path '${theorem.conclusion.path}' starting from type '${theorem.type}'`);
-    statement.push(`Then ${wordFromPath(theorem.conclusion.path)} ${theorem.conclusion.value ? 'is' : 'is not'} `, navigation.anchorAdjective(conclusionObjectType, theorem.conclusion.adjective), '.');
-    return create('span', {}, statement);
+    const span = create('span');
+    span.append(`Let $${theorem.subject}$ be a `, navigation.anchorType(theorem.type), '. ');
+    span.append('Suppose ', formatConditions(summary, theorem, theorem.conditions), '. ');
+    span.append('Then ', formatConditions(summary, theorem, theorem.conclusions), '.');
+    return span;
 }
 //# sourceMappingURL=formatter.js.map

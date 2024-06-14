@@ -11,8 +11,10 @@ async function main() {
         summary.verify();
     }
     catch (err) {
+        console.log(err);
+        
         const content = $('content') as HTMLElement;
-        if (false && location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
             content.append(create('div', { class: 'page page-home' }, [
                 create('span', { class: 'title' }, '🥺 Failed to load <span class="tt">summary.json</span> ..'),
                 create('p', {}, 'Make sure to update the JSON directory by running the following commands.'),

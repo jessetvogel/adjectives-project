@@ -7,28 +7,34 @@ function counterexamples(summary, theorem) {
     var _a, _b;
     const type = theorem.type;
     const results = [];
-    for (const id in summary.examples[type]) {
-        const subject = summary.examples[type][id];
-        const object = summary.resolvePath(summary.examples, subject, theorem.conclusion.path);
-        if (object == null)
-            throw new Error(`Could not resolve '${theorem.conclusion.path}'`);
-        if (!(theorem.conclusion.adjective in object.adjectives) || object.adjectives[theorem.conclusion.adjective] != theorem.conclusion.value)
-            continue; // if theorem conclusion does not apply, continue
-        // Check theorem conditions
-        let hasFalse = false, hasNull = false;
+    loop_examples: for (const id in summary.examples[type]) {
         const values = {};
-        values[theorem.conclusion.path] = { [theorem.conclusion.adjective]: theorem.conclusion.value };
+        const subject = summary.examples[type][id];
+        for (const path in theorem.conclusions) {
+            values[path] = {};
+            const object = summary.resolvePath(summary.examples, subject, path);
+            if (object == null)
+                throw new Error(`Could not resolve '${path}'`);
+            for (const adjective in theorem.conclusions[path]) {
+                const value = theorem.conclusions[path][adjective];
+                if (!(adjective in object.adjectives) || object.adjectives[adjective] != value)
+                    continue loop_examples; // if theorem conclusion does not apply, continue
+                values[path][adjective] = value;
+            }
+        }
+        // check theorem conditions
+        let hasFalse = false, hasNull = false;
         for (const path in theorem.conditions) {
             const object = summary.resolvePath(summary.examples, subject, path);
             if (object == null)
                 throw new Error(`Could not resolve '${path}'`);
-            for (const adj in theorem.conditions[path]) {
+            for (const adjective in theorem.conditions[path]) {
                 if (!(path in values))
                     values[path] = {};
-                const value = (_b = (_a = object === null || object === void 0 ? void 0 : object.adjectives) === null || _a === void 0 ? void 0 : _a[adj]) !== null && _b !== void 0 ? _b : null;
+                const value = (_b = (_a = object === null || object === void 0 ? void 0 : object.adjectives) === null || _a === void 0 ? void 0 : _a[adjective]) !== null && _b !== void 0 ? _b : null;
                 hasFalse || (hasFalse = value == false);
                 hasNull || (hasNull = value == null);
-                values[path][adj] = value;
+                values[path][adjective] = value;
             }
         }
         if (hasFalse && !hasNull)
@@ -71,7 +77,9 @@ export function pageTheorem(summary, options) {
         divCounterexamples.append(create('p', {}, 'The converse statement does not hold, as can be seen from the following counterexamples.'));
         const tableCounterexamples = create('table');
         const columns = []; // array of adjectives and paths corresponding to the columns of the table
-        columns.push({ path: theorem.conclusion.path, adjective: theorem.conclusion.adjective });
+        for (const path in theorem.conclusions)
+            for (const adjective in theorem.conclusions[path])
+                columns.push({ path, adjective });
         for (const path in theorem.conditions)
             for (const adjective in theorem.conditions[path])
                 columns.push({ path, adjective });
