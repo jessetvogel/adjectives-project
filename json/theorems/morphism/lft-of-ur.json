@@ -1,0 +1,1 @@
+{"type":"theorem","name":"unramified morphisms are locally of finite type","given":"morphism f","if":["f unramified"],"then":"f locally-of-finite-type"}

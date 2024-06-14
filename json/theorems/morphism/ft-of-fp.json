@@ -1,0 +1,1 @@
+{"type":"theorem","name":"morphisms of finite presentation are of finite type","given":"morphism f","if":["f of-finite-presentation"],"then":"f of-finite-type"}

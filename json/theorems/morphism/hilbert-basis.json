@@ -1,0 +1,1 @@
+{"type":"theorem","name":"Hilbert basis theorem","given":"morphism f","if":["f locally-of-finite-type","f.target locally-noetherian"],"then":"f.source locally-noetherian"}
