@@ -80,7 +80,7 @@ function init(s, c) {
     }
 }
 function navigate(url, state) {
-    window.history.pushState(state, '', url);
+    window.history.pushState(state, document.title, url);
     navigateCallback(state);
 }
 function setContent(elem) {

@@ -7,7 +7,7 @@ export class Log {
     static error(msg) { console.log(`🚨 ${msg}`); }
     static info(msg) { console.log(`💬 ${msg}`); }
     static warning(msg) { console.log(`⚠️ ${msg}`); }
-    static action(msg) { console.log(`👉 ${msg}`); }
+    static action(msg) { console.log(`👉 ${msg} ...`); }
     static success(msg) { console.log(`✅ ${msg}`); }
 }
 ;

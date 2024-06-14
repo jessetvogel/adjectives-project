@@ -52,7 +52,8 @@ There are a number of scripts:
 
 ## TODO
 
-- Create contribute page
+- Theorems should be able to have multiple conclusions (opposite application is just checking if one of the conclusions does not hold) (TheoremConclusion becomes TheoremConditions)
+- Create better contribute page
 - Copy data from old project
 - Check for redundant theorems
 - On theorem page, show where theorems are applied

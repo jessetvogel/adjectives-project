@@ -90,7 +90,7 @@ function init(s: Book, c: HTMLElement): void {
 }
 
 function navigate(url: string, state: any): void {
-    window.history.pushState(state, '', url);
+    window.history.pushState(state, document.title, url);
     navigateCallback(state);
 }
 
