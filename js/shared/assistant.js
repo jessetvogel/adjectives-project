@@ -198,10 +198,23 @@ export class Assistant {
                     if (!(type in this.book.theorems))
                         continue;
                     for (const theorem of Object.values(this.book.theorems[type])) { // ... and for every theorem of the corresponding type ...
-                        const cs = this.applyTheorem(theorem, context, id);
-                        if (cs.length > 0) {
-                            conclusions.push(...cs);
-                            updates = true;
+                        const versions = [theorem];
+                        if (theorem.converse)
+                            versions.push({
+                                id: theorem.id,
+                                name: theorem.name,
+                                type: theorem.type,
+                                subject: theorem.subject,
+                                conditions: theorem.conclusions,
+                                conclusions: theorem.conditions,
+                                converse: theorem.converse
+                            });
+                        for (const thm of versions) {
+                            const cs = this.applyTheorem(thm, context, id);
+                            if (cs.length > 0) {
+                                conclusions.push(...cs);
+                                updates = true;
+                            }
                         }
                     }
                 }

@@ -1,1 +1,1 @@
-{"type":"theorem","name":"morphisms with quasi-compact source are quasi-compact","given":"morphism f","if":["f.source quasi-compact"],"then":"f quasi-compact"}
+{"type":"theorem","name":"morphisms with quasi-compact source are quasi-compact","given":"morphism f","if":"f.source quasi-compact","then":"f quasi-compact"}

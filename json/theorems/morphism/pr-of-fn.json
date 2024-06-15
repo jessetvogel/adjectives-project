@@ -1,1 +1,0 @@
-{"type":"theorem","name":"finite morphisms are proper","given":"morphism f","if":["f finite"],"then":"f proper"}

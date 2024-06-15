@@ -1,1 +1,1 @@
-{"type":"theorem","name":"regular schemes are normal","given":"scheme X","if":["X regular"],"then":"X normal"}
+{"type":"theorem","name":"regular schemes are normal","given":"scheme X","if":"X regular","then":"X normal"}

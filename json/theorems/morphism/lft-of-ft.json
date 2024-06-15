@@ -1,1 +1,0 @@
-{"type":"theorem","name":"morphisms of finite type are locally of finite type","given":"morphism f","if":["f of-finite-type"],"then":"f locally-of-finite-type"}

@@ -1,1 +1,1 @@
-{"type":"theorem","name":"quasi-compact morphisms locally of finite type are of finite type","given":"morphism f","if":["f locally-of-finite-type","f quasi-compact"],"then":"f of-finite-type"}
+{"type":"theorem","name":"definition of finite type","given":"morphism f","if":["f locally-of-finite-type","f quasi-compact"],"then":"f of-finite-type","converse":true}

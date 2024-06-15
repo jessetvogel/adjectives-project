@@ -1,1 +1,0 @@
-{"type":"theorem","name":"formally étale morphisms are formally smooth","given":"morphism f","if":["f formally-etale"],"then":"f formally-smooth"}

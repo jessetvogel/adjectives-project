@@ -1,1 +1,1 @@
-{"type":"theorem","name":"open immersions are immersions","given":"morphism f","if":["f open-immersion"],"then":"f immersion"}
+{"type":"theorem","name":"open immersions are immersions","given":"morphism f","if":"f open-immersion","then":"f immersion"}

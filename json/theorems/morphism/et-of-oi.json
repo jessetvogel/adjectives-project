@@ -1,1 +1,1 @@
-{"type":"theorem","name":"open immersions are étale","given":"morphism f","if":["f open-immersion"],"then":"f etale"}
+{"type":"theorem","name":"open immersions are étale","given":"morphism f","if":"f open-immersion","then":"f etale"}

@@ -1,1 +1,0 @@
-{"type":"theorem","name":"faithfully flat morphisms are flat","given":"morphism f","if":["f faithfully-flat"],"then":"f flat"}
