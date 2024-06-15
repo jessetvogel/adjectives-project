@@ -1,1 +1,0 @@
-{"type":"theorem","name":"faithfully flat morphisms are surjective","given":"morphism f","if":["f faithfully-flat"],"then":"f surjective"}

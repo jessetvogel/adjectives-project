@@ -1,1 +1,1 @@
-{"type":"theorem","name":"integral schemes are reduced","given":"scheme X","if":["X integral"],"then":"X reduced"}
+{"type":"theorem","name":"integral schemes are reduced","given":"scheme X","if":"X integral","then":"X reduced"}

@@ -88,7 +88,9 @@ export class Book {
             throw new Error(`Invalid field 'then' in theorem '${id}'`);
         const conditions = parseTheoremConditions(('if' in data) ? (typeof data.if == 'string' ? [data.if] : data.if) : [], 'condition');
         const conclusions = parseTheoremConditions(typeof data.then == 'string' ? [data.then] : data.then, 'conclusion');
-        return { id, name, type, subject, conditions, conclusions };
+        // parse equivalence
+        const converse = ('converse' in data && data.converse == true);
+        return { id, name, type, subject, conditions, conclusions, converse };
     }
     serializeTheorem(theorem, elaborate = false) {
         function formatCondition(conditions, path) {
@@ -112,6 +114,8 @@ export class Book {
             if: formatConditions(theorem.conditions),
             then: formatConditions(theorem.conclusions)
         };
+        if (theorem.converse)
+            data.converse = true; // add converse if it is true
         if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type]) // add description when elaborate is true
             data.description = this.descriptions.theorems[theorem.type][theorem.id];
         return data;

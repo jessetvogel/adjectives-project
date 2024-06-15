@@ -1,1 +1,1 @@
-{"type":"theorem","name":"affine schemes are quasi-compact","given":"scheme X","if":["X affine"],"then":"X quasi-compact"}
+{"type":"theorem","name":"affine schemes are quasi-compact","given":"scheme X","if":"X affine","then":"X quasi-compact"}

@@ -18,7 +18,8 @@ export type Theorem = {
     type: string, // scheme
     subject: string, // X
     conditions: TheoremConditions, // { '': { affine: true } }
-    conclusions: TheoremConditions  // { '': { 'quasi-compact': true } }
+    conclusions: TheoremConditions,  // { '': { 'quasi-compact': true } }
+    converse: boolean // true if the converse also holds
 };
 
 export type Proof = {
@@ -157,7 +158,10 @@ export class Book {
         const conditions = parseTheoremConditions(('if' in data) ? (typeof data.if == 'string' ? [data.if] : data.if) : [], 'condition');
         const conclusions = parseTheoremConditions(typeof data.then == 'string' ? [data.then] : data.then, 'conclusion');
 
-        return { id, name, type, subject, conditions, conclusions };
+        // parse equivalence
+        const converse = ('converse' in data && data.converse == true);
+
+        return { id, name, type, subject, conditions, conclusions, converse };
     }
 
     serializeTheorem(theorem: Theorem, elaborate: boolean = false): any {
@@ -184,6 +188,8 @@ export class Book {
             if: formatConditions(theorem.conditions),
             then: formatConditions(theorem.conclusions)
         };
+
+        if (theorem.converse) data.converse = true; // add converse if it is true
 
         if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type])  // add description when elaborate is true
             data.description = this.descriptions.theorems[theorem.type][theorem.id];

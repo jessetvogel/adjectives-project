@@ -1,1 +1,1 @@
-{"type":"theorem","name":"homeomorphisms are surjective","given":"morphism f","if":["f homeomorphism"],"then":"f surjective"}
+{"type":"theorem","name":"homeomorphisms are surjective","given":"morphism f","if":"f homeomorphism","then":"f surjective"}

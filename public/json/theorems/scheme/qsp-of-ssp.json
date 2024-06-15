@@ -1,1 +1,1 @@
-{"type":"theorem","name":"semi-separated schemes are quasi-separated","given":"scheme X","if":["X semi-separated"],"then":"X quasi-separated"}
+{"type":"theorem","name":"semi-separated schemes are quasi-separated","given":"scheme X","if":"X semi-separated","then":"X quasi-separated"}

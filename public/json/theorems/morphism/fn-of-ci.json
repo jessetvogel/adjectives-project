@@ -1,1 +1,1 @@
-{"type":"theorem","name":"closed immersions are finite","given":"morphism f","if":["f closed-immersion"],"then":"f finite"}
+{"type":"theorem","name":"closed immersions are finite","given":"morphism f","if":"f closed-immersion","then":"f finite"}

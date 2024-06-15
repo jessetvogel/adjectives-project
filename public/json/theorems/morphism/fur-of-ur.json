@@ -1,1 +1,0 @@
-{"type":"theorem","name":"unramified morphisms are formally unramified","given":"morphism f","if":["f unramified"],"then":"f formally-unramified"}

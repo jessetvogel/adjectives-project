@@ -1,1 +1,0 @@
-{"type":"theorem","name":"étale morphisms are formally étale","given":"morphism f","if":["f etale"],"then":"f formally-etale"}

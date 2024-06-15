@@ -102,8 +102,15 @@ export function formatTheoremStatement(summary: Book, theorem: Theorem): HTMLEle
     const span = create('span');
 
     span.append(`Let $${theorem.subject}$ be a `, navigation.anchorType(theorem.type), '. ');
-    span.append('Suppose ', formatConditions(summary, theorem, theorem.conditions), '. ');
-    span.append('Then ', formatConditions(summary, theorem, theorem.conclusions), '.');
-    
+
+    if (!theorem.converse) {
+        span.append('Suppose ', formatConditions(summary, theorem, theorem.conditions), '. ');
+        span.append('Then ', formatConditions(summary, theorem, theorem.conclusions), '.');
+    }
+    else {
+        span.append('Then ', formatConditions(summary, theorem, theorem.conditions));
+        span.append(' if and only if ', formatConditions(summary, theorem, theorem.conclusions), '.');
+    }
+
     return span;
 }
