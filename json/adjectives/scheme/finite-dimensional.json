@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"finite-dimensional"}
+{"type":"scheme adjective","name":"finite-dimensional","description":"A scheme $X$ is finite-dimensional if its dimension is finite, where the dimension of $X$ is the supremum of the lengths $n$ of chains of irreducible closed subsets $\\varnothing \\ne X_0 \\subsetneq X_1 \\subsetneq \\cdots \\subsetneq X_n \\subset X$."}

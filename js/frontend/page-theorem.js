@@ -1,7 +1,7 @@
 import { formatTheoremStatement } from './formatter.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
-import { create, setText } from './util.js';
+import { create, setText, hasClass, addClass, removeClass } from './util.js';
 // Find examples which satisfy the theorem conclusion, but not the theorem conditions
 function counterexamples(summary, theorem) {
     var _a, _b;
@@ -68,49 +68,62 @@ export function pageTheorem(summary, options) {
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
-    // TABLE OF THEOREMS TO PROVE THE CONVERSE OF THE THEOREM
-    // TODO
     // TABLE OF COUNTEREXAMPLES TO THE CONVERSE OF THE THEOREM
-    const divCounterexamples = create('div', { class: 'counterexamples' });
+    const divExamples = create('div');
+    const tableExamples = create('table', { class: 'hidden' });
     const counterexamples_ = counterexamples(summary, theorem);
-    if (counterexamples_.length > 0) {
-        divCounterexamples.append(create('p', {}, 'The converse statement does not hold, as can be seen from the following counterexamples.'));
-        const tableCounterexamples = create('table');
-        const columns = []; // array of adjectives and paths corresponding to the columns of the table
-        for (const path in theorem.conclusions)
-            for (const adjective in theorem.conclusions[path])
-                columns.push({ path, adjective });
-        for (const path in theorem.conditions)
-            for (const adjective in theorem.conditions[path])
-                columns.push({ path, adjective });
-        tableCounterexamples.append(create('tr', {}, [
-            create('th', {}, 'Counterexample'),
+    // divExamples.append(create('p', {}, 'The converse statement does not hold, as can be seen from the following counterexamples.'));
+    const columns = []; // array of adjectives and paths corresponding to the columns of the table
+    for (const path in theorem.conclusions)
+        for (const adjective in theorem.conclusions[path])
+            columns.push({ path, adjective });
+    for (const path in theorem.conditions)
+        for (const adjective in theorem.conditions[path])
+            columns.push({ path, adjective });
+    tableExamples.append(create('tr', {}, [
+        create('th', {}, 'Counterexample'),
+        ...columns.map(x => {
+            const adjType = summary.resolvePathType(theorem.type, x.path);
+            if (adjType == null)
+                throw new Error(`Could not resolve '${x.path}' on type '${theorem.type}'`);
+            const adjName = summary.adjectives[adjType][x.adjective].name;
+            return create('th', {}, `${x.path.substring(1)} ${adjName}`);
+        })
+    ]));
+    for (const [example, values] of counterexamples_) {
+        tableExamples.append(create('tr', {}, [
+            create('td', {}, navigation.anchorExample(example.type, example.id)),
             ...columns.map(x => {
-                const adjType = summary.resolvePathType(theorem.type, x.path);
-                if (adjType == null)
-                    throw new Error(`Could not resolve '${x.path}' on type '${theorem.type}'`);
-                const adjName = summary.adjectives[adjType][x.adjective].name;
-                return create('th', {}, `${x.path.substring(1)} ${adjName}`);
+                const value = values[x.path][x.adjective] ? 'true' : 'false';
+                return create('td', { class: value }, value);
             })
         ]));
-        for (const [example, values] of counterexamples_) {
-            tableCounterexamples.append(create('tr', {}, [
-                create('td', {}, navigation.anchorExample(example.type, example.id)),
-                ...columns.map(x => create('td', {}, values[x.path][x.adjective] ? 'true' : 'false'))
-            ]));
-        }
-        divCounterexamples.append(tableCounterexamples);
-        katexTypeset(tableCounterexamples);
     }
+    const buttonExamples = create('button', {
+        '@click': () => {
+            if (hasClass(tableExamples, 'hidden')) {
+                removeClass(tableExamples, 'hidden');
+                setText(buttonExamples, 'Hide counterexamples for converse statement');
+            }
+            else {
+                addClass(tableExamples, 'hidden');
+                setText(buttonExamples, 'Show counterexamples for converse statement');
+            }
+        }
+    }, 'Show counterexamples for converse statement');
+    divExamples.append(create('div', { class: 'row-buttons' }, buttonExamples));
+    divExamples.append(tableExamples);
+    katexTypeset(tableExamples);
     page.append(...[
         create('span', { class: 'title' }, [
             spanName,
             spanSubtitle
         ]),
         pStatement,
-        pDescription,
-        divCounterexamples
+        pDescription
     ]);
+    if (counterexamples_.length > 0)
+        page.append(divExamples);
     return page;
 }
 //# sourceMappingURL=page-theorem.js.map

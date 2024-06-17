@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"quasi-finite"}
+{"type":"morphism adjective","name":"quasi-finite","description":"A morphism $f : X \\to Y$ of schemes is quasi-finite if it is of finite type, and every point $x \\in X$ is isolated in its fiber $f^{-1}(f(x))$, that is, every fiber is a discrete finite set."}

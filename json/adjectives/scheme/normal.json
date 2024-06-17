@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"normal"}
+{"type":"scheme adjective","name":"normal","description":"A scheme $X$ is normal if for every $x \\in X$, the local ring $\\mathcal{O}_{X, x}$ is an integrally closed domain."}

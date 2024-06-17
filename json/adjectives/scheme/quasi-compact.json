@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"quasi-compact","description":"A scheme is quasi-compact if its underlying topological space is quasi-compact."}
+{"type":"scheme adjective","name":"quasi-compact","description":"A scheme $X$ is quasi-compact if its underlying scheme is compact, that is, every open cover of $X$ has a finite subcover."}

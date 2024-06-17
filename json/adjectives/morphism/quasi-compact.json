@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"quasi-compact"}
+{"type":"morphism adjective","name":"quasi-compact","description":"A morphism $f : X \\to Y$ of schemes quasi-compact if the inverse image of every quasi-compact open in $Y$ is quasi-compact in $X$."}

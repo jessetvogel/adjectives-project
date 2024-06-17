@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"quasi-separated"}
+{"type":"morphism adjective","name":"quasi-separated","description":"A morphism $f : X \\to Y$ of schemes is quasi-separated if the diagonal $\\Delta_{X/Y} : X \\to X \\times_Y X$ is quasi-compact."}

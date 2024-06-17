@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"open"}
+{"type":"morphism adjective","name":"open","description":"A morphism $f : X \\to Y$ of schemes is open if for every open subset $U \\subset X$ the image $f(U)$ is open in $Y$."}

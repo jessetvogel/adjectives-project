@@ -1,1 +1,1 @@
-{"type":"theorem","name":"reduced irreducible schemes are integral","given":"scheme X","if":["X reduced","X irreducible"],"then":"X integral"}
+{"type":"theorem","name":"integral is reduced and irreducible","given":"scheme X","if":["X reduced","X irreducible"],"then":"X integral","converse":true}

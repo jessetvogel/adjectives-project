@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"quasi-affine"}
+{"type":"morphism adjective","name":"quasi-affine","description":"A morphism of schemes $f : X \\to Y$ is quasi-affine if the inverse image of every affine open of $Y$ is a quasi-affine scheme."}

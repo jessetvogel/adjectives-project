@@ -130,6 +130,15 @@ table tr:nth-child(2n+1) {
 table tr:nth-child(2n) {
   background-color: var(--color-background);
 }
+table td.true {
+  color: var(--color-green);
+}
+table td.false {
+  color: var(--color-red);
+}
+table td.unknown {
+  color: var(--color-gray);
+}
 
 select {
   border-radius: 4px;
@@ -156,6 +165,18 @@ p {
 
 .hidden {
   display: none;
+}
+
+.row-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0px;
+}
+.row-buttons button {
+  min-width: 128px;
 }
 
 .page-example .arguments {
@@ -296,17 +317,6 @@ p {
 .page-explore .context .column-objects > div .adjectives:not(:empty)::before {
   content: "(";
 }
-.page-explore .row-buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin: 16px 0px;
-}
-.page-explore .row-buttons button {
-  width: 128px;
-}
 .page-explore .results {
   padding: 0px 4px;
 }
@@ -318,9 +328,6 @@ p {
 }
 .page-explore .results p {
   text-align: center;
-}
-.page-explore .results table {
-  margin-bottom: 16px;
 }
 
 body::after {
@@ -423,6 +430,7 @@ nav button.selected {
   margin: auto;
   max-width: 960px;
   padding: 0px 4px;
+  margin-bottom: 16px;
 }
 
 .page-home p,

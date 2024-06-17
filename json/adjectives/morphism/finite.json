@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"finite"}
+{"type":"morphism adjective","name":"finite","description":"A morphism $f : X \\to Y$ of schemes is finite if there exists a covering of $Y$ by open affine subsets $V_i = \\Spec B_i$, such that for each $i$, $f^{-1}(V_i)$ is affine, equal to $\\Spec A_i$, where $A_i$ is a $B_i$-algebra which is a finitely generated $B_i$-module."}

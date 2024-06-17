@@ -63,11 +63,11 @@ export function pageExample(summary, options) {
         });
         for (const x of adjectiveValuePairs) {
             const adjId = x.id;
-            const value = x.value;
+            const value = (x.value == true) ? 'true' : (x.value == false ? 'false' : 'unknown');
             const adjective = summary.adjectives[type][adjId];
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
-                create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
+                create('td', { class: value }, value),
                 create('td', {}, (_c = formatProof(type, id, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjId])) !== null && _c !== void 0 ? _c : '')
             ]));
         }
