@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"formally smooth"}
+{"type":"morphism adjective","name":"formally smooth","description":"A morphism $f : X \\to Y$ of schemes is formally smooth if for every ring $A$, ideal $I \\subset A$ with $I^2 = 0$, and commutative diagram \\[ \\begin{CD} \\Spec A/I @>>> X \\\\ @VVV @VVfV \\\\ \\Spec A @>>> Y \\end{CD} \\] there exists at least one morphism $\\Spec A \\to X$ making the diagram commute."}

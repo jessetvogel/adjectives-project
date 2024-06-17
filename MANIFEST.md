@@ -33,7 +33,6 @@ There are a number of scripts:
 - `script-update-json-from-yaml.js`: reads the .yaml files and updates summary.json and the other .json files accordingly with any new information that is provided. Note that it overwrites (but not erases) existing data.
 - `script-deduce.js`: tries to make as many new deductions as possible for the examples (based on the summary.json file), and updates summary.json and the relevant .json files accoringly.
 - `script-clear-json.js`: clears all generated .json files.
-- `script-generate-questions.js`: generates questions (of the form 'Does there exist a (type) satisfying these conditions?') for which there does not yet exist an example, and which cannot be disproven using the theorems.
 
 
 ## Client
@@ -59,3 +58,4 @@ There are a number of scripts:
 - Possible adjectives:
   - injective
   - universally homeomorphism
+  - finite fibers

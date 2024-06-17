@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"locally of finite presentation"}
+{"type":"morphism adjective","name":"locally of finite presentation","description":"A morphism $f : X \\to Y$ of schemes is of finite presentation at $x \\in X$ if there exists affine opens $U = \\Spec A \\subset X$ containing $x$ and $V = \\Spec B \\subset Y$ with $f(U) \\subset V$ such that $A$ is a finitely presented $B$-algebra via the induced map $B \\to A$. The morphism $f$ is locally of finite presentation if it is of finite presentation at each $x \\in X$."}

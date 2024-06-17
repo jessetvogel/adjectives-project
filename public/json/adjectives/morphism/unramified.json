@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"unramified"}
+{"type":"morphism adjective","name":"unramified","description":"A morphism $f : X \\to Y$ of schemes is unramified if it is locally of finite type, the residue field $\\kappa(x)$ is a separable algebraic extension of $\\kappa(f(x))$ for all $x \\in X$, and $f^\\#(\\mathfrak{m}_{f(x)})\\mathcal{O}_{X, x} = \\mathfrak{m}_x$ for all $x \\in X$."}

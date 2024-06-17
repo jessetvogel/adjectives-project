@@ -63,11 +63,11 @@ export function pageExample(summary: Book, options: any): HTMLElement {
         });
         for (const x of adjectiveValuePairs) {
             const adjId = x.id;
-            const value = x.value;
+            const value = (x.value == true) ? 'true' : (x.value == false ? 'false' : 'unknown');
             const adjective = summary.adjectives[type][adjId];
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
-                create('td', {}, (value == true) ? 'true' : (value == false ? 'false' : 'unknown')),
+                create('td', { class: value }, value),
                 create('td', {}, formatProof(type, id, data?.proofs?.[adjId]) ?? '')
             ]));
         }

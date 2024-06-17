@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"regular"}
+{"type":"scheme adjective","name":"regular","description":"A scheme $X$ is regular if it is locally Noetherian and all of its stalks are regular local rings."}

@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"locally Noetherian"}
+{"type":"scheme adjective","name":"locally Noetherian","description":"A scheme $X$ is locally Noetherian if it can be covered by open affine subsets $\\Spec A_i$, where each $A_i$ is a Noetherian ring."}

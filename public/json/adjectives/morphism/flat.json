@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"flat","description":"A morphism of schemes is flat if [...]."}
+{"type":"morphism adjective","name":"flat","description":"A morphism $f : X \\to Y$ of schemes is flat if for every $x \\in X$, the local ring $\\mathcal{O}_{X, x}$ is flat as an $\\mathcal{O}_{Y, f(x)}$-module."}

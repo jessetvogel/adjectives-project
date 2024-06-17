@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"Noetherian"}
+{"type":"scheme adjective","name":"Noetherian","description":"A scheme is Noetherian if it is locally Noetherian and quasi-compact."}

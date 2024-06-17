@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"smooth"}
+{"type":"morphism adjective","name":"smooth","description":"A morphism $f : X \\to Y$ of schemes is smooth if it is locally of finite presentation, flat and all the fibers $X_y$ are geometrically regular over the residue field $\\kappa(y)$."}

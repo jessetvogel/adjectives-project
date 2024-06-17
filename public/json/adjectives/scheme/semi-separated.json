@@ -1,1 +1,1 @@
-{"type":"scheme adjective","name":"semi-separated"}
+{"type":"scheme adjective","name":"semi-separated","description":"A scheme $X$ is semi-separated if the morphism $X \\to \\Spec \\ZZ$ is semi-separated, that is, if the diagonal $\\Delta_X : X \\to X \\times X$ is affine."}

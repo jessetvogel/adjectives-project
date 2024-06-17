@@ -101,6 +101,18 @@ table {
     tr:nth-child(2n) {
         background-color: var(--color-background);
     }
+
+    td.true {
+        color: var(--color-green);
+    }
+
+    td.false {
+        color: var(--color-red);
+    }
+
+    td.unknown {
+        color: var(--color-gray);
+    }
 }
 
 select {
@@ -128,4 +140,17 @@ p {
 
 .hidden {
     display: none;
+}
+
+.row-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 16px 0px;
+
+    button {
+        min-width: 128px;
+    }
 }

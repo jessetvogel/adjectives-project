@@ -160,19 +160,6 @@
         }
     }
 
-    .row-buttons {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        margin: 16px 0px;
-
-        button {
-            width: 128px;
-        }
-    }
-
     .results {
         padding: 0px 4px;
 
@@ -185,10 +172,6 @@
 
         p {
             text-align: center;
-        }
-
-        table {
-            margin-bottom: 16px;
         }
     }
 }
