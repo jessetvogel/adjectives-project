@@ -1,1 +1,1 @@
-{"type":"scheme","name":"$\\PP^1_\\QQ$","adjectives":{"affine":false},"description":"The projective line over the rational numbers."}
+{"type":"scheme","name":"$\\PP^1_\\QQ$","adjectives":{"affine":false,"locally-noetherian":true},"description":"The projective line over the rational numbers.","proofs":{"locally-noetherian":{"type":"morphism","theorem":"src-lnt-of-lft-trg-lnt","subject":"PP-1-QQ-to-blowup-AA-2-QQ"}}}
