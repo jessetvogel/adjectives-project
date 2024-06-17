@@ -1,6 +1,62 @@
 import { Assistant, ContradictionError, Matcher } from '../shared/assistant.js';
 import { formatContext } from './formatter.js';
 import { create } from './util.js';
+const TYPES_AND_ADJECTIVES = {
+    'scheme': [
+        'affine',
+        // 'cohen-macaulay',
+        // 'connected',
+        // 'excellent',
+        'finite-dimensional',
+        'integral',
+        'irreducible',
+        // 'jacobson',
+        'locally-noetherian',
+        'noetherian',
+        'normal',
+        'quasi-affine',
+        'quasi-compact',
+        'quasi-separated',
+        'reduced',
+        'regular',
+        'semi-separated',
+        'separated'
+    ],
+    'morphism': [
+        'affine',
+        'closed-immersion',
+        'closed',
+        'etale',
+        'faithfully-flat',
+        'finite',
+        'flat',
+        'formally-etale',
+        'formally-smooth',
+        'formally-unramified',
+        'homeomorphism',
+        'immersion',
+        'locally-of-finite-presentation',
+        'locally-of-finite-type',
+        'of-finite-presentation',
+        'of-finite-type',
+        'open-immersion',
+        'open',
+        'proper',
+        'quasi-affine',
+        'quasi-compact',
+        'quasi-finite',
+        'quasi-separated',
+        'regular',
+        'semi-separated',
+        'separated',
+        'smooth',
+        'surjective',
+        // 'syntomic',
+        'universally-closed',
+        'universally-open',
+        'unramified'
+    ]
+};
 function combinations(array, size) {
     const result = [];
     function p(tuple, i) {
@@ -26,8 +82,8 @@ function product(array, size) {
     }
     return results;
 }
-function questions(summary, type) {
-    const adjectives = Object.keys(summary.adjectives[type]);
+function questions(summary, type, adjectives) {
+    // const adjectives = Object.keys(summary.adjectives[type]);
     const maxAdjectives = 2;
     const assistant = new Assistant(summary);
     const questions = []; // contains the original questions
@@ -87,10 +143,10 @@ export function pageQuestions(summary) {
     const table = create('table', { style: 'margin-bottom: 4px;' });
     table.append(create('tr', {}, create('th', {}, 'Questions')));
     const qs = [];
-    qs.push(...questions(summary, 'scheme'));
-    qs.push(...questions(summary, 'morphism'));
+    for (const type in TYPES_AND_ADJECTIVES)
+        qs.push(...questions(summary, type, TYPES_AND_ADJECTIVES[type]));
     let i = 0;
-    const maxQuestions = 20;
+    const maxQuestions = 25;
     for (const question of qs) {
         if (++i > maxQuestions)
             break;

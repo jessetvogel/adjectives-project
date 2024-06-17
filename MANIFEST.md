@@ -54,10 +54,8 @@ There are a number of scripts:
 
 - Think about the ordering of the adjectives on an example page (alphabetical / prove order / human vs machine)
 - Create better contribute page
-- Copy data from old project
 - Check for redundant theorems
 - On theorem page, show where theorems are applied?
 - Possible adjectives:
   - injective
   - universally homeomorphism
-  - 

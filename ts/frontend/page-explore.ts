@@ -56,7 +56,11 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
     const results = assistant.search(context);
 
     if (results.length == 0) {
-        resultsElem.append(create('p', {}, 'No results found.'));
+        resultsElem.append(create('p', {}, [
+            'No examples found of ',
+            formatContext(summary, context),
+            '.'
+        ]));
     }
     else {
         // The following are examples of {{ a ${type} which is [...], and whose source is [...], and whose target is [...] }}.
