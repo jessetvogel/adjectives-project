@@ -4,4 +4,10 @@
         text-align: center;
         color: var(--color-gray);
     }
+
+    table.adjectives {
+        th:first-child {
+            min-width: 20%;
+        }
+    }
 }

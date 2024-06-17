@@ -163,6 +163,9 @@ p {
   text-align: center;
   color: var(--color-gray);
 }
+.page-example table.adjectives th:first-child {
+  min-width: 20%;
+}
 
 .page-explore {
   padding: 0px !important;

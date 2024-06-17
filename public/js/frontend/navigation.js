@@ -38,7 +38,11 @@ function navigateCallback(state) {
 function anchorWrapper(a) {
     onClick(a, function (event) {
         event.preventDefault();
-        navigate(this.href, {});
+        const href = this.href;
+        if (event.metaKey)
+            window.open(href, '_blank');
+        else
+            navigate(href, {});
     });
     return a;
 }

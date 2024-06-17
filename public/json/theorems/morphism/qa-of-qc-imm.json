@@ -1,0 +1,1 @@
+{"type":"theorem","name":"quasi-compact immersions are quasi-affine","given":"morphism f","if":["f immersion","f quasi-compact"],"then":"f quasi-affine","description":"https://stacks.math.columbia.edu/tag/02JR"}

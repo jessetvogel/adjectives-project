@@ -43,7 +43,12 @@ function navigateCallback(state: any): void {
 
 function anchorWrapper(a: HTMLAnchorElement): HTMLAnchorElement {
     onClick(a, function (event: MouseEvent) {
-        event.preventDefault(); navigate((this as HTMLAnchorElement).href, {});
+        event.preventDefault();
+        const href = (this as HTMLAnchorElement).href;
+        if (event.metaKey)
+            window.open(href, '_blank');
+        else
+            navigate(href, {});
     });
     return a;
 }

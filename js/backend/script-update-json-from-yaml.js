@@ -32,7 +32,7 @@ function main() {
                 book.add(id, data);
             }
             catch (err) {
-                Log.error(`Failed to load '${file}': ${err}`);
+                throw new Error(`Failed to load '${file}': ${err.stack}`);
             }
         }
         book.verify();
