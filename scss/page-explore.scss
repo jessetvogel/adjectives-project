@@ -161,8 +161,6 @@
     }
 
     .results {
-        padding: 0px 4px;
-
         .result {
             display: flex;
             flex-direction: row;
@@ -172,6 +170,11 @@
 
         p {
             text-align: center;
+        }
+
+        .table-scroll-wrapper {
+            padding: 0px 4px;
+            overflow-x: scroll;
         }
     }
 }

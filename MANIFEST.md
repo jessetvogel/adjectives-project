@@ -51,6 +51,7 @@ There are a number of scripts:
 
 ## TODO
 
+- Better data page, and search functionality?
 - Think about the ordering of the adjectives on an example page (alphabetical / prove order / human vs machine)
 - Create better contribute page
 - Check for redundant theorems

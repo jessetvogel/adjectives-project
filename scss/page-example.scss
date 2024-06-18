@@ -9,5 +9,9 @@
         th:first-child {
             min-width: 20%;
         }
+
+        th:nth-child(2) {
+            min-width: 10%;
+        }
     }
 }

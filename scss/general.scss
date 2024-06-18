@@ -59,8 +59,8 @@ button {
     font-size: 1rem;
     text-align: center;
     transition:
-        background-color 0.2s,
-        color 0.2s;
+        background-color 0.2s;
+        // color 0.2s;
     cursor: pointer;
 
     &:hover {
@@ -152,5 +152,30 @@ p {
 
     button {
         min-width: 128px;
+    }
+}
+
+.loading {
+    width: 64px;
+    height: 64px;
+    border-radius: 32px;
+    opacity: 0;
+    background-color: black;
+    animation: loading 0.8s infinite;
+    animation-delay: 0.2s;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+@keyframes loading {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
     }
 }

@@ -5,6 +5,143 @@ import { katexTypeset } from './katex-typeset.js';
 import { formatContext, formatProof } from './formatter.js';
 import navigation from './navigation.js';
 
+export function pageExplore(summary: Book, options: any): HTMLElement {
+    const pageElem = create('div', { class: 'page page-explore' });
+
+    // "I am looking for a <select>"
+    const defaultOption = 'scheme';
+    const selectElem = create('select', {}, Object.keys(summary.types).map(id => {
+        const name = summary.types[id].name;
+        const attr = (id == defaultOption) ? { value: id, selected: true } : { value: id };
+        return create('option', attr, name);
+    })) as HTMLSelectElement;
+    const aHelp = navigation.anchorPage('help', 'Help') as HTMLAnchorElement;
+    aHelp.target = '_blank';
+    addClass(aHelp, 'help');
+    pageElem.append(create('div', { class: 'type-selection' }, [
+        create('span', {}, 'I am looking for a '),
+        selectElem,
+        aHelp // .outerHTML // removes onclick
+    ]));
+
+    // Column of objects and column of adjectives
+    const objectsElem = create('div', { class: 'column-objects' });
+    const adjectivesElem = create('div', { class: 'column-adjectives' });
+    pageElem.append(create('div', { class: 'context' }, [objectsElem, adjectivesElem,]));
+
+    function initializeWithContext(context: Context) {
+        clear(objectsElem);
+        clear(adjectivesElem);
+        for (const type in context) { // TODO: fix order (do not rely on browser specifications..)
+            for (const id in context[type]) {
+                const item = create('div', {}, [
+                    create('span', { class: 'type' }, type), // NOTE: has display:hidden
+                    create('span', { class: 'id' }, id), // NOTE: has display:hidden
+                    create('span', { class: 'name' }, context[type][id].name),
+                    create('span', { class: 'adjectives' })
+                ]);
+                onClick(item, function () {
+                    // Update `.selected` class
+                    objectsElem.querySelectorAll('.selected').forEach(elem => removeClass(elem as HTMLElement, 'selected'))
+                    addClass(item, 'selected');
+                    // Update overview
+                    updateWithContext(context);
+                });
+                objectsElem.append(item);
+            }
+        }
+        (objectsElem.firstChild as HTMLElement).click(); // select the first object
+
+        // Search and Deduce onclick handlers
+        searchButtonElem.onclick = function () { updateHistory(context, 'search'); search(summary, context, resultsElem); };
+        deduceButtonElem.onclick = function () { updateHistory(context, 'deduce'); deduce(summary, context, resultsElem); };
+    }
+
+    function updateWithContext(context: Context) {
+        clear(adjectivesElem);
+
+        // Update adjective list after object name
+        for (const div of objectsElem.childNodes as NodeListOf<HTMLElement>) {
+            const type = div.querySelector('.type')?.textContent ?? '';
+            const id = div.querySelector('.id')?.textContent ?? '';
+            const object = context[type][id];
+            setHTML(div.querySelector('.adjectives') as HTMLElement,
+                Object.keys(object.adjectives)
+                    .sort((a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+                    .map(adj => create('span', { class: object.adjectives[adj] ? 'yes' : 'no' }, summary.adjectives[type][adj].name))
+                    .map(elem => elem.outerHTML)
+                    .join(', ')
+            );
+        }
+
+        // Update adjectives column
+        const selectedElem = objectsElem.querySelector('.selected');
+        if (selectedElem) {
+            const type = selectedElem.querySelector('.type')?.textContent ?? '';
+            const id = selectedElem.querySelector('.id')?.textContent ?? '';
+            const adjs = Object.keys(summary.adjectives[type]).sort((a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' })); // alphabetically
+            for (const adj of adjs) {
+                const itemClass = (context[type][id].adjectives[adj] == true) ? 'yes' : ((context[type][id].adjectives[adj] == false) ? 'no' : '');
+                const itemElem = create('div', { class: itemClass }, create('label', {}, summary.adjectives[type][adj].name));
+                onClick(itemElem, function () {
+                    if (hasClass(itemElem, 'yes')) { // yes -> no
+                        removeClass(itemElem, 'yes');
+                        addClass(itemElem, 'no');
+                        context[type][id].adjectives[adj] = false;
+                    }
+                    else if (hasClass(itemElem, 'no')) { // no -> _
+                        removeClass(itemElem, 'no');
+                        delete context[type][id].adjectives[adj];
+                    } else { // _ -> yes
+                        addClass(itemElem, 'yes');
+                        context[type][id].adjectives[adj] = true;
+                    }
+                    updateWithContext(context);
+                });
+                adjectivesElem.append(itemElem);
+            }
+        }
+        updateHistory(context);
+    }
+
+    // Append row of buttons and help link: " [Search] [Deduce] _Help_ "
+    const searchButtonElem = create('button', {}, 'Search');
+    const deduceButtonElem = create('button', {}, 'Deduce');
+    pageElem.append(create('div', { class: 'row-buttons' }, [
+        searchButtonElem,
+        deduceButtonElem
+    ]));
+
+    // Append div for results
+    const resultsElem = create('div', { class: 'results' });
+    pageElem.append(resultsElem);
+
+    // If select value changes, re-initialize the context
+    onChange(selectElem, function () {
+        const type = selectElem.value;
+        const context = summary.createContextFromType(type, type) // simply use id equal to type
+        initializeWithContext(context);
+
+    });
+    selectElem.dispatchEvent(new Event('change')); // trigger initalization
+
+    if ('q' in options) {
+        const x = deserializeContext(summary, options.q);
+        if (x != null) {
+            const [type, context] = x;
+            selectElem.value = type;
+            initializeWithContext(context);
+        }
+    }
+
+    if ('action' in options) {
+        if (options.action == 'search') searchButtonElem.click();
+        if (options.action == 'deduce') deduceButtonElem.click();
+    }
+
+    return pageElem;
+}
+
 function serializeContext(context: Context): string {
     const data: any = {};
     /* 
@@ -87,7 +224,8 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
             }
             tableElem.append(trElem);
         }
-        resultsElem.append(tableElem);
+        const divTableWrapper = create('div', { class: 'table-scroll-wrapper' }, tableElem); // wrap table so that we can scroll horizontally if needed
+        resultsElem.append(divTableWrapper);
 
         katexTypeset(resultsElem);
     }
@@ -147,135 +285,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
     resultsElem.scrollIntoView({ behavior: 'smooth' });
 }
 
-export function pageExplore(summary: Book, options: any): HTMLElement {
-    const pageElem = create('div', { class: 'page page-explore' });
-
-    // "I am looking for a <select>"
-    const defaultOption = 'scheme';
-    const selectElem = create('select', {}, Object.keys(summary.types).map(id => {
-        const name = summary.types[id].name;
-        const attr = (id == defaultOption) ? { value: id, selected: true } : { value: id };
-        return create('option', attr, name);
-    })) as HTMLSelectElement;
-    const aHelp = navigation.anchorPage('help', 'Help') as HTMLAnchorElement;
-    aHelp.target = '_blank';
-    addClass(aHelp, 'help');
-    pageElem.append(create('div', { class: 'type-selection' }, [
-        create('span', {}, 'I am looking for a '),
-        selectElem,
-        aHelp // .outerHTML // removes onclick
-    ]));
-
-    // Column of objects and column of adjectives
-    const objectsElem = create('div', { class: 'column-objects' });
-    const adjectivesElem = create('div', { class: 'column-adjectives' });
-    pageElem.append(create('div', { class: 'context' }, [objectsElem, adjectivesElem,]));
-
-    function initializeWithContext(context: Context) {
-        clear(objectsElem);
-        clear(adjectivesElem);
-        for (const type in context) { // TODO: fix order (do not rely on browser specifications..)
-            for (const id in context[type]) {
-                const item = create('div', {}, [
-                    create('span', { class: 'type' }, type), // NOTE: has display:hidden
-                    create('span', { class: 'id' }, id), // NOTE: has display:hidden
-                    create('span', { class: 'name' }, context[type][id].name),
-                    create('span', { class: 'adjectives' })
-                ]);
-                onClick(item, function () {
-                    // Update `.selected` class
-                    objectsElem.querySelectorAll('.selected').forEach(elem => removeClass(elem as HTMLElement, 'selected'))
-                    addClass(item, 'selected');
-                    // Update overview
-                    updateWithContext(context);
-                });
-                objectsElem.append(item);
-            }
-        }
-        (objectsElem.firstChild as HTMLElement).click(); // select the first object
-
-        // Search and Deduce onclick handlers
-        searchButtonElem.onclick = function () { search(summary, context, resultsElem); };
-        deduceButtonElem.onclick = function () { deduce(summary, context, resultsElem); };
-    }
-
-    function updateWithContext(context: Context) {
-        clear(adjectivesElem);
-
-        // Update adjective list after object name
-        for (const div of objectsElem.childNodes as NodeListOf<HTMLElement>) {
-            const type = div.querySelector('.type')?.textContent ?? '';
-            const id = div.querySelector('.id')?.textContent ?? '';
-            const object = context[type][id];
-            setHTML(div.querySelector('.adjectives') as HTMLElement,
-                Object.keys(object.adjectives)
-                    .sort((a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
-                    .map(adj => create('span', { class: object.adjectives[adj] ? 'yes' : 'no' }, summary.adjectives[type][adj].name))
-                    .map(elem => elem.outerHTML)
-                    .join(', ')
-            );
-        }
-
-        // Update adjectives column
-        const selectedElem = objectsElem.querySelector('.selected');
-        if (selectedElem) {
-            const type = selectedElem.querySelector('.type')?.textContent ?? '';
-            const id = selectedElem.querySelector('.id')?.textContent ?? '';
-            const adjs = Object.keys(summary.adjectives[type]).sort((a: string, b: string) => a.localeCompare(b, 'en', { sensitivity: 'base' })); // alphabetically
-            for (const adj of adjs) {
-                const itemClass = (context[type][id].adjectives[adj] == true) ? 'yes' : ((context[type][id].adjectives[adj] == false) ? 'no' : '');
-                const itemElem = create('div', { class: itemClass }, create('label', {}, summary.adjectives[type][adj].name));
-                onClick(itemElem, function () {
-                    if (hasClass(itemElem, 'yes')) { // yes -> no
-                        removeClass(itemElem, 'yes');
-                        addClass(itemElem, 'no');
-                        context[type][id].adjectives[adj] = false;
-                    }
-                    else if (hasClass(itemElem, 'no')) { // no -> _
-                        removeClass(itemElem, 'no');
-                        delete context[type][id].adjectives[adj];
-                    } else { // _ -> yes
-                        addClass(itemElem, 'yes');
-                        context[type][id].adjectives[adj] = true;
-                    }
-                    updateWithContext(context);
-                });
-                adjectivesElem.append(itemElem);
-            }
-        }
-
-        window.history.replaceState({}, '', `?page=explore&q=${serializeContext(context)}`);
-    }
-
-    // Append row of buttons and help link: " [Search] [Deduce] _Help_ "
-    const searchButtonElem = create('button', {}, 'Search');
-    const deduceButtonElem = create('button', {}, 'Deduce');
-    pageElem.append(create('div', { class: 'row-buttons' }, [
-        searchButtonElem,
-        deduceButtonElem
-    ]));
-
-    // Append div for results
-    const resultsElem = create('div', { class: 'results' });
-    pageElem.append(resultsElem);
-
-    // If select value changes, re-initialize the context
-    onChange(selectElem, function () {
-        const type = selectElem.value;
-        const context = summary.createContextFromType(type, type) // simply use id equal to type
-        initializeWithContext(context);
-
-    });
-    selectElem.dispatchEvent(new Event('change')); // trigger initalization
-
-    if ('q' in options) {
-        const x = deserializeContext(summary, options.q);
-        if (x != null) {
-            const [type, context] = x;
-            selectElem.value = type;
-            initializeWithContext(context);
-        }
-    }
-
-    return pageElem;
+function updateHistory(context: Context, action: 'search' | 'deduce' | null = null): void {
+    const url = `?page=explore&q=${serializeContext(context)}${action != null ? '&action=' + action : ''}`;
+    window.history.replaceState({}, '', url);
 }
