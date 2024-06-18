@@ -13,7 +13,7 @@
   --color-background: #fcfcfc;
   --color-button: #dddddd;
   --color-button-hover: #cccccc;
-  --color-nav-background: #b5d4da;
+  --color-nav-background: #1a7d8e7f;
   --color-text: var(--color-black);
   --color-text-inverted: var(--color-white);
   --color-focus-background: #1a7d8e66;
@@ -93,7 +93,7 @@ button {
   font-family: var(--font-main);
   font-size: 1rem;
   text-align: center;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.2s;
   cursor: pointer;
 }
 button:hover {
@@ -179,6 +179,30 @@ p {
   min-width: 128px;
 }
 
+.loading {
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  opacity: 0;
+  background-color: black;
+  animation: loading 0.8s infinite;
+  animation-delay: 0.2s;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+@keyframes loading {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
 .page-example .arguments {
   display: block;
   text-align: center;
@@ -186,6 +210,9 @@ p {
 }
 .page-example table.adjectives th:first-child {
   min-width: 20%;
+}
+.page-example table.adjectives th:nth-child(2) {
+  min-width: 10%;
 }
 
 .page-explore {
@@ -317,9 +344,6 @@ p {
 .page-explore .context .column-objects > div .adjectives:not(:empty)::before {
   content: "(";
 }
-.page-explore .results {
-  padding: 0px 4px;
-}
 .page-explore .results .result {
   display: flex;
   flex-direction: row;
@@ -328,6 +352,10 @@ p {
 }
 .page-explore .results p {
   text-align: center;
+}
+.page-explore .results .table-scroll-wrapper {
+  padding: 0px 4px;
+  overflow-x: scroll;
 }
 
 body::after {
@@ -370,6 +398,16 @@ body::after {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.5;
+}
+.page-data .progress {
+  float: right;
+  color: var(--color-gray);
+}
+.page-data .progress::before {
+  content: "(";
+}
+.page-data .progress::after {
+  content: ")";
 }
 
 body {
@@ -420,7 +458,6 @@ nav button.selected {
   background-size: 60%;
   background-repeat: no-repeat;
   filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.12));
-  transition: filter 0.2;
 }
 #button-home.selected {
   filter: drop-shadow(0px 0px 5px white);
