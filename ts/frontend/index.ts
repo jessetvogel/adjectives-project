@@ -7,12 +7,12 @@ let summary: Book;
 async function main() {
     try {
         // Load summary
-        summary = new Book(await (await fetch('json/summary.json')).json()); // load summary
+        summary = new Book(await (await fetch('json/summary.json', { cache: 'reload' })).json()); // load summary
         summary.verify();
     }
     catch (err) {
         console.log(err);
-        
+
         const content = $('content') as HTMLElement;
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
             content.append(create('div', { class: 'page page-home' }, [

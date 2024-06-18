@@ -5,7 +5,7 @@ let summary;
 async function main() {
     try {
         // Load summary
-        summary = new Book(await (await fetch('json/summary.json')).json()); // load summary
+        summary = new Book(await (await fetch('json/summary.json', { cache: 'reload' })).json()); // load summary
         summary.verify();
     }
     catch (err) {
