@@ -138,6 +138,15 @@ function questions(summary: Book, type: string, adjectives: string[]): Context[]
     return questions;
 }
 
+function shuffle<T>(array: T[]): void {
+    let index = array.length;
+    while (index != 0) {
+        const i = Math.floor(Math.random() * index);
+        index--;
+        [array[index], array[i]] = [array[i], array[index]];
+    }
+}
+
 export function pageQuestions(summary: Book): HTMLElement {
     const page = create('div', { class: 'page page-questions' });
 
@@ -153,6 +162,7 @@ export function pageQuestions(summary: Book): HTMLElement {
     const qs: Context[] = [];
     for (const type in TYPES_AND_ADJECTIVES)
         qs.push(...questions(summary, type, TYPES_AND_ADJECTIVES[type]));
+    shuffle(qs);
     let i = 0;
     const maxQuestions = 25;
     for (const question of qs) {

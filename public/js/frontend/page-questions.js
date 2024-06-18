@@ -133,6 +133,14 @@ function questions(summary, type, adjectives) {
     }
     return questions;
 }
+function shuffle(array) {
+    let index = array.length;
+    while (index != 0) {
+        const i = Math.floor(Math.random() * index);
+        index--;
+        [array[index], array[i]] = [array[i], array[index]];
+    }
+}
 export function pageQuestions(summary) {
     const page = create('div', { class: 'page page-questions' });
     // title
@@ -145,6 +153,7 @@ export function pageQuestions(summary) {
     const qs = [];
     for (const type in TYPES_AND_ADJECTIVES)
         qs.push(...questions(summary, type, TYPES_AND_ADJECTIVES[type]));
+    shuffle(qs);
     let i = 0;
     const maxQuestions = 25;
     for (const question of qs) {

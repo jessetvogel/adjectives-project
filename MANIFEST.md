@@ -55,7 +55,12 @@ There are a number of scripts:
 - Create better contribute page
 - Check for redundant theorems
 - On theorem page, show where theorems are applied?
+- Find proofs for theorems
 - Possible adjectives:
   - injective
   - universally homeomorphism
   - finite fibers
+- Possible theorems:
+  - target finite-dimensional + (some finite type condition on morphism) => source finite-dimensional
+  - any relation between finite-dimensionality and noetherianness?
+  - 
