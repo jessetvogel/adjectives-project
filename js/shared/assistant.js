@@ -156,7 +156,8 @@ export class Assistant {
                 for (const adjective in theorem.conclusions[path]) {
                     const value = theorem.conclusions[path][adjective];
                     if (adjective in object.adjectives && object.adjectives[adjective] != value)
-                        throw new ContradictionError(`in applying theorem '${id}' to object '${subject.id}' of type '${type}'`);
+                        throw new ContradictionError(`in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
+                    // console.log(`🚨 Contradiction: in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
                     if (!(adjective in object.adjectives)) // only push the conclusions that are new
                         conclusions.push({ object, adjective, value });
                 }

@@ -1,0 +1,1 @@
+{"type":"theorem","name":"morphisms with quasi-separated source are quasi-separated","given":"morphism f","if":"f.source quasi-separated","then":"f quasi-separated","description":"https://stacks.math.columbia.edu/tag/01KV"}
