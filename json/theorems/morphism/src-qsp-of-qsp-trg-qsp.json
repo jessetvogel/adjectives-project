@@ -1,0 +1,1 @@
+{"type":"theorem","name":"quasi-separated morphisms with quasi-separated target have quasi-separated source","given":"morphism f","if":["f quasi-separated","f.target quasi-separated"],"then":"f.source quasi-separated"}
