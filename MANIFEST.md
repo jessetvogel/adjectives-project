@@ -61,6 +61,7 @@ There are a number of scripts:
   - injective
   - universally homeomorphism
   - finite fibers
+  - all the projectivity adjectives
 - Possible theorems:
   - target finite-dimensional + (some finite type condition on morphism) => source finite-dimensional
   - any relation between finite-dimensionality and noetherianness?

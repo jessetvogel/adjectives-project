@@ -1,1 +1,1 @@
-{"type":"theorem","name":"formally smooth morphisms locally of finite presentation are smooth","given":"morphism f","if":["f formally-smooth","f locally-of-finite-presentation"],"then":"f smooth","converse":true}
+{"type":"theorem","name":"smooth is formally smooth and locally of finite presentation","given":"morphism f","if":["f formally-smooth","f locally-of-finite-presentation"],"then":"f smooth","converse":true}
