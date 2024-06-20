@@ -55,6 +55,7 @@ There are a number of scripts:
 - Think about the ordering of the adjectives on an example page (alphabetical / prove order / human vs machine)
 - Create better contribute page
 - Check for redundant theorems
+- Check for redundant data (adjectives for examples)
 - On theorem page, show where theorems are applied?
 - Find proofs for theorems
 - Possible adjectives:
