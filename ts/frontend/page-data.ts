@@ -22,7 +22,7 @@ export function pageData(summary: Book, options: any): HTMLElement {
     page.append(loading);
 
     setTimeout(() => {
-        for (const sort of ['examples', 'adjectives', 'theorems']) {
+        for (const sort of ['examples', 'adjectives', 'theorems'] as ('examples' | 'adjectives' | 'theorems')[]) {
             const div = create('div');
             div.append(create('span', { class: 'title', style: 'text-align: left;' }, sort.charAt(0).toUpperCase() + sort.slice(1)));
             const ul = create('ul');

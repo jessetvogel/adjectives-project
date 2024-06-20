@@ -9,11 +9,11 @@ export function pageContribute(): HTMLElement {
     page.append(create('p', {}, [
         'The data for this website is managed in ',
         create('a', { href: 'https://github.com/jessetvogel/adjectives-project-data', target: '_blank' }, 'this repository'),
-        '. Please create a pull request.'
+        '. To contribute, please create a pull request.'
     ]));
 
     page.append(create('p', {}, [
-        'For inspiration, check out the ',
+        'For inspiration, check out the list of ',
         navigation.anchorPage('questions', 'open questions'),
         '.'
     ]));
