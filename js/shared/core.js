@@ -170,7 +170,12 @@ export class Book {
                 else {
                     if (!('type' in proof) || !('theorem' in proof) || !('subject' in proof))
                         throw new Error(`Example with id '${id}' for type '${data.type}' has invalid proof for adjective '${key}'`);
-                    proofs[key] = { type: proof.type, theorem: proof.theorem, subject: proof.subject };
+                    const pf = { type: proof.type, theorem: proof.theorem, subject: proof.subject };
+                    if (proof.converse)
+                        pf.converse = proof.converse;
+                    if (proof.negated)
+                        pf.negated = proof.negated;
+                    proofs[key] = pf;
                 }
             }
         }
@@ -288,9 +293,13 @@ export class Book {
                     throw new Error(`Theorem '${id}' refers to unknown type '${type}'`);
                 for (const con of [theorem.conditions, theorem.conclusions]) { // verify theorem conditions & conclusions
                     for (const path in con) {
-                        const pathType = this.resolvePathType(theorem.type, path);
-                        if (pathType == null)
-                            throw new Error(`Theorem '${id}' refers to invalid path '${path}' in its conditions`);
+                        let pathType;
+                        try {
+                            pathType = this.resolvePathType(theorem.type, path);
+                        }
+                        catch (err) {
+                            throw new Error(`In theorem '${id}': ${err.stack}`);
+                        }
                         for (const key in con[path]) {
                             if (!(key in this.adjectives[pathType]))
                                 throw new Error(`Theorem '${id}' refers to unknown adjective '${key}' for '${theorem.subject}${path}' of type '${pathType}'`);
@@ -329,9 +338,9 @@ export class Book {
         const pathParts = path.split('.');
         for (let i = 0; i < pathParts.length; ++i) {
             if (i == 0 && pathParts[0] != '')
-                return null;
+                throw new Error(`Could not resolve path '${path}' starting from type '${type}'`);
             if (i > 0 && !(pathParts[i] in this.types[type].parameters))
-                return null;
+                throw new Error(`Could not resolve path '${path}' starting from type '${type}'`);
             if (i > 0)
                 type = this.types[type].parameters[pathParts[i]];
         }
@@ -341,9 +350,9 @@ export class Book {
         const pathParts = path.split('.');
         for (let i = 0; i < pathParts.length; ++i) {
             if (i == 0 && pathParts[0] != '')
-                return null;
+                throw new Error(`Could not resolve path '${path}' on object '${object.id}' of type '${object.type}'`);
             if (i > 0 && !(pathParts[i] in this.types[object.type].parameters))
-                return null;
+                throw new Error(`Could not resolve path '${path}' on object '${object.id}' of type '${object.type}'`);
             if (i > 0 && !(pathParts[i] in object.args))
                 throw new Error(`Mysteriously missing argument '${pathParts[i]}' in '${object.id}' of type '${object.type}'`);
             if (i > 0) {
@@ -399,6 +408,48 @@ export class Book {
         }
         addType(type, id, this.types[type].name);
         return context;
+    }
+    traceProof(context, object, adjective) {
+        var _a;
+        const proof = (_a = object.proofs[adjective]) !== null && _a !== void 0 ? _a : null;
+        if (proof == null || typeof proof == 'string')
+            return [];
+        const steps = [];
+        const theorem = this.theorems[proof.type][proof.theorem];
+        const subject = context[proof.type][proof.subject];
+        // swap conditions and theorems if the theorem was applied in converse
+        const theoremConditions = (proof.converse ? theorem.conclusions : theorem.conditions);
+        const theoremConclusions = (proof.converse ? theorem.conditions : theorem.conclusions);
+        // case 1: the theorem was applied in the forward direction
+        const negated = proof.negated;
+        if (negated === undefined) {
+            for (const path in theoremConditions) {
+                const object = this.resolvePath(context, subject, path);
+                for (const adjective in theoremConditions[path])
+                    steps.push(...this.traceProof(context, object, adjective));
+            }
+        }
+        // case 2: the theorem was applied in the backward direction
+        else {
+            // trace proof on the conclusion that was used to apply the negation of the theorem
+            steps.push(...this.traceProof(context, this.resolvePath(context, subject, negated.path), negated.adjective));
+            // trace the proof on all conditions other than the one we are tracing
+            for (const path in theoremConditions) {
+                const obj = this.resolvePath(context, subject, path);
+                for (const adj in theoremConditions[path]) {
+                    if (obj != object || adj != adjective)
+                        steps.push(...this.traceProof(context, obj, adj));
+                }
+            }
+        }
+        // finally, add the last (current) step in the proof
+        steps.push(proof);
+        // remove duplicate steps
+        const stepsUnique = [];
+        for (const step of steps)
+            if (!stepsUnique.some(s => s.type == step.type && s.theorem == step.theorem && s.subject == step.subject))
+                stepsUnique.push(step);
+        return stepsUnique;
     }
 }
 ;
