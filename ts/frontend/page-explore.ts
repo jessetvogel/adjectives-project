@@ -176,7 +176,6 @@ function deserializeContext(summary: Book, str: string): [string, Context] | nul
             if (parts.length != 2) throw new Error(`Invalid key '${key}'`);
             const [path, adj] = parts;
             const object = summary.resolvePath(context, subject, path);
-            if (object == null) throw new Error(`Could not resolve '${path}' on type '${type}'`);
             if (typeof data[key] != 'boolean') throw new Error(`Invalid value for '${path}'`);
             object.adjectives[adj] = data[key];
         }

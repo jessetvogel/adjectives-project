@@ -64,8 +64,6 @@ export function formatConditions(summary: Book, theorem: Theorem, conditions: Th
     for (const path in conditions) {
         for (const adj in conditions[path]) {
             const conditionObjectType = summary.resolvePathType(theorem.type, path);
-            if (conditionObjectType == null)
-                throw new Error(`Could not resolve path '${path}' starting from type '${theorem.type}'`);
             const value = conditions[path][adj];
 
             if (numberOfConditions > 1 && conditionsCount > 0 && conditionsCount < numberOfConditions - 1)

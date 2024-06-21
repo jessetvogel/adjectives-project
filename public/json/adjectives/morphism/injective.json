@@ -1,0 +1,1 @@
+{"type":"morphism adjective","name":"injective","description":"A morphism $f : X \\to Y$ of schemes is injective if the underlying map of topological spaces is injective, that is, if $f(x_1) = f(x_2)$ for some $x_1, x_2 \\in X$, then $x_1 = x_2$."}

@@ -1,20 +1,20 @@
-import * as core from './core.js';
+import { Book, Context, Example, Theorem, Proof } from './core.js';
 
 export class Matcher {
 
-    book: core.Book;
-    sourceContext: core.Context;
-    targetContext: core.Context;
-    map: core.Context;
+    book: Book;
+    sourceContext: Context;
+    targetContext: Context;
+    map: Context;
 
-    constructor(book: core.Book, sourceContext: core.Context, targetContext: core.Context) {
+    constructor(book: Book, sourceContext: Context, targetContext: Context) {
         this.book = book;
         this.sourceContext = sourceContext;
         this.targetContext = targetContext;
         this.map = {};
     }
 
-    match(source: core.Example, target: core.Example): boolean {
+    match(source: Example, target: Example): boolean {
         if (!(source.type in this.map)) // make sure `map` contains a field for this type
             this.map[source.type] = {};
 
@@ -43,7 +43,7 @@ export class Matcher {
         return true; // if no problems occurred, return true
     }
 
-    hasMatch(source: core.Example): boolean {
+    hasMatch(source: Example): boolean {
         return (source.type in this.map && source.id in this.map[source.type]);
     }
 
@@ -56,8 +56,8 @@ export class Matcher {
 
 };
 
-export type Conclusion = { object: core.Example, adjective: string, value: boolean };
-export type DeduceOptions = { types?: string[], ids?: string[] };
+export type Conclusion = { object: Example, adjective: string, value: boolean };
+export type DeduceOptions = { types?: string[], ids?: string[], excludeTheorems?: Theorem[] };
 
 export class ContradictionError extends Error {
     constructor(message: string) {
@@ -68,15 +68,15 @@ export class ContradictionError extends Error {
 
 export class Assistant {
 
-    book: core.Book;
+    book: Book;
 
-    constructor(book: core.Book) {
+    constructor(book: Book) {
         this.book = book;
     }
 
-    search(query: core.Context): core.Context[] {
+    search(query: Context): Context[] {
         // collect all objects of the query in an array
-        const objects: (core.Example | null)[] = [];
+        const objects: (Example | null)[] = [];
         for (const type in query) {
             for (const id in query[type])
                 objects.push(query[type][id]);
@@ -95,12 +95,12 @@ export class Assistant {
         }
 
         // apply [topological sorting](https://en.wikipedia.org/wiki/Topological_sorting)
-        const objectsSorted: core.Example[] = [];
+        const objectsSorted: Example[] = [];
         while_loop: while (objects.some(x => x != null)) {
             for (let i = 0; i < objects.length; ++i) {
                 if (objects[i] == null) continue; // if object has already moved to the sorted array, continue
                 if (!arrows.some(x => x[0] == i)) { // this means the i'th object has no dependencies on other objects
-                    objectsSorted.unshift(objects[i] as core.Example); // move from `objects` array to `objects_sorted`
+                    objectsSorted.unshift(objects[i] as Example); // move from `objects` array to `objects_sorted`
                     objects[i] = null;
                     arrows = arrows.filter(x => x[1] != i); // ignore all dependencies on the i'th object
                     continue while_loop;
@@ -111,11 +111,11 @@ export class Assistant {
 
         // find matches for the objects, according to the `objectsSorted` array
         const assistant: Assistant = this;
-        const results: core.Context[] = [];
+        const results: Context[] = [];
 
         function helper(matcher: Matcher, i: number): void {
             if (i == objects.length) { // if all objects have a match, return the results
-                const result: core.Context = {};
+                const result: Context = {};
                 Object.assign(result, matcher.map);
                 results.push(result);
                 return;
@@ -139,7 +139,7 @@ export class Assistant {
         return results;
     }
 
-    applyTheorem(theorem: core.Theorem, context: core.Context, id: string): Conclusion[] {
+    applyTheorem(theorem: Theorem, context: Context, id: string, converse: boolean = false): Conclusion[] {
         // check type
         const type = theorem.type;
         if (!(id in context[type]))
@@ -147,17 +147,21 @@ export class Assistant {
 
         const subject = context[type][id];
 
+        // switch conditions and conclusions if we should apply the converse
+        if (converse && !theorem.converse) throw new Error(`Converse of theorem '${theorem.id}' of type '${theorem.type}' does not hold`);
+        const theoremConditions = (converse ? theorem.conclusions : theorem.conditions);
+        const theoremConclusions = (converse ? theorem.conditions : theorem.conclusions);
+
         // check the conditions (if there is one that does not hold)
         let conditionsThatHoldCount: number = 0;
         let conditionsCount: number = 0;
         let conditionThatDoesNotHold: { path: string, adjective: string } | null = null;
-        for (const path in theorem.conditions) {
+        for (const path in theoremConditions) {
             const object = this.book.resolvePath(context, subject, path);
-            if (object == null) throw new Error(`Could not resolve path '${path}' on object '${subject.id}' of type '${subject.type}'`);
-            for (const adjective in theorem.conditions[path]) {
+            for (const adjective in theoremConditions[path]) {
                 ++conditionsCount;
                 const value = object.adjectives?.[adjective];
-                if (value !== theorem.conditions[path][adjective]) {
+                if (value !== theoremConditions[path][adjective]) {
                     conditionThatDoesNotHold = { path, adjective };
                 }
                 else {
@@ -165,16 +169,14 @@ export class Assistant {
                 }
             }
         }
-        const conditionsAreSatisfied = (conditionsThatHoldCount == conditionsCount);
 
         // check the conclusions (if there is one that is actually false)
         let conclusionsArePossible: boolean = true;
-        l: for (const path in theorem.conclusions) {
+        l: for (const path in theoremConclusions) {
             const object = this.book.resolvePath(context, subject, path);
-            if (object == null) throw new Error(`Could not resolve path '${path}' on object '${subject.id}' of type '${subject.type}'`);
-            for (const adjective in theorem.conclusions[path]) {
+            for (const adjective in theoremConclusions[path]) {
                 const value = object.adjectives?.[adjective];
-                if (value === !theorem.conclusions[path][adjective]) {
+                if (value === !theoremConclusions[path][adjective]) {
                     conclusionsArePossible = false;
                     break l;
                 }
@@ -184,15 +186,14 @@ export class Assistant {
         const conclusions: Conclusion[] = [];
 
         // If all the conditions hold, we can apply the theorem (in the forward direction) to arrive at the conclusion! (Watch out for contradictions though!)
-        if (conditionsAreSatisfied) {
-            for (const path in theorem.conclusions) {
+        if (conditionsThatHoldCount == conditionsCount) {
+            for (const path in theoremConclusions) {
                 const object = this.book.resolvePath(context, subject, path);
-                if (object == null) throw new Error(`Could not resolve path '${path}' on object '${subject.id}' of type '${type}'`);
-                for (const adjective in theorem.conclusions[path]) {
-                    const value = theorem.conclusions[path][adjective];
+                for (const adjective in theoremConclusions[path]) {
+                    const value = theoremConclusions[path][adjective];
                     if (adjective in object.adjectives && object.adjectives[adjective] != value)
                         throw new ContradictionError(`in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
-                        // console.log(`🚨 Contradiction: in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
+                    // console.log(`🚨 Contradiction: in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
                     if (!(adjective in object.adjectives)) // only push the conclusions that are new
                         conclusions.push({ object, adjective, value });
                 }
@@ -202,9 +203,8 @@ export class Assistant {
         // If there is a faulty conclusion, and all BUT ONE conditions hold, we can apply the theorem (in the backwards direction) to conclude the remaining condition must be false!
         else if (!conclusionsArePossible && conditionsThatHoldCount == conditionsCount - 1 && conditionThatDoesNotHold != null) {
             const object = this.book.resolvePath(context, subject, conditionThatDoesNotHold.path);
-            if (object == null) throw new Error(`Could not resolve path '${conditionThatDoesNotHold.path}' on object '${subject.id}' of type '${type}'`);
             const adjective = conditionThatDoesNotHold.adjective;
-            const value = !theorem.conditions[conditionThatDoesNotHold.path][adjective]; // NOTE: invert the boolean
+            const value = !theoremConditions[conditionThatDoesNotHold.path][adjective]; // NOTE: invert the boolean
             if (object.adjectives?.[adjective] == value) // If the conclusion was already known, simply return an empty list of conclusions
                 return [];
             conclusions.push({ object, adjective, value });
@@ -213,16 +213,20 @@ export class Assistant {
         // Apply the conclusions and return them
         for (const conclusion of conclusions) {
             conclusion.object.adjectives[conclusion.adjective] = conclusion.value;
-            conclusion.object.proofs[conclusion.adjective] = {
+            const proof: Proof = {
                 type: subject.type,
                 theorem: theorem.id,
-                subject: subject.id
+                subject: subject.id,
             };
+            if (converse) proof.converse = converse; // indicate we have applied the theorem backwards
+            if (conditionThatDoesNotHold != null) proof.negated = conditionThatDoesNotHold; // indicate that we have applied the negation of the theorem, and which conclusion was false
+            conclusion.object.proofs[conclusion.adjective] = proof;
         }
+
         return conclusions;
     }
 
-    deduce(context: core.Context, options?: DeduceOptions): Conclusion[] {
+    deduce(context: Context, options?: DeduceOptions): Conclusion[] {
         const conclusions: Conclusion[] = [];
         let updates = true; // keep track of if any theorems are applied
         while (updates) {
@@ -231,22 +235,18 @@ export class Assistant {
                 if (options?.types && !options.types.includes(type)) continue; // skip if not in options
                 for (const id in context[type]) {
                     if (options?.ids && !options.ids.includes(id)) continue; // skip if not in options
-                    if (!(type in this.book.theorems))
-                        continue;
+                    if (!(type in this.book.theorems)) continue;
                     for (const theorem of Object.values(this.book.theorems[type])) {  // ... and for every theorem of the corresponding type ...
-                        const versions: core.Theorem[] = [theorem];
-                        if (theorem.converse)
-                            versions.push({ // add the converse theorem
-                                id: theorem.id,
-                                name: theorem.name,
-                                type: theorem.type,
-                                subject: theorem.subject,
-                                conditions: theorem.conclusions, // NOTE: conditions and conclusions are reversed!
-                                conclusions: theorem.conditions, // NOTE: conditions and conclusions are reversed!
-                                converse: theorem.converse
-                            })
-                        for (const thm of versions) {
-                            const cs = this.applyTheorem(thm, context, id);
+                        if (options?.excludeTheorems && options.excludeTheorems.includes(theorem)) continue;
+
+                        const cs = this.applyTheorem(theorem, context, id);
+                        if (cs.length > 0) {
+                            conclusions.push(...cs);
+                            updates = true;
+                        }
+
+                        if (theorem.converse) {
+                            const cs = this.applyTheorem(theorem, context, id, true);
                             if (cs.length > 0) {
                                 conclusions.push(...cs);
                                 updates = true;

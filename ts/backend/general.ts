@@ -10,4 +10,5 @@ export class Log {
     static warning(msg: string): void { console.log(`⚠️ ${msg}`); }
     static action(msg: string): void { console.log(`👉 ${msg} ...`); }
     static success(msg: string): void { console.log(`✅ ${msg}`); }
+    static print(msg: string): void { console.log(msg); }
 };

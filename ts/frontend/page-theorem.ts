@@ -14,7 +14,6 @@ function counterexamples(summary: Book, theorem: Theorem): [Example, TheoremCond
         for (const path in theorem.conclusions) {
             values[path] = {};
             const object = summary.resolvePath(summary.examples, subject, path);
-            if (object == null) throw new Error(`Could not resolve '${path}'`);
             for (const adjective in theorem.conclusions[path]) {
                 const value = theorem.conclusions[path][adjective];
                 if (!(adjective in object.adjectives) || object.adjectives[adjective] != value)
@@ -27,7 +26,6 @@ function counterexamples(summary: Book, theorem: Theorem): [Example, TheoremCond
         let hasFalse = false, hasNull = false;
         for (const path in theorem.conditions) {
             const object = summary.resolvePath(summary.examples, subject, path);
-            if (object == null) throw new Error(`Could not resolve '${path}'`);
             for (const adjective in theorem.conditions[path]) {
                 if (!(path in values)) values[path] = {};
                 const value = object?.adjectives?.[adjective] ?? null;
@@ -89,7 +87,6 @@ export function pageTheorem(summary: Book, options: any): HTMLElement {
         create('th', {}, 'Counterexample'),
         ...columns.map(x => {
             const adjType = summary.resolvePathType(theorem.type, x.path);
-            if (adjType == null) throw new Error(`Could not resolve '${x.path}' on type '${theorem.type}'`);
             const adjName = summary.adjectives[adjType][x.adjective].name;
             return create('th', {}, `${x.path.substring(1)} ${adjName}`);
         })

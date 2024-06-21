@@ -9,6 +9,7 @@ export class Log {
     static warning(msg) { console.log(`⚠️ ${msg}`); }
     static action(msg) { console.log(`👉 ${msg} ...`); }
     static success(msg) { console.log(`✅ ${msg}`); }
+    static print(msg) { console.log(msg); }
 }
 ;
 //# sourceMappingURL=general.js.map
