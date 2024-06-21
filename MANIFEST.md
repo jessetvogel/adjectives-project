@@ -51,6 +51,7 @@ There are a number of scripts:
 
 ## TODO
 
+- Single adjective implication graph + visualization
 - Better data page, and search functionality?
 - Think about the ordering of the adjectives on an example page (alphabetical / prove order / human vs machine)
 - Create better contribute page
@@ -59,12 +60,9 @@ There are a number of scripts:
 - On theorem page, show where theorems are applied?
 - Find proofs for theorems
 - Possible adjectives:
-  - injective
-  - universally homeomorphism
-  - finite fibers
+  - universally homeomorphism, universally injective, universally surjective, ...
   - all the projectivity adjectives
-  - monomorphism / epimorphism
+  - monomorphism / epimorphism / (injective good?)
 - Possible theorems:
   - target finite-dimensional + (some finite type condition on morphism) => source finite-dimensional
   - any relation between finite-dimensionality and noetherianness?
-  - 

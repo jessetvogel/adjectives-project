@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"immersion","description":"A morphism of schemes $f : X \\to Y$ is an immersion if it factors as $f = j \\circ i$, where $i : X \\to U$ is a closed immersion and $j : U \\to Y$ is an open immersion."}
+{"type":"morphism adjective","name":"immersion","verb":["is an","is not an"],"description":"A morphism of schemes $f : X \\to Y$ is an immersion if it factors as $f = j \\circ i$, where $i : X \\to U$ is a closed immersion and $j : U \\to Y$ is an open immersion."}

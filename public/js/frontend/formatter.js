@@ -12,6 +12,7 @@ export function formatContext(summary, context) {
     const id = Object.keys(context[type])[0]; // right ?!
     span.append(`a ${summary.types[type].name}`);
     function addAdjectives(prefix, type, id) {
+        var _a;
         if (!('adjectives' in context[type][id]) || Object.keys(context[type][id].adjectives).length == 0)
             return false;
         span.append(prefix);
@@ -22,19 +23,22 @@ export function formatContext(summary, context) {
                 span.append(', ');
             if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1)
                 span.append(' and ');
-            if (!context[type][id].adjectives[adj])
-                span.append('not ');
+            const adjective = summary.adjectives[type][adj];
+            const value = context[type][id].adjectives[adj];
+            const verbs = (_a = adjective.verb) !== null && _a !== void 0 ? _a : ['is', 'is not'];
+            span.append(value ? verbs[0] : verbs[1]);
+            span.append(' ');
             span.append(navigation.anchorAdjective(type, adj));
             ++adjectivesCount;
         }
         return true;
     }
     let first = true; // keeps track of whether some adjectives are already written
-    if (addAdjectives(' which is ', type, id)) // subject
+    if (addAdjectives(' which ', type, id)) // subject
         first = false;
     if ('args' in context[type][id] && Object.keys(context[type][id].args).length > 0) { // arguments / parameters
         for (const arg in context[type][id].args) {
-            if (addAdjectives(`${first ? ' ' : ', and '}whose ${arg} is `, summary.types[type].parameters[arg], `${id}.${arg}`))
+            if (addAdjectives(`${first ? '' : ', and'} whose ${arg} `, summary.types[type].parameters[arg], `${id}.${arg}`))
                 first = false;
         }
     }
@@ -49,6 +53,7 @@ function formatFromPath(theorem, path) {
     return `the ${path.substring(i + 1)} of ${formatFromPath(theorem, path.substring(0, i))}`;
 }
 export function formatConditions(summary, theorem, conditions) {
+    var _a;
     const span = create('span');
     const numberOfConditions = Object.values(conditions).map(adj => Object.keys(adj).length).reduce((partial, n) => partial + n);
     let conditionsCount = 0;
@@ -60,7 +65,9 @@ export function formatConditions(summary, theorem, conditions) {
                 span.append(', ');
             if (numberOfConditions > 1 && conditionsCount == numberOfConditions - 1)
                 span.append(' and ');
-            span.append(`${formatFromPath(theorem, path)} ${value ? 'is' : 'is not'} `, navigation.anchorAdjective(conditionObjectType, adj));
+            const adjective = summary.adjectives[conditionObjectType][adj];
+            const verbs = (_a = adjective.verb) !== null && _a !== void 0 ? _a : ['is', 'is not'];
+            span.append(`${formatFromPath(theorem, path)} ${value ? verbs[0] : verbs[1]} `, navigation.anchorAdjective(conditionObjectType, adj));
             ++conditionsCount;
         }
     }

@@ -8,6 +8,7 @@ export type Adjective = {
     id: string, // closed-immersion 
     type: string, // morphism
     name: string, // closed immersion
+    verb?: [string, string] // [is, is not] / [is a, is not a] / [has, does not have]
 };
 
 export type TheoremConditions = { [path: string]: { [id: string]: boolean } };
@@ -201,14 +202,17 @@ export class Book {
 
     deserializeAdjective(id: string, data: any): Adjective {
         const type = (data.type as string).replace(/ adjective$/, '');
-        if (!(type in this.adjectives)) this.adjectives[type] = {};
+        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
 
-        if (id in this.adjectives[type])
-            throw new Error(`Adjective with id '${id}' for type '${type}' already exists`);
+        const adjective: Adjective = { id, type, name };
 
-        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given            
+        if ('verb' in data) {
+            if (!Array.isArray(data.verb) || data.verb.length != 2 || typeof data.verb[0] != 'string' || typeof data.verb[1] != 'string')
+                throw new Error(`Invalid field 'verb' in adjective '${id}' of type '${type}'`);
+            adjective.verb = data.verb;
+        }
 
-        return { id, type: type, name };
+        return adjective;
     }
 
     serializeAdjective(adjective: Adjective, elaborate: boolean = false): any {
@@ -216,6 +220,7 @@ export class Book {
             type: `${adjective.type} adjective`,
             name: adjective.name,
         };
+        if (adjective.verb) data.verb = adjective.verb;
         if (elaborate && adjective.type in this.descriptions.adjectives && adjective.id in this.descriptions.adjectives[adjective.type])  // add description when elaborate is true
             data.description = this.descriptions.adjectives[adjective.type][adjective.id];
         return data;

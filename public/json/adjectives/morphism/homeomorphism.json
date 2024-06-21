@@ -1,1 +1,1 @@
-{"type":"morphism adjective","name":"homeomorphism","description":"A morphism of schemes is a homeomorphism if the underlying map of topological spaces is a homeomorphism, that is, continuous and bijective with continuous inverse."}
+{"type":"morphism adjective","name":"homeomorphism","verb":["is a","is not a"],"description":"A morphism of schemes is a homeomorphism if the underlying map of topological spaces is a homeomorphism, that is, continuous and bijective with continuous inverse."}

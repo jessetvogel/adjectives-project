@@ -23,12 +23,13 @@ export function formatContext(summary: Book, context: Context): HTMLElement {
         const adjectivesTotal = Object.keys(context[type][id].adjectives).length;
         let adjectivesCount = 0;
         for (const adj in context[type][id].adjectives) {
-            if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1)
-                span.append(', ');
-            if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1)
-                span.append(' and ');
-            if (!context[type][id].adjectives[adj])
-                span.append('not ');
+            if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1) span.append(', ');
+            if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1) span.append(' and ');
+            const adjective = summary.adjectives[type][adj];
+            const value = context[type][id].adjectives[adj];
+            const verbs = adjective.verb ?? ['is', 'is not'];
+            span.append(value ? verbs[0] : verbs[1]);
+            span.append(' ');
             span.append(navigation.anchorAdjective(type, adj));
             ++adjectivesCount;
         }
@@ -36,12 +37,12 @@ export function formatContext(summary: Book, context: Context): HTMLElement {
     }
 
     let first = true; // keeps track of whether some adjectives are already written
-    if (addAdjectives(' which is ', type, id))  // subject
+    if (addAdjectives(' which ', type, id))  // subject
         first = false;
 
     if ('args' in context[type][id] && Object.keys(context[type][id].args).length > 0) { // arguments / parameters
         for (const arg in context[type][id].args) {
-            if (addAdjectives(`${first ? ' ' : ', and '}whose ${arg} is `, summary.types[type].parameters[arg], `${id}.${arg}`))
+            if (addAdjectives(`${first ? '' : ', and'} whose ${arg} `, summary.types[type].parameters[arg], `${id}.${arg}`))
                 first = false;
         }
     }
@@ -70,7 +71,9 @@ export function formatConditions(summary: Book, theorem: Theorem, conditions: Th
                 span.append(', ');
             if (numberOfConditions > 1 && conditionsCount == numberOfConditions - 1)
                 span.append(' and ');
-            span.append(`${formatFromPath(theorem, path)} ${value ? 'is' : 'is not'} `, navigation.anchorAdjective(conditionObjectType, adj));
+            const adjective = summary.adjectives[conditionObjectType][adj];
+            const verbs = adjective.verb ?? ['is', 'is not']
+            span.append(`${formatFromPath(theorem, path)} ${value ? verbs[0] : verbs[1]} `, navigation.anchorAdjective(conditionObjectType, adj));
             ++conditionsCount;
         }
     }
