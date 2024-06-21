@@ -122,18 +122,22 @@ export class Book {
     }
     deserializeAdjective(id, data) {
         const type = data.type.replace(/ adjective$/, '');
-        if (!(type in this.adjectives))
-            this.adjectives[type] = {};
-        if (id in this.adjectives[type])
-            throw new Error(`Adjective with id '${id}' for type '${type}' already exists`);
-        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given            
-        return { id, type: type, name };
+        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
+        const adjective = { id, type, name };
+        if ('verb' in data) {
+            if (!Array.isArray(data.verb) || data.verb.length != 2 || typeof data.verb[0] != 'string' || typeof data.verb[1] != 'string')
+                throw new Error(`Invalid field 'verb' in adjective '${id}' of type '${type}'`);
+            adjective.verb = data.verb;
+        }
+        return adjective;
     }
     serializeAdjective(adjective, elaborate = false) {
         const data = {
             type: `${adjective.type} adjective`,
             name: adjective.name,
         };
+        if (adjective.verb)
+            data.verb = adjective.verb;
         if (elaborate && adjective.type in this.descriptions.adjectives && adjective.id in this.descriptions.adjectives[adjective.type]) // add description when elaborate is true
             data.description = this.descriptions.adjectives[adjective.type][adjective.id];
         return data;
