@@ -76,23 +76,38 @@ function graphScore(graph: Graph, layers: string[][], legend: { [key: string]: n
     return score;
 }
 
+function arraymove<T>(array: T[], fromIndex: number, toIndex: number): void {
+    const element = array[fromIndex];
+    array.splice(fromIndex, 1);
+    array.splice(toIndex, 0, element);
+}
+
+function arrayshuffle<T>(array: T[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
 function optimizeGraph(graph: Graph, layers: string[][], legend: { [key: string]: number }, score?: number): [Graph, string[][]] {
     if (score == undefined) score = graphScore(graph, layers, legend);
+    // for (const layer of layers) arrayshuffle(layer); // randomize initially
 
     loop: while (true) {
         for (const layer of layers) {
             for (let i = 0; i < layer.length; ++i) {
-                for (let j = i + 1; j < layer.length; ++j) {
-                    // swap elements at positions i and j
-                    [layer[i], layer[j]] = [layer[j], layer[i]];
+                for (let j = 0; j < layer.length; ++j) {
+                    if (i == j) continue;
+                    // move i -> j
+                    arraymove(layer, i, j);
                     const newScore = graphScore(graph, layers, legend);
                     if (newScore < score) {
                         score = newScore;
                         continue loop;
                     }
                     else {
-                        // swap back
-                        [layer[i], layer[j]] = [layer[j], layer[i]];
+                        // move j -> i back
+                        arraymove(layer, j, i);
                     }
                 }
             }
@@ -104,12 +119,12 @@ function optimizeGraph(graph: Graph, layers: string[][], legend: { [key: string]
 
 export function pageGraph(summary: Book, options?: any): HTMLElement {
     const page = create('div', { class: 'page page-graph' });
+    const type = options.type ?? 'scheme';
 
     // title
-    page.append(create('span', { class: 'title' }, 'Graph'));
+    page.append(create('span', { class: 'title' }, `Graph of ${summary.types[type].name} adjectives`));
 
     // construct graph
-    const type = options.type ?? 'scheme';
     let g = adjectiveGraph(summary, type);
     let l = graphToLayers(g);
     const legend: { [key: string]: number } = {};
@@ -146,6 +161,8 @@ export function pageGraph(summary: Book, options?: any): HTMLElement {
             console.log('Removed event listnere!')
         }
 
+        const boxBody = document.body.getBoundingClientRect();
+
         for (const [arrow, source, target] of arrows) {
             const boxSource = source.getBoundingClientRect();
             const boxTarget = target.getBoundingClientRect();
@@ -153,12 +170,17 @@ export function pageGraph(summary: Book, options?: any): HTMLElement {
             const from = [(boxSource.left + boxSource.right) / 2, boxSource.bottom];
             const to = [(boxTarget.left + boxTarget.right) / 2, boxTarget.top - 4];
 
+            from[0] -= boxBody.left;
+            from[1] -= boxBody.top;
+            to[0] -= boxBody.left;
+            to[1] -= boxBody.top;
+
             const width = Math.sqrt((to[0] - from[0]) * (to[0] - from[0]) + (to[1] - from[1]) * (to[1] - from[1]));
             const rotate = 180 + 180.0 / Math.PI * Math.atan2(to[1] - from[1], to[0] - from[0]);
 
             arrow.style.left = `${(from[0] + to[0]) / 2 - width / 2}px`;
             arrow.style.top = `${(from[1] + to[1]) / 2}px`;
-            arrow.style.width = `${width}px`
+            arrow.style.width = `${width}px`;
             arrow.style.rotate = `${rotate}deg`;
 
             divGraph.append(arrow);
