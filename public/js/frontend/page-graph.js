@@ -52,6 +52,46 @@ function graphToLayers(graph) {
     }
     return layers;
 }
+function graphScore(graph, layers, legend) {
+    let score = 0;
+    for (const A in graph) {
+        const i = legend[A];
+        const j = layers[i].indexOf(A);
+        const Ax = j - layers[i].length / 2;
+        for (const B of graph[A]) {
+            const u = legend[B];
+            const v = layers[u].indexOf(B);
+            const Bx = v - layers[u].length / 2;
+            score += Math.sqrt((u - i) * (u - i) + (Bx - Ax) * (Bx - Ax));
+        }
+    }
+    return score;
+}
+function optimizeGraph(graph, layers, legend, score) {
+    if (score == undefined)
+        score = graphScore(graph, layers, legend);
+    loop: while (true) {
+        for (const layer of layers) {
+            for (let i = 0; i < layer.length; ++i) {
+                for (let j = i + 1; j < layer.length; ++j) {
+                    // swap elements at positions i and j
+                    [layer[i], layer[j]] = [layer[j], layer[i]];
+                    const newScore = graphScore(graph, layers, legend);
+                    if (newScore < score) {
+                        score = newScore;
+                        continue loop;
+                    }
+                    else {
+                        // swap back
+                        [layer[i], layer[j]] = [layer[j], layer[i]];
+                    }
+                }
+            }
+        }
+        break;
+    }
+    return [graph, layers];
+}
 export function pageGraph(summary, options) {
     var _a;
     const page = create('div', { class: 'page page-graph' });
@@ -59,8 +99,12 @@ export function pageGraph(summary, options) {
     page.append(create('span', { class: 'title' }, 'Graph'));
     // construct graph
     const type = (_a = options.type) !== null && _a !== void 0 ? _a : 'scheme';
-    const graph = adjectiveGraph(summary, type);
-    const layers = graphToLayers(graph);
+    let g = adjectiveGraph(summary, type);
+    let l = graphToLayers(g);
+    const legend = {};
+    for (const key in g)
+        legend[key] = l.findIndex(layer => layer.includes(key));
+    const [graph, layers] = optimizeGraph(g, l, legend); // minimize arrow lengths
     // render graph layers
     const divGraph = create('div', { class: 'graph' });
     const mapDiv = {};
@@ -78,7 +122,7 @@ export function pageGraph(summary, options) {
     const arrows = [];
     for (const source in graph) {
         for (const target of graph[source]) {
-            const arrow = create('div', { class: 'arrow' });
+            const arrow = create('div', { class: 'arrow', style: `--color: hsl(${Math.floor(Math.random() * 360.0)}, ${25}%, ${75}%)` });
             arrows.push([arrow, mapDiv[source], mapDiv[target]]);
             divGraph.append(arrow);
         }
@@ -99,7 +143,6 @@ export function pageGraph(summary, options) {
             arrow.style.top = `${(from[1] + to[1]) / 2}px`;
             arrow.style.width = `${width}px`;
             arrow.style.rotate = `${rotate}deg`;
-            arrow.style.setProperty('--color', `hsl(${Math.floor(Math.random() * 360.0)}, ${20}%, ${50}%)`);
             divGraph.append(arrow);
         }
     }
