@@ -1,0 +1,1 @@
+{"type":"theorem","name":"definition quasi-finite","given":"morphism f","if":["f of-finite-type","f finite-fibers"],"then":"f quasi-finite","converse":true}

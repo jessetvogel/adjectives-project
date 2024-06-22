@@ -1,0 +1,46 @@
+.page-graph {
+    max-width: unset !important;
+
+    .graph {
+        display: flex;
+        flex-direction: column;
+        gap: 96px;
+
+        .layer {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+
+            > div {
+                border: var(--border-input);
+                border-radius: 4px;
+                padding: 8px 12px;
+                background-color: rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .arrow {
+            z-index: -1;
+            --color: var(--color-gray);
+            position: absolute;
+            height: 0px;
+            border-top: 1px solid var(--color);
+            border-bottom: 1px solid var(--color);
+
+            &::after {
+                --size: 6px;
+                content: "";
+                display: block;
+                border-top: var(--size) solid transparent;
+                border-bottom: var(--size) solid transparent;
+                border-right: var(--size) solid var(--color);
+                width: 0px;
+                height: 0px;
+                position: relative;
+                bottom: var(--size);
+                right: 2px;
+                transform: scaleX(2.0);
+            }
+        }
+    }
+}
