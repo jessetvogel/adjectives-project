@@ -20,7 +20,7 @@ export function pageHelp(): HTMLElement {
         create('p', {}, 'Now suppose we are also interested in what additional properties non-separated schemes have.'),
         create('ol', { start: 5 }, [
             create('li', {}, 'Click the <button>Deduce</button> button.'),
-            create('li', {}, ['You will now see a list of conclusions that apply to a non-separated scheme, together with the theorem from which that conclusion follows. For instance, the scheme is also not ', navigation.anchorAdjective('scheme', 'affine'), ' because ', navigation.anchorTheorem('scheme', 'sp-of-af'), '.'])
+            create('li', {}, ['You will now see a list of conclusions that apply to a non-separated scheme, together with the theorem from which that conclusion follows. For instance, the scheme is also not ', navigation.anchorAdjective('scheme', 'affine'), ' because ', navigation.anchorTheorem('scheme', 'qaf-of-af'), ' and ', navigation.anchorTheorem('scheme', 'sp-of-qaf'), '.'])
         ])
     ]);
 

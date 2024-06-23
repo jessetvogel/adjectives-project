@@ -149,7 +149,9 @@ export function pageGraph(summary: Book, options?: any): HTMLElement {
     const arrows: [HTMLDivElement, HTMLDivElement, HTMLDivElement][] = [];
     for (const source in graph) {
         for (const target of graph[source]) {
-            const arrow = create('div', { class: 'arrow', style: `--color: hsl(${Math.floor(Math.random() * 360.0)}, ${25}%, ${75}%)` }) as HTMLDivElement;
+            const color = `hsl(${Math.floor(Math.random() * 360.0)}, ${25}%, ${75}%)`;
+            // const color = `hsl(189, 69%, ${12 + Math.floor(Math.random() * (40 - 12))}%)`;
+            const arrow = create('div', { class: 'arrow', style: `--color: ${color}` }) as HTMLDivElement;
             arrows.push([arrow, mapDiv[source], mapDiv[target]]);
             divGraph.append(arrow);
         }

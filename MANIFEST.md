@@ -63,6 +63,24 @@ There are a number of scripts:
   - universally homeomorphism, universally injective, universally surjective, ...
   - all the projectivity adjectives
   - monomorphism / epimorphism / (injective good?)
+  - https://stacks.math.columbia.edu/tag/02WE
 - Possible theorems:
   - target finite-dimensional + (some finite type condition on morphism) => source finite-dimensional
   - any relation between finite-dimensionality and noetherianness?
+- Possible examples:
+  - https://mathoverflow.net/questions/74806/are-morphisms-from-affine-schemes-to-arbitrary-schemes-affine-morphisms
+- Find theorem converse counterexamples:
+  - scheme: `cm-of-rg`
+  - scheme: `lf-of-rg`
+  - scheme: `lnt-of-cm`
+  - morphism: `qsp-of-ssp`
+  - morphism: `fl-of-rg`
+  - morphism: `op-of-uo`
+  - morphism: `rg-of-sm`
+  - morphism: `syn-of-sm`
+  - morphism: `uo-of-fl-flp`
+  - morphism: `qc-of-src-qc`
+  - morphism: `sp-of-src-sp`
+  - morphism: `src-jc-of-lft-trg-jc`
+  - morphism: `src-qc-of-qc-trg-qc`
+  - morphism: `src-sp-of-sp-trg-sp`
