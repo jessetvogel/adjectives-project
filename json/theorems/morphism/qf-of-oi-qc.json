@@ -1,1 +1,0 @@
-{"type":"theorem","name":"quasi-compact open immersions are quasi-finite","given":"morphism f","if":["f open-immersion","f quasi-compact"],"then":"f quasi-finite"}
