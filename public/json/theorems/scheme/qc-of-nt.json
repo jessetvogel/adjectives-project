@@ -1,1 +1,0 @@
-{"type":"theorem","name":"Noetherian schemes are quasi-compact","given":"scheme X","if":"X noetherian","then":"X quasi-compact"}

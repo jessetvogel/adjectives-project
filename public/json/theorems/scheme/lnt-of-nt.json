@@ -1,1 +1,0 @@
-{"type":"theorem","name":"Noetherian schemes are locally Noetherian","given":"scheme X","if":"X noetherian","then":"X locally-noetherian"}

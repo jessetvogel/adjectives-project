@@ -1,0 +1,1 @@
+{"type":"theorem","name":"finite is integral and locally of finite type","given":"morphism f","if":["f integral","f locally-of-finite-type"],"then":"f finite","converse":true,"description":"https://stacks.math.columbia.edu/tag/01WJ"}

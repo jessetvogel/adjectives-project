@@ -1,0 +1,1 @@
+{"type":"morphism adjective","name":"projective","description":"A morphism $f : X \\to Y$ of schemes is projective if $X$ is isomorphic as a $Y$-scheme to a closed subscheme of a projective bundle $\\PP(\\mathcal{E})$ for some quasi-coherent $\\mathcal{O}_Y$-module $\\mathcal{E}$ of finite type."}

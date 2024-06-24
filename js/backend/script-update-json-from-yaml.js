@@ -41,12 +41,13 @@ export function main() {
         updateJSON(book);
         // Done
         Log.success('Done');
+        return 0;
     }
     catch (err) {
-        Log.error(err.stack);
-        process.exit(1);
+        Log.error(err.toString());
+        return 1;
     }
 }
 if (process.argv[1] === fileURLToPath(import.meta.url))
-    main();
+    process.exit(main());
 //# sourceMappingURL=script-update-json-from-yaml.js.map
