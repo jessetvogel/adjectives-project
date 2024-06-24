@@ -6,6 +6,7 @@
   "scripts": {
     "watch-ts": "(cd ts && tsc -w --project tsconfig.backend.json) & (cd ts && tsc -w --project tsconfig.frontend.json)",
     "watch-scss": "(cd scss && sass -w index.scss:../public/css/index.css)",
+    "watch-yaml": "node --enable-source-maps ./js/backend/script-watch-yaml.js",
     "update-json-from-yaml": "node --enable-source-maps ./js/backend/script-update-json-from-yaml.js",
     "clear-json": "node --enable-source-maps ./js/backend/script-clear-json.js",
     "deduce": "node --enable-source-maps ./js/backend/script-deduce.js",
