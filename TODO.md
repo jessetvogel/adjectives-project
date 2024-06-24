@@ -60,14 +60,25 @@ There are a number of scripts:
 - On theorem page, show where theorems are applied?
 - Find proofs for theorems
 - Possible adjectives:
-  - universally homeomorphism, universally injective, universally surjective, ...
+  - https://stacks.math.columbia.edu/tag/02WE
+  - universally homeomorphism, universally injective
+  - (universally) submersive ...
   - all the projectivity adjectives
-  - monomorphism / epimorphism / (injective good?)
+  - monomorphism
+  - epimorphism ?
   - G-unramified
   - integral morphism
-  - https://stacks.math.columbia.edu/tag/02WE
+  - finite locally free morphism
+  - projective (bundle) (morphism)
+  - projective (EGA) (morphism)
+  - projective (H) (morphism)
+  - projective (locally) (morphism)
+
 - Possible theorems:
   - target finite-dimensional + (some finite type condition on morphism) => source finite-dimensional
+
+  target finite-dimensional + morphism ??? => source finite-dimensional
+
   - any relation between finite-dimensionality and noetherianness?
 - Possible examples:
   - https://mathoverflow.net/questions/74806/are-morphisms-from-affine-schemes-to-arbitrary-schemes-affine-morphisms
@@ -86,3 +97,6 @@ There are a number of scripts:
   - morphism: `src-jc-of-lft-trg-jc`
   - morphism: `src-qc-of-qc-trg-qc`
   - morphism: `src-sp-of-sp-trg-sp`
+
+
+- script to watch the yaml files

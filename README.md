@@ -14,20 +14,26 @@ To run the Adjectives Project locally, use the following steps. Make sure that b
 ```
 git clone https://github.com/jessetvogel/adjectives-project.git
 ```
+
 **2.** Navigate into the project directory and update the data submodule.
 ```
 cd adjectives-project
 git submodule update --init
 ```
 
-**3.** Update the JSON files by running the following commands. For more details, see the 'Commands' section.
+**3.** Install Node dependencies.
+```
+npm install
+```
+
+**4.** Update the JSON files by running the following commands. For more details, see the 'Commands' section.
 ```
 npm run clear-json
 npm run update-json-from-yaml
 npm run deduce
 ```
 
-**4.** Serve the `public` folder via an HTTP server. For instance, using Python, run the following command and visit the website via `https://127.0.0.1:8080`.
+**5.** Serve the `public` folder via an HTTP server. For instance, using Python, run the following command and visit the website via `https://127.0.0.1:8080`.
 ```
 python3 -m http.server -d public 8080
 ```
