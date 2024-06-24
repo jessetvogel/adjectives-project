@@ -63,6 +63,8 @@ There are a number of scripts:
   - universally homeomorphism, universally injective, universally surjective, ...
   - all the projectivity adjectives
   - monomorphism / epimorphism / (injective good?)
+  - G-unramified
+  - integral morphism
   - https://stacks.math.columbia.edu/tag/02WE
 - Possible theorems:
   - target finite-dimensional + (some finite type condition on morphism) => source finite-dimensional

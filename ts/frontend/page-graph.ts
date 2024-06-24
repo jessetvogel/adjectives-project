@@ -1,6 +1,6 @@
 import { Assistant } from '../shared/assistant.js';
 import { Book } from '../shared/core.js';
-import { create } from './util.js';
+import { $$, create } from './util.js';
 import navigation from './navigation.js';
 
 type Graph = { [key: string]: string[] };
