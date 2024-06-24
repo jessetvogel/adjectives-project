@@ -23,7 +23,7 @@ function minimizeGraph(graph) {
     // minimize graph: if A => C factors as A => B and B => C, then remove A => C
     const out = {};
     for (const A in graph) {
-        const Cs = graph[A];
+        const Cs = [...graph[A]];
         for (const B of graph[A]) {
             for (const C of graph[B]) {
                 const i = Cs.indexOf(C);
