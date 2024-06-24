@@ -121,6 +121,7 @@ export class Assistant {
         let conditionsThatHoldCount = 0;
         let conditionsCount = 0;
         let conditionThatDoesNotHold = null;
+        let conclusionThatWasFalse = null;
         for (const path in theoremConditions) {
             const object = this.book.resolvePath(context, subject, path);
             for (const adjective in theoremConditions[path]) {
@@ -142,6 +143,7 @@ export class Assistant {
                 const value = (_b = object.adjectives) === null || _b === void 0 ? void 0 : _b[adjective];
                 if (value === !theoremConclusions[path][adjective]) {
                     conclusionsArePossible = false;
+                    conclusionThatWasFalse = { path, adjective };
                     break l;
                 }
             }
@@ -180,8 +182,8 @@ export class Assistant {
             };
             if (converse)
                 proof.converse = converse; // indicate we have applied the theorem backwards
-            if (conditionThatDoesNotHold != null)
-                proof.negated = conditionThatDoesNotHold; // indicate that we have applied the negation of the theorem, and which conclusion was false
+            if (conclusionThatWasFalse != null)
+                proof.negated = conclusionThatWasFalse; // indicate that we have applied the negation of the theorem, and which conclusion was false
             conclusion.object.proofs[conclusion.adjective] = proof;
         }
         return conclusions;
