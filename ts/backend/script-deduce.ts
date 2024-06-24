@@ -4,8 +4,9 @@ import { Book } from '../shared/core.js';
 import { Assistant, Conclusion, DeduceOptions } from '../shared/assistant.js';
 import { updateJSON } from './json-updater.js';
 import { Log, PATH_SUMMARY } from './general.js';
+import { fileURLToPath } from 'url';
 
-function main() {
+export function main() {
     // Parse arguments
     let options: DeduceOptions = {};
     for (const arg of process.argv) {
@@ -64,4 +65,4 @@ function main() {
     }
 }
 
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) main();

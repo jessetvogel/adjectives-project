@@ -3,7 +3,8 @@ import { Book } from '../shared/core.js';
 import { Assistant } from '../shared/assistant.js';
 import { updateJSON } from './json-updater.js';
 import { Log, PATH_SUMMARY } from './general.js';
-function main() {
+import { fileURLToPath } from 'url';
+export function main() {
     // Parse arguments
     let options = {};
     for (const arg of process.argv) {
@@ -57,5 +58,6 @@ function main() {
         process.exit(1);
     }
 }
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url))
+    main();
 //# sourceMappingURL=script-deduce.js.map

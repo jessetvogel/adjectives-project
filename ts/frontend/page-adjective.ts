@@ -27,6 +27,11 @@ export function pageAdjective(summary: Book, options: any): HTMLElement {
     const rows: { id: string, value: boolean | null }[] = [];
     for (const exampleId in summary.examples[type])
         rows.push({ id: exampleId, value: summary.examples[type][exampleId]?.adjectives?.[id] ?? null });
+    rows.sort((a, b) => {
+        if (a.value != null && b.value == null) return -1;
+        if (a.value == null && b.value != null) return 1;
+        return 0;
+    });
     for (const row of rows) {
         const value = (row.value == true) ? 'true' : ((row.value === false ? 'false' : 'unknown'));
         tableExamples.append(create('tr', {}, [

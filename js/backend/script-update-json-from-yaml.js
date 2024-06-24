@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import { Book } from '../shared/core.js';
 import { updateJSON } from './json-updater.js';
 import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
+import { fileURLToPath } from 'url';
 // Finds all files (recursively) with the given extension inside the given directory.
 // Returns a list of the paths to all files found.
 // NOTE: ignore all hidden files (starting with .)
@@ -21,7 +22,7 @@ function findFilesWithExtension(directory, extension) {
     }
     return files;
 }
-function main() {
+export function main() {
     try {
         // Create book from .yaml files
         const book = new Book();
@@ -46,5 +47,6 @@ function main() {
         process.exit(1);
     }
 }
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url))
+    main();
 //# sourceMappingURL=script-update-json-from-yaml.js.map
