@@ -1,0 +1,1 @@
+{"type":"morphism adjective","name":"universally homeomorphism","description":"A morphism $f : X \\to Y$ of schemes is universally homeomorphism if for every $g : Z \\to Y$ the induced map $X \\times_Y Z \\to Z$ is a homeomorphism."}

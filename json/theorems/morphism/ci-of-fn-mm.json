@@ -1,0 +1,1 @@
+{"type":"theorem","name":"finite monomorphisms are closed immersions","given":"morphism f","if":["f finite","f monomorphism"],"then":"f closed-immersion","description":"https://stacks.math.columbia.edu/tag/03BB"}

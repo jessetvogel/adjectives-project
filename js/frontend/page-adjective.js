@@ -23,6 +23,13 @@ export function pageAdjective(summary, options) {
     const rows = [];
     for (const exampleId in summary.examples[type])
         rows.push({ id: exampleId, value: (_c = (_b = (_a = summary.examples[type][exampleId]) === null || _a === void 0 ? void 0 : _a.adjectives) === null || _b === void 0 ? void 0 : _b[id]) !== null && _c !== void 0 ? _c : null });
+    rows.sort((a, b) => {
+        if (a.value != null && b.value == null)
+            return -1;
+        if (a.value == null && b.value != null)
+            return 1;
+        return 0;
+    });
     for (const row of rows) {
         const value = (row.value == true) ? 'true' : ((row.value === false ? 'false' : 'unknown'));
         tableExamples.append(create('tr', {}, [

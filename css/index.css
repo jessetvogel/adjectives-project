@@ -86,6 +86,7 @@ button {
   height: 32px;
   border-radius: 4px;
   background-color: var(--color-button);
+  color: var(--color-text);
   border: var(--border-input);
   box-sizing: border-box;
   padding: 0px 12px;
