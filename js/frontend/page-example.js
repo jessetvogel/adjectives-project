@@ -30,7 +30,7 @@ export function pageExample(summary, options) {
     }
     spanSubtitle.append(')');
     katexTypeset(spanSubtitle);
-    fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
+    fetch(`json/examples/${type}/${id}.json`, { cache: 'reload' }).then(response => response.json()).then(data => {
         var _a, _b, _c;
         // Update name span
         if ('name' in data)
