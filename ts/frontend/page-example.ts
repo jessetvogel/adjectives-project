@@ -33,7 +33,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     spanSubtitle.append(')');
     katexTypeset(spanSubtitle);
 
-    fetch(`json/examples/${type}/${id}.json`).then(response => response.json()).then(data => {
+    fetch(`json/examples/${type}/${id}.json`, { cache: 'reload' }).then(response => response.json()).then(data => {
         // Update name span
         if ('name' in data) setText(spanName, data.name);
         katexTypeset(spanName);
