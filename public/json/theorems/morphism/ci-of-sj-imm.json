@@ -1,0 +1,1 @@
+{"type":"theorem","name":"surjective immersions are closed immersions","given":"morphism f","if":["f immersion","f surjective"],"then":"f closed-immersion"}

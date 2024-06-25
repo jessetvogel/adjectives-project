@@ -25,40 +25,40 @@ export function main() {
             return;
         }
     }
+    // Load summary
+    if (!fs.existsSync(PATH_SUMMARY))
+        throw new Error(`Missing summary file '${PATH_SUMMARY}'`);
+    const summary = JSON.parse(fs.readFileSync(PATH_SUMMARY, 'utf8'));
+    // Create book from summary
+    const book = new Book(summary);
+    book.verify();
+    // Make deductions
+    const assistant = new Assistant(book);
+    Log.action(`Deducing`);
+    const conclusions = [];
+    let c;
+    while ((c = assistant.deduce(book.examples, options)).length > 0)
+        conclusions.push(...c);
+    for (const conclusion of conclusions)
+        Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
+    // Save conclusions
+    if (conclusions.length > 0) {
+        Log.action(`Saving conclusions`);
+        updateJSON(book);
+    }
+    else {
+        Log.info(`No deductions were made`);
+    }
+    // Done
+    Log.success('Done');
+}
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
     try {
-        // Load summary
-        if (!fs.existsSync(PATH_SUMMARY))
-            throw new Error(`Missing summary file '${PATH_SUMMARY}'`);
-        const summary = JSON.parse(fs.readFileSync(PATH_SUMMARY, 'utf8'));
-        // Create book from summary
-        const book = new Book(summary);
-        book.verify();
-        // Make deductions
-        const assistant = new Assistant(book);
-        Log.action(`Deducing`);
-        const conclusions = [];
-        let c;
-        while ((c = assistant.deduce(book.examples, options)).length > 0)
-            conclusions.push(...c);
-        for (const conclusion of conclusions)
-            Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
-        // Save conclusions
-        if (conclusions.length > 0) {
-            Log.action(`Saving conclusions`);
-            updateJSON(book);
-        }
-        else {
-            Log.info(`No deductions were made`);
-        }
-        // Done
-        Log.success('Done');
-        return 0;
+        main();
     }
     catch (err) {
         Log.error(err.toString());
-        return 1;
+        process.exit(1);
     }
 }
-if (process.argv[1] === fileURLToPath(import.meta.url))
-    process.exit(main());
 //# sourceMappingURL=script-deduce.js.map

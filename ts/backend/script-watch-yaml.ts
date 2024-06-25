@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import { main as mainUpdateJsonFromYaml } from './script-update-json-from-yaml.js';
 import { main as mainDeduce } from './script-deduce.js';
-import { PATH_YAML } from './general.js';
+import { EXTENSION_YAML, Log, PATH_YAML } from './general.js';
 
 function info(msg: string): void {
     const date = new Date();
@@ -13,14 +13,24 @@ function main() {
     console.clear();
     info('Watching YAML files for changes ...');
 
+    var cooldown = false; // prevent events to double fire
     fs.watch(PATH_YAML, { recursive: true }, (eventType, filename) => {
+        if (filename == null || !filename.endsWith('.' + EXTENSION_YAML)) return;
+        if (eventType != 'change' && eventType != 'rename') return;
+        if (cooldown) return;
+        cooldown = true;
+        setTimeout(() => cooldown = false, 100);
+
         console.clear();
-        if (eventType == 'change' || eventType == 'rename') { // NOTE: this is always true
-            info(`Detected file change (${filename}). Updating JSON files ...`);
-            if (mainUpdateJsonFromYaml() == 1) { console.log(); info('Error in updating JSON from YAML files. Aborting.'); }
-            else if (mainDeduce() == 1) { console.log(); info('Error in deducing new adjectives. Aborting.'); }
-            else console.log();
+        info(`Detected file change (${filename}). Updating JSON files ...`);
+        try {
+            mainUpdateJsonFromYaml();
+            mainDeduce();
         }
+        catch (err) {
+            Log.error(err.toString());
+        }
+        console.log();
         info('Watching YAML files for changes ...');
     });
 }

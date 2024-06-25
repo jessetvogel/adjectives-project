@@ -114,7 +114,7 @@ function findRedundantExamples(book) {
     for (const type in book.examples) {
         for (const id in book.examples[type]) {
             const example = book.examples[type][id];
-            const context = createLocalContext(book, type, id);
+            const context = createLocalContext(book, type, id); // TODO: we could also just split up all examples into local contexts beforehand, would save some time
             for (const adjective in example.adjectives) {
                 // create context where example does not have adjective
                 const contextCopy = structuredClone(context);

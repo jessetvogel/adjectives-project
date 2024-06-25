@@ -25,32 +25,31 @@ function findFilesWithExtension(directory: string, extension: string): string[] 
 }
 
 export function main() {
-    try {
-        // Create book from .yaml files
-        const book = new Book();
-        for (const file of findFilesWithExtension(PATH_YAML, EXTENSION_YAML)) {
-            try {
-                const id = path.parse(file).name;
-                const data = yaml.load(fs.readFileSync(file, 'utf8'));
-                book.add(id, data);
-            }
-            catch (err) {
-                throw new Error(`Failed to load '${file}': ${err.stack}`);
-            }
+    // Create book from .yaml files
+    const book = new Book();
+    for (const file of findFilesWithExtension(PATH_YAML, EXTENSION_YAML)) {
+        try {
+            const id = path.parse(file).name;
+            const data = yaml.load(fs.readFileSync(file, 'utf8'));
+            book.add(id, data);
         }
-        book.verify();
-
-        // Update json
-        updateJSON(book);
-
-        // Done
-        Log.success('Done');
-        return 0;
-    } catch (err: any) {
-        Log.error(err.toString());
-        return 1;
+        catch (err) {
+            throw new Error(`Failed to load '${file}': ${err.stack}`);
+        }
     }
+    book.verify();
+
+    // Update json
+    updateJSON(book);
+
+    // Done
+    Log.success('Done');
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url))
-    process.exit(main());
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    try { main(); }
+    catch (err) {
+        Log.error(err.toString());
+        process.exit(1);
+    }
+}
