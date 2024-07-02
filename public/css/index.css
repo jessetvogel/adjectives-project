@@ -13,7 +13,7 @@
   --color-background: #fcfcfc;
   --color-button: #dddddd;
   --color-button-hover: #cccccc;
-  --color-nav-background: #1a7d8e7f;
+  --color-nav-background: var(--color-light-gray);
   --color-text: var(--color-black);
   --color-text-inverted: var(--color-white);
   --color-focus-background: #1a7d8e66;
@@ -466,8 +466,9 @@ nav {
   height: 48px;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-nav-background);
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--box-shadow-input);
+  border-bottom: var(--border-input);
+  background-color: var(--color-light-gray);
 }
 nav button {
   display: block;

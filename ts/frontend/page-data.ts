@@ -9,9 +9,9 @@ export function pageData(summary: Book, options: any): HTMLElement {
     const input = create('input', { type: 'text', placeholder: 'Search for example, adjective or theorem ...' }) as HTMLInputElement;
 
     onInput(input, () => {
-        const value = input.value;
+        const value = input.value.toLocaleLowerCase();
         for (const li of $$('li')) {
-            const show = (value == '' || li.innerText.includes(value));
+            const show = (value == '' || li.innerText.toLocaleLowerCase().includes(value));
             li.style.display = show ? 'list-item' : 'none';
         }
     });

@@ -21,8 +21,9 @@ nav {
     height: 48px;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-nav-background);
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--box-shadow-input);
+    border-bottom: var(--border-input);
+    background-color: var(--color-light-gray);
 
     button {
         display: block;

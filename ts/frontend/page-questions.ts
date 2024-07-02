@@ -3,61 +3,60 @@ import { Book, Context } from '../shared/core.js';
 import { formatContext } from './formatter.js';
 import { create } from './util.js';
 
-const TYPES_AND_ADJECTIVES: { [type: string]: string[] } = {
-    'scheme': [
-        'affine',
-        // 'cohen-macaulay',
-        // 'connected',
-        // 'excellent',
-        'finite-dimensional',
-        'integral',
-        'irreducible',
-        // 'jacobson',
-        'locally-noetherian',
-        'noetherian',
-        'normal',
-        'quasi-affine',
-        'quasi-compact',
-        'quasi-separated',
-        'reduced',
-        'regular',
-        'semi-separated',
-        'separated'
-    ],
-    'morphism': [
-        'affine',
-        'closed-immersion',
-        'closed',
-        'etale',
-        'faithfully-flat',
-        'finite',
-        'flat',
-        'formally-etale',
-        'formally-smooth',
-        'formally-unramified',
-        'homeomorphism',
-        'immersion',
-        'locally-of-finite-presentation',
-        'locally-of-finite-type',
-        'of-finite-presentation',
-        'of-finite-type',
-        'open-immersion',
-        'open',
-        'proper',
-        'quasi-affine',
-        'quasi-compact',
-        'quasi-finite',
-        'quasi-separated',
-        'regular',
-        'semi-separated',
-        'separated',
-        'smooth',
-        'surjective',
-        // 'syntomic',
-        'universally-closed',
-        'universally-open',
-        'unramified'
-    ]
+const ADJECTIVES_CONSTRAINTS: { [type: string]: { [adj: string]: boolean[] } } = {
+    'scheme': {
+        'cohen-macaulay': [],
+        'connected': [true],
+        'excellent': [],
+        // 'finite-dimensional',
+        // 'integral',
+        // 'irreducible',
+        'jacobson': [],
+        // 'locally-noetherian',
+        // 'noetherian',
+        // 'normal',
+        // 'quasi-affine',
+        // 'quasi-compact',
+        // 'quasi-separated',
+        'reduced': [true],
+        // 'regular',
+        // 'semi-separated',
+        // 'separated',
+    },
+    'morphism': {
+        // 'affine',
+        // 'closed-immersion',
+        // 'closed',
+        // 'etale',
+        // 'faithfully-flat',
+        // 'finite',
+        // 'flat',
+        // 'formally-etale',
+        // 'formally-smooth',
+        // 'formally-unramified',
+        // 'homeomorphism',
+        // 'immersion',
+        // 'locally-of-finite-presentation',
+        // 'locally-of-finite-type',
+        // 'of-finite-presentation',
+        // 'of-finite-type',
+        // 'open-immersion',
+        // 'open',
+        // 'proper',
+        // 'quasi-affine',
+        // 'quasi-compact',
+        // 'quasi-finite',
+        // 'quasi-separated',
+        // 'regular',
+        // 'semi-separated',
+        // 'separated',
+        // 'smooth',
+        // 'surjective',
+        'syntomic': [],
+        // 'universally-closed',
+        // 'universally-open',
+        // 'unramified'
+    }
 };
 
 function combinations<T>(array: T[], size: number): T[][] {
@@ -86,8 +85,8 @@ function product<T>(array: T[], size: number): T[][] {
     return results;
 }
 
-function questions(summary: Book, type: string, adjectives: string[]): Context[] {
-    // const adjectives = Object.keys(summary.adjectives[type]);
+function questions(summary: Book, type: string, constraints: { [adj: string]: boolean[] }): Context[] {
+    const adjectives = Object.keys(summary.adjectives[type]);
     const maxAdjectives = 2;
 
     const assistant = new Assistant(summary);
@@ -100,6 +99,10 @@ function questions(summary: Book, type: string, adjectives: string[]): Context[]
     for (let n = 1; n <= maxAdjectives; ++n) { // loop over number of adjectives
         for (const adjs of combinations(adjectives, n)) { // loop over all combinations of adjectives
             for (const values of product([true, false], n)) { // loop over all values of the adjectives
+                if (adjs.some((adj, i) => (adj in constraints && !constraints[adj].includes(values[i])))) // if some value does not match the constraints, just skip this one
+                    continue;
+                if (!values.some(v => v)) // we want at least one positive property
+                    continue;
                 const context = summary.createContextFromType(type, id); // create context for type
                 for (let i = 0; i < n; ++i) // assign the adjectives their values
                     context[type][id].adjectives[adjs[i]] = values[i];
@@ -156,28 +159,36 @@ export function pageQuestions(summary: Book): HTMLElement {
     // description
     page.append(create('p', {}, 'The questions below could not be answered with \'yes\' by the examples, or with \'no\' using the theorems.'));
 
+    // loading icon
+    const loading = create('div', { class: 'loading' });
+    page.append(loading);
+
     // table
     const table = create('table', { style: 'margin-bottom: 4px;' });
-    table.append(create('tr', {}, create('th', {}, 'Questions')));
-    const qs: Context[] = [];
-    for (const type in TYPES_AND_ADJECTIVES)
-        qs.push(...questions(summary, type, TYPES_AND_ADJECTIVES[type]));
-    shuffle(qs);
-    let i = 0;
-    const maxQuestions = 25;
-    for (const question of qs) {
-        if (++i > maxQuestions) break;
-        table.append(create('tr', {}, [
-            create('td', {}, [
-                create('span', {}, [
-                    'Does there exist ',
-                    formatContext(summary, question),
-                    '?'
-                ])
-            ])
-        ]));
-    }
     page.append(table);
+    setTimeout(() => {
+        table.append(create('tr', {}, create('th', {}, 'Questions')));
+        const qs: Context[] = [];
+        for (const type in ADJECTIVES_CONSTRAINTS)
+            qs.push(...questions(summary, type, ADJECTIVES_CONSTRAINTS[type]));
+        console.log(`#questions = ${qs.length}`);
+        shuffle(qs);
+        let i = 0;
+        const maxQuestions = 25;
+        for (const question of qs) {
+            if (++i > maxQuestions) break;
+            table.append(create('tr', {}, [
+                create('td', {}, [
+                    create('span', {}, [
+                        'Does there exist ',
+                        formatContext(summary, question),
+                        '?'
+                    ])
+                ])
+            ]));
+        }
+        loading.remove();
+    }, 0);
 
     return page;
 }
