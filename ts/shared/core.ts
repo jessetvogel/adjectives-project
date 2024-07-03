@@ -533,37 +533,10 @@ export class Book {
         if (proof == null || typeof proof == 'string') return [];
 
         const steps: Proof[] = [];
-        const theorem = this.theorems[proof.type][proof.theorem];
-        const subject = context[proof.type][proof.subject];
-
-        // swap conditions and theorems if the theorem was applied in converse
-        const theoremConditions = (proof.converse ? theorem.conclusions : theorem.conditions);
-        const theoremConclusions = (proof.converse ? theorem.conditions : theorem.conclusions);
-
-        // case 1: the theorem was applied in the forward direction
-        const negated = proof.negated;
-        if (negated === undefined) {
-            for (const path in theoremConditions) {
-                const object = this.resolvePath(context, subject, path);
-                for (const adjective in theoremConditions[path])
-                    steps.push(...this.traceProof(context, object, adjective));
-            }
-        }
-        // case 2: the theorem was applied in the backward direction
-        else {
-            // trace proof on the conclusion that was used to apply the negation of the theorem
-            steps.push(...this.traceProof(context, this.resolvePath(context, subject, negated.path), negated.adjective));
-            // trace the proof on all conditions other than the one we are tracing
-            for (const path in theoremConditions) {
-                const obj = this.resolvePath(context, subject, path);
-                for (const adj in theoremConditions[path]) {
-                    if (obj != object || adj != adjective)
-                        steps.push(...this.traceProof(context, obj, adj));
-                }
-            }
-        }
-
-        // finally, add the last (current) step in the proof
+        // trace the proofs of all dependencies
+        for (const { object: obj, adjective: adj } of this.traceProofDependencies(context, object, adjective))
+            steps.push(...this.traceProof(context, obj, adj));
+        // do not forget to add the last (current) step in the proof:
         steps.push(proof);
         // remove duplicate steps
         const stepsUnique: Proof[] = [];
@@ -571,5 +544,46 @@ export class Book {
             if (!stepsUnique.some(s => s.type == step.type && s.theorem == step.theorem && s.subject == step.subject))
                 stepsUnique.push(step);
         return stepsUnique;
+    }
+
+    traceProofDependencies(context: Context, object: Example, adjective: string, proofHint?: Proof): { object: Example, adjective: string }[] {
+        // use proof hint if provided, otherwise the use proof as in this book
+        const proof = proofHint ?? object.proofs[adjective] ?? null;
+        if (proof == null || typeof proof == 'string') return [];
+
+        const theorem = this.theorems[proof.type][proof.theorem];
+        const subject = context[proof.type][proof.subject];
+
+        // swap conditions and theorems if the theorem was applied in converse
+        const theoremConditions = (proof.converse ? theorem.conclusions : theorem.conditions);
+        const theoremConclusions = (proof.converse ? theorem.conditions : theorem.conclusions);
+
+        // the array which keeps track of the dependencies
+        const dependencies: { object: Example, adjective: string }[] = [];
+
+        // case 1: the theorem was applied in the forward direction
+        const negated = proof.negated;
+        if (negated === undefined) {
+            for (const path in theoremConditions) {
+                const object = this.resolvePath(context, subject, path);
+                for (const adjective in theoremConditions[path])
+                    dependencies.push({ object, adjective });
+            }
+        }
+        // case 2: the theorem was applied in the backward direction
+        else {
+            // trace proof on the conclusion that was used to apply the negation of the theorem
+            dependencies.push({ object: this.resolvePath(context, subject, negated.path), adjective: negated.adjective });
+            // trace the proof on all conditions other than the one we are tracing
+            for (const path in theoremConditions) {
+                const obj = this.resolvePath(context, subject, path);
+                for (const adj in theoremConditions[path]) {
+                    if (obj != object || adj != adjective)
+                        dependencies.push({ object: obj, adjective: adj });
+                }
+            }
+        }
+
+        return dependencies;
     }
 };

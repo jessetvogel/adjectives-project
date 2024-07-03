@@ -1,4 +1,4 @@
-import { Book } from '../shared/core.js';
+import { Book, Proof } from '../shared/core.js';
 import { create, setText } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import { formatProof } from './formatter.js';
@@ -51,20 +51,9 @@ export function pageExample(summary: Book, options: any): HTMLElement {
             create('th', {}, 'Proof')
         ]));
 
-        const adjectiveValuePairs: { id: string, name: string, value: boolean | null }[] = []; // sort the adjectives based on name and value
-        for (const adjId in summary.adjectives[type])
-            adjectiveValuePairs.push({ id: adjId, name: summary.adjectives[type][adjId].name, value: data?.adjectives?.[adjId] });
-        adjectiveValuePairs.sort((a, b) => {
-            if (a.value == true && b.value != true) return -1;
-            if (a.value != true && b.value == true) return 1;
-            if (a.value == false && b.value == undefined) return -1;
-            if (a.value == undefined && b.value == false) return 1;
-            return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
-        });
-        for (const x of adjectiveValuePairs) {
-            const adjId = x.id;
-            const value = (x.value == true) ? 'true' : (x.value == false ? 'false' : 'unknown');
+        for (const adjId of adjectivesOrder(summary, type, id, data)) {
             const adjective = summary.adjectives[type][adjId];
+            const value = (data?.adjectives?.[adjId] ?? 'unknown').toString();
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', { class: value }, value),
@@ -87,4 +76,47 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     ]);
 
     return page;
+}
+
+function adjectivesOrder(summary: Book, type: string, id: string, data: any): string[] {
+    // If the proof of an adjective depends on another adjective, then it should be below that dependency. Keep track of these dependencies using 'depth'.
+    const depths: { [adj: string]: number } = {};
+
+    function computeDepth(adjective: string): void {
+        if (adjective in depths) return; // if depth was already computed, done
+        if (data?.adjectives?.[adjective] === undefined) {
+            depths[adjective] = 999999;
+            return;
+        }
+        if (data?.proofs?.[adjective] === undefined) { // if there is no proof, depth is zero
+            depths[adjective] = 0;
+            return;
+        }
+        const proof = data.proofs[adjective] as Proof;
+        if (typeof proof == 'string') { // if there is a proof by words, depth is also zero
+            depths[adjective] = 0;
+            return;
+        }
+        // console.log(proof);
+        // depths[adjective] = 1;
+
+        // TODO: use summary.traceProofDependencies
+        const dependencies = summary.traceProofDependencies(summary.examples, summary.examples[type][id], adjective, proof);
+        let depth = 1; // penalty of 1 because it is a deduction
+        for (const { object: obj, adjective: adj } of dependencies) {
+            if (obj.type == type && obj.id == id) { // only regard this example, because we have no access to proofs of other examples
+                computeDepth(adj);
+                depth = Math.max(depth, depths[adj] + 1);
+            }
+        }
+        depths[adjective] = depth;
+        return;
+    }
+
+    const adjectives = Object.keys(summary.adjectives[type]);
+    for (const adjective of adjectives)
+        computeDepth(adjective);
+    adjectives.sort((a, b) => depths[a] - depths[b]);
+
+    return adjectives;
 }

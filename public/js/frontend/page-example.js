@@ -31,7 +31,7 @@ export function pageExample(summary, options) {
     spanSubtitle.append(')');
     katexTypeset(spanSubtitle);
     fetch(`json/examples/${type}/${id}.json`, { cache: 'reload' }).then(response => response.json()).then(data => {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         // Update name span
         if ('name' in data)
             setText(spanName, data.name);
@@ -47,28 +47,13 @@ export function pageExample(summary, options) {
             create('th', {}, 'Value'),
             create('th', {}, 'Proof')
         ]));
-        const adjectiveValuePairs = []; // sort the adjectives based on name and value
-        for (const adjId in summary.adjectives[type])
-            adjectiveValuePairs.push({ id: adjId, name: summary.adjectives[type][adjId].name, value: (_a = data === null || data === void 0 ? void 0 : data.adjectives) === null || _a === void 0 ? void 0 : _a[adjId] });
-        adjectiveValuePairs.sort((a, b) => {
-            if (a.value == true && b.value != true)
-                return -1;
-            if (a.value != true && b.value == true)
-                return 1;
-            if (a.value == false && b.value == undefined)
-                return -1;
-            if (a.value == undefined && b.value == false)
-                return 1;
-            return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
-        });
-        for (const x of adjectiveValuePairs) {
-            const adjId = x.id;
-            const value = (x.value == true) ? 'true' : (x.value == false ? 'false' : 'unknown');
+        for (const adjId of adjectivesOrder(summary, type, id, data)) {
             const adjective = summary.adjectives[type][adjId];
+            const value = ((_b = (_a = data === null || data === void 0 ? void 0 : data.adjectives) === null || _a === void 0 ? void 0 : _a[adjId]) !== null && _b !== void 0 ? _b : 'unknown').toString();
             tableAdjectives.append(create('tr', {}, [
                 create('td', {}, navigation.anchorAdjective(adjective.type, adjId)),
                 create('td', { class: value }, value),
-                create('td', {}, (_c = formatProof(type, id, (_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjId])) !== null && _c !== void 0 ? _c : '')
+                create('td', {}, (_d = formatProof(type, id, (_c = data === null || data === void 0 ? void 0 : data.proofs) === null || _c === void 0 ? void 0 : _c[adjId])) !== null && _d !== void 0 ? _d : '')
             ]));
         }
         katexTypeset(tableAdjectives);
@@ -84,5 +69,45 @@ export function pageExample(summary, options) {
         tableAdjectives
     ]);
     return page;
+}
+function adjectivesOrder(summary, type, id, data) {
+    // If the proof of an adjective depends on another adjective, then it should be below that dependency. Keep track of these dependencies using 'depth'.
+    const depths = {};
+    function computeDepth(adjective) {
+        var _a, _b;
+        if (adjective in depths)
+            return; // if depth was already computed, done
+        if (((_a = data === null || data === void 0 ? void 0 : data.adjectives) === null || _a === void 0 ? void 0 : _a[adjective]) === undefined) {
+            depths[adjective] = 999999;
+            return;
+        }
+        if (((_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjective]) === undefined) { // if there is no proof, depth is zero
+            depths[adjective] = 0;
+            return;
+        }
+        const proof = data.proofs[adjective];
+        if (typeof proof == 'string') { // if there is a proof by words, depth is also zero
+            depths[adjective] = 0;
+            return;
+        }
+        // console.log(proof);
+        // depths[adjective] = 1;
+        // TODO: use summary.traceProofDependencies
+        const dependencies = summary.traceProofDependencies(summary.examples, summary.examples[type][id], adjective, proof);
+        let depth = 1; // penalty of 1 because it is a deduction
+        for (const { object: obj, adjective: adj } of dependencies) {
+            if (obj.type == type && obj.id == id) { // only regard this example, because we have no access to proofs of other examples
+                computeDepth(adj);
+                depth = Math.max(depth, depths[adj] + 1);
+            }
+        }
+        depths[adjective] = depth;
+        return;
+    }
+    const adjectives = Object.keys(summary.adjectives[type]);
+    for (const adjective of adjectives)
+        computeDepth(adjective);
+    adjectives.sort((a, b) => depths[a] - depths[b]);
+    return adjectives;
 }
 //# sourceMappingURL=page-example.js.map
