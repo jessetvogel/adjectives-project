@@ -26,14 +26,14 @@ git submodule update --init
 npm install
 ```
 
-**4.** Update the JSON files by running the following commands. For more details, see the 'Commands' section.
+<!-- **4.** Update the JSON files by running the following commands. For more details, see the 'Commands' section.
 ```
 npm run clear-json
 npm run update-json-from-yaml
 npm run deduce
-```
+``` -->
 
-**5.** Serve the `public` folder via an HTTP server. For instance, using Python, run the following command and visit the website via `https://127.0.0.1:8080`.
+**4.** Serve the `public` folder via an HTTP server. For instance, using Python, run the following command and visit the website via `https://127.0.0.1:8080`.
 ```
 python3 -m http.server -d public 8080
 ```
@@ -50,4 +50,8 @@ npm run update-json-from-yaml
 To deduce new properties for the examples, run the following command.
 ```
 npm run deduce
+```
+To automatically run `update-json-from-yaml` and `deduce` whenever a YAML file is changed, run the following command.
+```
+npm run watch-yaml
 ```
