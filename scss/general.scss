@@ -29,7 +29,7 @@ span.invalid {
 }
 
 a {
-    color: var(--color-blue);
+    color: var(--color-anchor);
     text-decoration: underline;
 
     // position: relative;
@@ -120,8 +120,9 @@ select {
     border: var(--border-input);
     box-shadow: var(--box-shadow-input);
     box-sizing: border-box;
-    background-color: var(--color-white);
+    background-color: var(--color-background-input);
     font-family: var(--font-main);
+    color: var(--color-text);
 }
 
 input[type="text"] {
@@ -132,6 +133,8 @@ input[type="text"] {
     font-size: inherit;
     outline: none;
     box-sizing: border-box;
+    background-color: var(--color-background-input);
+    color: var(--color-text);
 }
 
 p {

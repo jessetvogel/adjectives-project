@@ -13,6 +13,7 @@ body {
     font-family: var(--font-main);
     font-size: 1rem;
     background-color: var(--color-background);
+    color: var(--color-text);
 }
 
 nav {
@@ -23,7 +24,7 @@ nav {
     justify-content: center;
     box-shadow: var(--box-shadow-input);
     border-bottom: var(--border-input);
-    background-color: var(--color-light-gray);
+    background-color: var(--color-nav-background);
 
     button {
         display: block;
@@ -62,7 +63,7 @@ nav {
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.12));
 
     &.selected {
-        filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 1));
+        filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.24));
     }
 }
 

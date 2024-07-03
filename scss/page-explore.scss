@@ -76,7 +76,7 @@
                         border: var(--border-input);
                         box-shadow: var(--box-shadow-input);
                         box-sizing: border-box;
-                        background-color: white;
+                        background-color: var(--color-background-input);
                         background-size: 67%;
                         background-position: center;
                         background-repeat: no-repeat;
@@ -85,10 +85,12 @@
 
                 &.yes label::before {
                     background-image: url("../img/check.png");
+                    filter: var(--filter-invert-dark-theme);
                 }
 
                 &.no label::before {
                     background-image: url("../img/cross.png");
+                    filter: var(--filter-invert-dark-theme);
                 }
             }
         }

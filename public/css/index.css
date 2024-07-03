@@ -1,4 +1,4 @@
-:root {
+body {
   --color-black: #101010;
   --color-white: #ffffff;
   --color-blue: #1a7d8e;
@@ -16,12 +16,43 @@
   --color-nav-background: var(--color-light-gray);
   --color-text: var(--color-black);
   --color-text-inverted: var(--color-white);
+  --color-anchor: var(--color-blue);
   --color-focus-background: #1a7d8e66;
   --color-hover-background: rgba(127, 127, 127, 0.12);
   --font-main: "Palatino-Linotype";
   --font-typewriter: "Computer-Modern-Typewriter";
+  --color-background-input: white;
   --box-shadow-input: 0px 0px 5px rgba(0, 0, 0, 0.12);
   --border-input: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+body.dark {
+  --color-black: #101010;
+  --color-white: #e2e2e2;
+  --color-blue: #0a4f5a;
+  --color-yellow: #e2a32d;
+  --color-green: #a6f385;
+  --color-red: #eb8740;
+  --color-light-gray: #dddddd;
+  --color-gray: #7f7f7f;
+  --color-dark-gray: #233239;
+  --color-light-green: #a6f385;
+  --color-light-red: #eb8740;
+  --color-background: #242424;
+  --color-button: var(--color-background-input);
+  --color-button-hover: #696969;
+  --color-nav-background: #323232;
+  --color-text: var(--color-white);
+  --color-text-inverted: var(--color-white);
+  --color-anchor: #77c7d3;
+  --color-focus-background: #1a7d8e66;
+  --color-hover-background: rgba(127, 127, 127, 0.12);
+  --font-main: "Palatino-Linotype";
+  --font-typewriter: "Computer-Modern-Typewriter";
+  --color-background-input: #525252;
+  --box-shadow-input: 0px 0px 5px rgba(255, 255, 255, 0.12);
+  --border-input: 1px solid rgba(255, 255, 255, 0.125);
+  --filter-invert-dark-theme: invert(1.0);
 }
 
 @font-face {
@@ -78,7 +109,7 @@ span.invalid {
 }
 
 a {
-  color: var(--color-blue);
+  color: var(--color-anchor);
   text-decoration: underline;
 }
 
@@ -146,8 +177,9 @@ select {
   border: var(--border-input);
   box-shadow: var(--box-shadow-input);
   box-sizing: border-box;
-  background-color: var(--color-white);
+  background-color: var(--color-background-input);
   font-family: var(--font-main);
+  color: var(--color-text);
 }
 
 input[type=text] {
@@ -158,6 +190,8 @@ input[type=text] {
   font-size: inherit;
   outline: none;
   box-sizing: border-box;
+  background-color: var(--color-background-input);
+  color: var(--color-text);
 }
 
 p {
@@ -286,16 +320,18 @@ p {
   border: var(--border-input);
   box-shadow: var(--box-shadow-input);
   box-sizing: border-box;
-  background-color: white;
+  background-color: var(--color-background-input);
   background-size: 67%;
   background-position: center;
   background-repeat: no-repeat;
 }
 .page-explore .context .column-adjectives > div.yes label::before {
   background-image: url("../img/check.png");
+  filter: var(--filter-invert-dark-theme);
 }
 .page-explore .context .column-adjectives > div.no label::before {
   background-image: url("../img/cross.png");
+  filter: var(--filter-invert-dark-theme);
 }
 .page-explore .context .column-objects > div {
   text-align: center;
@@ -399,6 +435,7 @@ body::after {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.5;
+  filter: var(--filter-invert-dark-theme);
 }
 .page-data .progress {
   float: right;
@@ -428,7 +465,7 @@ body::after {
   border: var(--border-input);
   border-radius: 4px;
   padding: 8px 12px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: color-mix(in srgb, var(--color-background) 75%, rgba(127, 127, 127, 0));
 }
 .page-graph .graph .arrow {
   z-index: -1;
@@ -458,6 +495,7 @@ body {
   font-family: var(--font-main);
   font-size: 1rem;
   background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 nav {
@@ -468,7 +506,7 @@ nav {
   justify-content: center;
   box-shadow: var(--box-shadow-input);
   border-bottom: var(--border-input);
-  background-color: var(--color-light-gray);
+  background-color: var(--color-nav-background);
 }
 nav button {
   display: block;
@@ -504,7 +542,7 @@ nav button.selected {
   filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.12));
 }
 #button-home.selected {
-  filter: drop-shadow(0px 0px 5px white);
+  filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.24));
 }
 
 .page {
