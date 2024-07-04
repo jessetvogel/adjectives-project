@@ -17,7 +17,7 @@ export function pageExplore(summary, options) {
     addClass(aHelp, 'help');
     pageElem.append(create('div', { class: 'type-selection' }, [
         create('span', {}, 'I am looking for a '),
-        selectElem,
+        create('label', {}, selectElem),
         aHelp // .outerHTML // removes onclick
     ]));
     // Column of objects and column of adjectives

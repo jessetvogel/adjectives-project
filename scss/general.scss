@@ -123,6 +123,10 @@ select {
     background-color: var(--color-background-input);
     font-family: var(--font-main);
     color: var(--color-text);
+
+    &::after {
+        content: '';
+    }
 }
 
 input[type="text"] {

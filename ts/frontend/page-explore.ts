@@ -20,7 +20,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
     addClass(aHelp, 'help');
     pageElem.append(create('div', { class: 'type-selection' }, [
         create('span', {}, 'I am looking for a '),
-        selectElem,
+        create('label', {}, selectElem),
         aHelp // .outerHTML // removes onclick
     ]));
 

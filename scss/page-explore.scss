@@ -14,11 +14,29 @@
             margin-left: auto;
         }
 
-        select {
-            height: 40px;
-            padding-left: 8px;
+        label {
+            position: relative;
             margin-right: auto;
-            font-size: 1rem;
+
+            select {
+                appearance: none;
+                height: 40px;
+                padding-left: 8px;
+                font-size: 1rem;
+                padding-right: 28px;
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: 8px;
+                top: 14px;
+                border: solid var(--color-text);
+                border-width: 0 3px 3px 0;
+                display: inline-block;
+                padding: 3px;
+                transform: rotate(45deg);
+            }
         }
 
         a.help {

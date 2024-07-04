@@ -181,6 +181,9 @@ select {
   font-family: var(--font-main);
   color: var(--color-text);
 }
+select::after {
+  content: "";
+}
 
 input[type=text] {
   border: var(--border-input);
@@ -276,11 +279,27 @@ ol li::marker {
 .page-explore .type-selection span {
   margin-left: auto;
 }
-.page-explore .type-selection select {
+.page-explore .type-selection label {
+  position: relative;
+  margin-right: auto;
+}
+.page-explore .type-selection label select {
+  appearance: none;
   height: 40px;
   padding-left: 8px;
-  margin-right: auto;
   font-size: 1rem;
+  padding-right: 28px;
+}
+.page-explore .type-selection label::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 14px;
+  border: solid var(--color-text);
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
 }
 .page-explore .type-selection a.help {
   margin-right: 8px;
