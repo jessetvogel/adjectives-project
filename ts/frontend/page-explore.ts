@@ -1,4 +1,4 @@
-import { Context, Book } from '../shared/core.js';
+import { Context, Book, Proof, Example } from '../shared/core.js';
 import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
@@ -192,7 +192,7 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
     const results = assistant.search(context);
 
     if (results.length == 0) {
-        resultsElem.append(create('p', {}, [
+        resultsElem.append(create('p', { class: 'center' }, [
             'No examples found of ',
             formatContext(summary, context),
             '.'
@@ -200,7 +200,7 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
     }
     else {
         // The following are examples of {{ a ${type} which is [...], and whose source is [...], and whose target is [...] }}.
-        resultsElem.append(create('p', {}, [
+        resultsElem.append(create('p', { class: 'center' }, [
             'The following are examples of ',
             formatContext(summary, context),
             '.'
@@ -236,17 +236,17 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
 function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void {
     clear(resultsElem);
 
+    const contextCopy = structuredClone(context); // NOTE: the conclusions must not pollute the original context
     try {
-        const contextCopy = structuredClone(context); // NOTE: the conclusions must not pollute the original context
         const assistant = new Assistant(summary);
         const conclusions = assistant.deduce(contextCopy);
 
         if (conclusions.length == 0) {
-            resultsElem.append(create('p', {}, 'No new conclusions could be made.'));
+            resultsElem.append(create('p', { class: 'center' }, 'No new conclusions could be made.'));
         }
         else {
             // Given {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}, the following conclusions hold.
-            resultsElem.append(create('p', {}, [
+            resultsElem.append(create('p', { class: 'center' }, [
                 'The following conclusions follow from ',
                 formatContext(summary, context),
                 '.'
@@ -272,10 +272,22 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
     catch (err) {
         if (err instanceof ContradictionError) {
             resultsElem.append(create('span', { class: 'title' }, 'Contradiction!'));
-            resultsElem.append(create('p', {}, [
+            resultsElem.append(create('p', { class: 'center' }, [
                 'A contradiction follows from ',
                 formatContext(summary, context),
                 '.'
+            ]));
+            resultsElem.append(create('div', { style: 'max-width: 800px;' }, [
+                create('p', {}, [
+                    'Namely, the ',
+                    ...formatStatement(summary, err.conclusion.object, [err.conclusion.adjective]),
+                    ' by ',
+                    formatProofTrace(summary.traceProof(contextCopy, err.conclusion.object, err.conclusion.adjective))
+                ]),
+                create('p', {}, [
+                    'However, the converse follows by ',
+                    formatProofTrace(summary.traceProof(contextCopy, err.conclusion.object, err.conclusion.adjective, err.proof))
+                ])
             ]));
         }
     }
@@ -287,4 +299,37 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
 function updateHistory(context: Context, action: 'search' | 'deduce' | null = null): void {
     const url = `?page=explore&q=${serializeContext(context)}${action != null ? '&action=' + action : ''}`;
     window.history.replaceState({}, '', url);
+}
+
+function formatProofTrace(steps: Proof[]): HTMLElement {
+    const items: (HTMLElement | string)[][] = [];
+    for (const step of steps)
+        items.push(['applying ', step.negated ? 'the negation of ' : '', navigation.anchorTheorem(step.type, step.theorem), ' to the ', step.subject]);
+
+    for (let i = 0; i < items.length; ++i) // add puncutation
+        items[i].push((i < items.length - 1) ? ',' : '.');
+
+    if (steps.length == 0) return create('span', {}, 'assumption.');
+    if (steps.length == 1) return create('span', {}, items[0]);
+
+    return create('ol', {}, items.map(item => create('li', {}, item)));
+}
+
+function formatStatement(summary: Book, object: Example, adjectives: string[]): (HTMLElement | string)[] {
+    const type = object.type;
+    const elems: (HTMLElement | string)[] = [];
+    elems.push(object.name, ' ');
+    const adjectivesTotal = adjectives.length;
+    let adjectivesCount = 0;
+    for (const adjId of adjectives) {
+        if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1) elems.push(', ');
+        if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1) elems.push(' and ');
+        const adjective = summary.adjectives[type][adjId];
+        const value = object.adjectives[adjId];
+        const verbs = adjective.verb ?? ['is', 'is not'];
+        elems.push(value ? verbs[0] : verbs[1], ' ', navigation.anchorAdjective(type, adjId));
+        ++adjectivesCount;
+    }
+
+    return elems;
 }

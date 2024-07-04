@@ -60,9 +60,14 @@ export type Conclusion = { object: Example, adjective: string, value: boolean };
 export type DeduceOptions = { types?: string[], ids?: string[], excludeTheorems?: Theorem[] };
 
 export class ContradictionError extends Error {
-    constructor(message: string) {
+    conclusion: Conclusion;
+    proof: Proof;
+
+    constructor(message: string, conclusion: Conclusion, proof: Proof) {
         super(message);
         this.name = 'ContradictionError';
+        this.conclusion = conclusion;
+        this.proof = proof;
     }
 };
 
@@ -194,7 +199,11 @@ export class Assistant {
                 for (const adjective in theoremConclusions[path]) {
                     const value = theoremConclusions[path][adjective];
                     if (adjective in object.adjectives && object.adjectives[adjective] != value)
-                        throw new ContradictionError(`in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
+                        throw new ContradictionError(
+                            `in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`,
+                            { object, adjective, value },
+                            { type, theorem: theorem.id, subject: subject.id, converse }
+                        );
                     // console.log(`🚨 Contradiction: in applying theorem '${theorem.id}' to object '${subject.id}' of type '${type}'`);
                     if (!(adjective in object.adjectives)) // only push the conclusions that are new
                         conclusions.push({ object, adjective, value });

@@ -182,3 +182,15 @@ p {
         opacity: 0;
     }
 }
+
+ol {
+    list-style-position: inside;
+
+    li::marker {
+        color: var(--color-gray);
+    }
+}
+
+.center {
+    text-align: center;
+}

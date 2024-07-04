@@ -238,6 +238,17 @@ p {
     opacity: 0;
   }
 }
+ol {
+  list-style-position: inside;
+}
+ol li::marker {
+  color: var(--color-gray);
+}
+
+.center {
+  text-align: center;
+}
+
 .page-example .arguments {
   display: block;
   text-align: center;
@@ -381,14 +392,8 @@ p {
 .page-explore .context .column-objects > div .adjectives:not(:empty)::before {
   content: "(";
 }
-.page-explore .results .result {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 8px;
-}
 .page-explore .results p {
-  text-align: center;
+  padding: 0px 4px;
 }
 .page-explore .results .table-scroll-wrapper {
   padding: 0px 4px;

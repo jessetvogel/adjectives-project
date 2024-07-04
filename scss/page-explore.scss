@@ -163,15 +163,8 @@
     }
 
     .results {
-        .result {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
         p {
-            text-align: center;
+            padding: 0px 4px;
         }
 
         .table-scroll-wrapper {

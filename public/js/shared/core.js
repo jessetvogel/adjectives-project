@@ -413,14 +413,15 @@ export class Book {
         addType(type, id, this.types[type].name);
         return context;
     }
-    traceProof(context, object, adjective) {
+    traceProof(context, object, adjective, proofHint) {
         var _a;
-        const proof = (_a = object.proofs[adjective]) !== null && _a !== void 0 ? _a : null;
+        // use proof hint if provided, otherwise the use proof as in this book
+        const proof = (_a = proofHint !== null && proofHint !== void 0 ? proofHint : object.proofs[adjective]) !== null && _a !== void 0 ? _a : null;
         if (proof == null || typeof proof == 'string')
             return [];
         const steps = [];
         // trace the proofs of all dependencies
-        for (const { object: obj, adjective: adj } of this.traceProofDependencies(context, object, adjective))
+        for (const { object: obj, adjective: adj } of this.traceProofDependencies(context, object, adjective, proof))
             steps.push(...this.traceProof(context, obj, adj));
         // do not forget to add the last (current) step in the proof:
         steps.push(proof);
