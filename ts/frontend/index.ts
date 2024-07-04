@@ -1,4 +1,4 @@
-import { $, create } from './util.js';
+import { $, addClass, create, getCookie, hasClass, setCookie, toggleClass } from './util.js';
 import { Book } from '../shared/core.js';
 import navigation from './navigation.js';
 
@@ -32,6 +32,18 @@ async function main() {
 
     // Initialize navigation
     navigation.init(summary, $('content') as HTMLElement);
+
+    // Light/dark theme trick
+    const buttonHome = $('button-home') as HTMLButtonElement;
+    buttonHome.onpointerdown = () => {
+        const t = setTimeout(() => {
+            toggleClass(document.body, 'dark');
+            setCookie('theme', hasClass(document.body, 'dark') ? 'dark' : 'light', 365);
+        }, 2000);
+        buttonHome.onpointerup = () => clearTimeout(t);
+    };
+    if (getCookie('theme') == 'dark')
+        addClass(document.body, 'dark');
 }
 
 window.onload = main;

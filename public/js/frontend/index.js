@@ -1,4 +1,4 @@
-import { $, create } from './util.js';
+import { $, addClass, create, getCookie, hasClass, setCookie, toggleClass } from './util.js';
 import { Book } from '../shared/core.js';
 import navigation from './navigation.js';
 let summary;
@@ -28,6 +28,17 @@ async function main() {
     }
     // Initialize navigation
     navigation.init(summary, $('content'));
+    // Light/dark theme trick
+    const buttonHome = $('button-home');
+    buttonHome.onpointerdown = () => {
+        const t = setTimeout(() => {
+            toggleClass(document.body, 'dark');
+            setCookie('theme', hasClass(document.body, 'dark') ? 'dark' : 'light', 365);
+        }, 2000);
+        buttonHome.onpointerup = () => clearTimeout(t);
+    };
+    if (getCookie('theme') == 'dark')
+        addClass(document.body, 'dark');
 }
 window.onload = main;
 //# sourceMappingURL=index.js.map

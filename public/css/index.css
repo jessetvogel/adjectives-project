@@ -219,7 +219,7 @@ p {
   height: 64px;
   border-radius: 32px;
   opacity: 0;
-  background-color: black;
+  background-color: var(--color-text);
   animation: loading 0.8s infinite;
   animation-delay: 0.2s;
   margin-left: auto;

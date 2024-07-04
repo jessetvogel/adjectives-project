@@ -124,4 +124,20 @@ export function requestHEAD(url) {
 export function cssVariable(name) {
     return getComputedStyle(document.body).getPropertyValue(name);
 }
+export function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
+}
+export function getCookie(name) {
+    const cookies = decodeURIComponent(document.cookie).split(';');
+    const needle = `${name}=`;
+    for (let c of cookies) {
+        while (c.charAt(0) == ' ')
+            c = c.substring(1);
+        if (c.indexOf(needle) == 0)
+            return c.substring(needle.length, c.length);
+    }
+    return null;
+}
 //# sourceMappingURL=util.js.map
