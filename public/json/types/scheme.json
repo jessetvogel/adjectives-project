@@ -1,1 +1,1 @@
-{"type":"type","name":"scheme"}
+{"type":"type","name":"scheme","description":"A scheme is a locally ringed space $(X, \\mathcal{O}_X)$ in which every point has an open neighborhood $U$ such that $(U, \\mathcal{O}_X|_U)$ is isomorphic to the spectrum of a ring."}

@@ -70,7 +70,6 @@ export function pageAdjective(summary: Book, options: any): HTMLElement {
         console.log(`[ERROR] ${error}`);
     });
 
-
     page.append(...[
         create('span', { class: 'title' }, [
             spanName,

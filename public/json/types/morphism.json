@@ -1,1 +1,1 @@
-{"type":"type","name":"morphism","parameters":{"source":"scheme","target":"scheme"}}
+{"type":"type","name":"morphism","parameters":{"source":"scheme","target":"scheme"},"description":"A morphism of schemes is a morphism of locally ringed spaces."}
