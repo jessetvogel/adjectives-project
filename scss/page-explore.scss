@@ -27,7 +27,7 @@
             }
 
             &::after {
-                content: '';
+                content: "";
                 position: absolute;
                 right: 8px;
                 top: 14px;
@@ -101,14 +101,22 @@
                     }
                 }
 
-                &.yes label::before {
-                    background-image: url("../img/check.png");
-                    filter: var(--filter-invert-dark-theme);
+                &.yes {
+                    color: var(--color-green);
+
+                    label::before {
+                        background-image: url("../img/check.png");
+                        filter: var(--filter-invert-dark-theme);
+                    }
                 }
 
-                &.no label::before {
-                    background-image: url("../img/cross.png");
-                    filter: var(--filter-invert-dark-theme);
+                &.no {
+                    color: var(--color-red);
+
+                    label::before {
+                        background-image: url("../img/cross.png");
+                        filter: var(--filter-invert-dark-theme);
+                    }
                 }
             }
         }

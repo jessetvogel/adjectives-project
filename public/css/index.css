@@ -120,7 +120,7 @@ button {
   border: var(--border-input);
   box-sizing: border-box;
   padding: 4px 12px;
-  margin: 8px 0px;
+  margin: 8px;
   line-height: 24px;
   font-family: var(--font-main);
   font-size: 1rem;
@@ -355,9 +355,15 @@ ol li::marker {
   background-position: center;
   background-repeat: no-repeat;
 }
+.page-explore .context .column-adjectives > div.yes {
+  color: var(--color-green);
+}
 .page-explore .context .column-adjectives > div.yes label::before {
   background-image: url("../img/check.png");
   filter: var(--filter-invert-dark-theme);
+}
+.page-explore .context .column-adjectives > div.no {
+  color: var(--color-red);
 }
 .page-explore .context .column-adjectives > div.no label::before {
   background-image: url("../img/cross.png");
