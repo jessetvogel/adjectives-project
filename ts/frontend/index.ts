@@ -1,4 +1,4 @@
-import { $, addClass, create, getCookie, hasClass, setCookie, toggleClass } from './util.js';
+import { $, addClass, create, getCookie, hasClass, onClick, setCookie, toggleClass } from './util.js';
 import { Book } from '../shared/core.js';
 import navigation from './navigation.js';
 
@@ -33,17 +33,25 @@ async function main() {
     // Initialize navigation
     navigation.init(summary, $('content') as HTMLElement);
 
-    // Light/dark theme trick
-    const buttonHome = $('button-home') as HTMLButtonElement;
-    buttonHome.onpointerdown = () => {
-        const t = setTimeout(() => {
-            toggleClass(document.body, 'dark');
-            setCookie('theme', hasClass(document.body, 'dark') ? 'dark' : 'light', 365);
-        }, 2000);
-        buttonHome.onpointerup = () => clearTimeout(t);
-    };
+    // Initialize theme
+    initTheme();
+}
+
+function initTheme(): void {
+    // toggle theme by clicking button
+    const buttonTheme = $('button-theme') as HTMLButtonElement;
+    onClick(buttonTheme, () => {
+        toggleClass(document.body, 'dark');
+        setCookie('theme', hasClass(document.body, 'dark') ? 'dark' : 'light', 365);
+    });
+    // set initial theme by cookie
     if (getCookie('theme') == 'dark')
         addClass(document.body, 'dark');
+    // little hack to prevent initial transition, but it works
+    setTimeout(function () {
+        const sheet = window.document.styleSheets[0];
+        sheet.insertRule('* { transition: background-color 0.2s, color 0.2s; }', sheet.cssRules.length);
+    }, 100);
 }
 
 window.onload = main;

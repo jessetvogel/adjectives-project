@@ -49,6 +49,24 @@ nav {
             color: var(--color-text-inverted);
         }
     }
+
+    #button-theme {
+        width: 48px;
+        height: 48px;
+        line-height: 48px;
+        text-align: center;
+        background-image: var(--background-image-theme);
+        background-position: center;
+        background-size: 50%;
+        background-repeat: no-repeat;
+        opacity: 0.25;
+        transition: opacity 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.67;
+        }
+    }
 }
 
 #button-home {

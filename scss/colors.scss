@@ -28,6 +28,8 @@ body {
     --color-background-input: white;
     --box-shadow-input: 0px 0px 5px rgba(0, 0, 0, 0.12);
     --border-input: 1px solid rgba(0, 0, 0, 0.125);
+
+    --background-image-theme: url("../img/moon.png");
 }
 
 body.dark {
@@ -61,5 +63,7 @@ body.dark {
     --box-shadow-input: 0px 0px 5px rgba(255, 255, 255, 0.12);
     --border-input: 1px solid rgba(255, 255, 255, 0.125);
 
-    --filter-invert-dark-theme: invert(1.0);
+    --filter-invert-dark-theme: invert(1);
+
+    --background-image-theme: url("../img/sun.png");
 }

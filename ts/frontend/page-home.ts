@@ -6,7 +6,7 @@ export function pageHome(): HTMLElement {
         create('span', { class: 'title' }, 'Welcome 👋'),
         create('p', { style: 'text-align: justify' },
             'Welcome to the <i>Adjectives Project</i>! On this website you can search for examples of schemes and morphisms based on combinations of adjectives. Also, you can see which properties automatically follow from your given assumptions.'),
-        create('p', { style: 'text-align: justify' }, 'Click \'Explore\' to get started, or check out one of the below examples.'),
+        create('p', { style: 'text-align: justify' }, 'Click \'Explore\' to get started, or check out one of the examples below.'),
         create('p', { class: 'center' }, [
             create('button', {
                 '@click': () => navigation.navigate('?page=explore&q=eyJ0eXBlIjoic2NoZW1lIiwiIGludGVncmFsIjpmYWxzZSwiIGlycmVkdWNpYmxlIjp0cnVlfQ==&action=search', {})

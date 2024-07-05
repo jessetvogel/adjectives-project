@@ -24,6 +24,7 @@ body {
   --color-background-input: white;
   --box-shadow-input: 0px 0px 5px rgba(0, 0, 0, 0.12);
   --border-input: 1px solid rgba(0, 0, 0, 0.125);
+  --background-image-theme: url("../img/moon.png");
 }
 
 body.dark {
@@ -52,7 +53,8 @@ body.dark {
   --color-background-input: #525252;
   --box-shadow-input: 0px 0px 5px rgba(255, 255, 255, 0.12);
   --border-input: 1px solid rgba(255, 255, 255, 0.125);
-  --filter-invert-dark-theme: invert(1.0);
+  --filter-invert-dark-theme: invert(1);
+  --background-image-theme: url("../img/sun.png");
 }
 
 @font-face {
@@ -560,6 +562,22 @@ nav button:hover {
 nav button.selected {
   background-color: var(--color-blue);
   color: var(--color-text-inverted);
+}
+nav #button-theme {
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  background-image: var(--background-image-theme);
+  background-position: center;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  opacity: 0.25;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+nav #button-theme:hover {
+  opacity: 0.67;
 }
 
 #button-home {
