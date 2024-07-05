@@ -120,7 +120,6 @@ button {
   border: var(--border-input);
   box-sizing: border-box;
   padding: 4px 12px;
-  margin: 8px;
   line-height: 24px;
   font-family: var(--font-main);
   font-size: 1rem;
@@ -250,6 +249,10 @@ ol li::marker {
 
 .center {
   text-align: center;
+}
+
+.page-home button {
+  margin: 8px 0px;
 }
 
 .page-example .arguments {
