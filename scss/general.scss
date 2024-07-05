@@ -47,15 +47,16 @@ a {
 }
 
 button {
-    height: 32px;
+    // height: 32px;
     border-radius: 4px;
     background-color: var(--color-button);
     color: var(--color-text);
     // box-shadow: var(--box-shadow-input);
     border: var(--border-input);
     box-sizing: border-box;
-    padding: 0px 12px;
-    line-height: 32px;
+    padding: 4px 12px;
+    margin: 8px;
+    line-height: 24px;
     font-family: var(--font-main);
     font-size: 1rem;
     text-align: center;

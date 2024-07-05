@@ -210,7 +210,7 @@ function search(summary, context, resultsElem) {
         katexTypeset(resultsElem);
     }
     // scroll into view
-    resultsElem.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 function deduce(summary, context, resultsElem) {
     var _a;
@@ -269,7 +269,7 @@ function deduce(summary, context, resultsElem) {
         }
     }
     // scroll into view
-    resultsElem.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 function updateHistory(context, action = null) {
     const url = `?page=explore&q=${serializeContext(context)}${action != null ? '&action=' + action : ''}`;

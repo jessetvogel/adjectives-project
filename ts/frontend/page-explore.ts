@@ -230,7 +230,7 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
     }
 
     // scroll into view
-    resultsElem.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 
 function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void {
@@ -293,7 +293,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
     }
 
     // scroll into view
-    resultsElem.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 
 function updateHistory(context: Context, action: 'search' | 'deduce' | null = null): void {
