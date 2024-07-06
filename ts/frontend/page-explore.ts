@@ -72,6 +72,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
                     .map(elem => elem.outerHTML)
                     .join(', ')
             );
+            katexTypeset(div);
         }
 
         // Update adjectives column
@@ -99,6 +100,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
                     updateWithContext(context);
                 });
                 adjectivesElem.append(itemElem);
+                katexTypeset(itemElem);
             }
         }
         updateHistory(context);
@@ -225,9 +227,9 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
         }
         const divTableWrapper = create('div', { class: 'table-scroll-wrapper' }, tableElem); // wrap table so that we can scroll horizontally if needed
         resultsElem.append(divTableWrapper);
-
-        katexTypeset(resultsElem);
     }
+
+    katexTypeset(resultsElem);
 
     // scroll into view
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
@@ -291,6 +293,8 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
             ]));
         }
     }
+
+    katexTypeset(resultsElem);
 
     // scroll into view
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);

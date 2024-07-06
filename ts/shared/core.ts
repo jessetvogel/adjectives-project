@@ -355,6 +355,9 @@ export class Book {
             return;
         }
 
+        if (type.includes(' '))
+            throw new Error(`Invalid type '${type}'`);
+
         { // parse examples
             const example = this.deserializeExample(id, data);
 
