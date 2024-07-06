@@ -64,6 +64,7 @@ export function pageExplore(summary, options) {
                 .map(elem => elem.outerHTML)
                 .join(', '));
         }
+        katexTypeset(objectsElem);
         // Update adjectives column
         const selectedElem = objectsElem.querySelector('.selected');
         if (selectedElem) {
@@ -91,6 +92,7 @@ export function pageExplore(summary, options) {
                 });
                 adjectivesElem.append(itemElem);
             }
+            katexTypeset(adjectivesElem);
         }
         updateHistory(context);
     }
@@ -207,8 +209,8 @@ function search(summary, context, resultsElem) {
         }
         const divTableWrapper = create('div', { class: 'table-scroll-wrapper' }, tableElem); // wrap table so that we can scroll horizontally if needed
         resultsElem.append(divTableWrapper);
-        katexTypeset(resultsElem);
     }
+    katexTypeset(resultsElem);
     // scroll into view
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
@@ -268,6 +270,7 @@ function deduce(summary, context, resultsElem) {
             ]));
         }
     }
+    katexTypeset(resultsElem);
     // scroll into view
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }

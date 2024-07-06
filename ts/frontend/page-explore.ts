@@ -72,8 +72,8 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
                     .map(elem => elem.outerHTML)
                     .join(', ')
             );
-            katexTypeset(div);
         }
+        katexTypeset(objectsElem);
 
         // Update adjectives column
         const selectedElem = objectsElem.querySelector('.selected');
@@ -100,8 +100,8 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
                     updateWithContext(context);
                 });
                 adjectivesElem.append(itemElem);
-                katexTypeset(itemElem);
             }
+            katexTypeset(adjectivesElem);
         }
         updateHistory(context);
     }
