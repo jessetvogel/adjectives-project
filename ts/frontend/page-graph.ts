@@ -158,10 +158,8 @@ export function pageGraph(summary: Book, options?: any): HTMLElement {
     }
 
     function updateArrows() {
-        if (!document.body.contains(divGraph)) {
+        if (!document.body.contains(divGraph))
             window.removeEventListener('resize', updateArrows);
-            console.log('Removed event listnere!')
-        }
 
         const boxBody = document.body.getBoundingClientRect();
 

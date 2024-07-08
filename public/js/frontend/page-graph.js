@@ -144,10 +144,8 @@ export function pageGraph(summary, options) {
         }
     }
     function updateArrows() {
-        if (!document.body.contains(divGraph)) {
+        if (!document.body.contains(divGraph))
             window.removeEventListener('resize', updateArrows);
-            console.log('Removed event listnere!');
-        }
         const boxBody = document.body.getBoundingClientRect();
         for (const [arrow, source, target] of arrows) {
             const boxSource = source.getBoundingClientRect();
