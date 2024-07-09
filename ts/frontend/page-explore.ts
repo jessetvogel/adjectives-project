@@ -305,22 +305,3 @@ function updateHistory(context: Context, action: 'search' | 'deduce' | null = nu
     const url = `?page=explore&q=${serializeContext(context)}${action != null ? '&action=' + action : ''}`;
     window.history.replaceState({}, '', url);
 }
-
-// function formatStatement(summary: Book, object: Example, adjectives: string[]): (HTMLElement | string)[] {
-//     const type = object.type;
-//     const elems: (HTMLElement | string)[] = [];
-//     elems.push(object.name, ' ');
-//     const adjectivesTotal = adjectives.length;
-//     let adjectivesCount = 0;
-//     for (const adjId of adjectives) {
-//         if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1) elems.push(', ');
-//         if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1) elems.push(' and ');
-//         const adjective = summary.adjectives[type][adjId];
-//         const value = object.adjectives[adjId];
-//         const verbs = adjective.verb ?? ['is', 'is not'];
-//         elems.push(value ? verbs[0] : verbs[1], ' ', navigation.anchorAdjective(type, adjId));
-//         ++adjectivesCount;
-//     }
-
-//     return elems;
-// }

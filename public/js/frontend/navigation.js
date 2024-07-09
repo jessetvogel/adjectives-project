@@ -10,7 +10,6 @@ import { pageHelp } from './page-help.js';
 import { $$, clear, create, onClick, addClass, removeClass } from './util.js';
 import { pageQuestions } from './page-questions.js';
 import { pageGraph } from './page-graph.js';
-import { pageCompare } from './page-compare.js';
 let summary;
 let content;
 function navigateCallback(state) {
@@ -31,7 +30,6 @@ function navigateCallback(state) {
         case 'help': return setContent(pageHelp());
         case 'questions': return setContent(pageQuestions(summary));
         case 'graph': return setContent(pageGraph(summary, query));
-        case 'compare': return setContent(pageCompare(summary, query));
     }
     setContent(create('div', { class: 'page' }, [
         create('span', { class: 'title' }, '🥺 Page not found..')
