@@ -2,7 +2,7 @@ import { Context, Book, Proof, Example } from '../shared/core.js';
 import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
-import { formatContext, formatProof } from './formatter.js';
+import { formatContext, formatProof, formatStepByStepProof, formatAdjectivesDescription } from './formatter.js';
 import navigation from './navigation.js';
 
 export function pageExplore(summary: Book, options: any): HTMLElement {
@@ -279,16 +279,17 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
                 formatContext(summary, context),
                 '.'
             ]));
+            const object = err.conclusion.object;
             resultsElem.append(create('div', { style: 'max-width: 800px;' }, [
                 create('p', {}, [
-                    'Namely, the ',
-                    ...formatStatement(summary, err.conclusion.object, [err.conclusion.adjective]),
+                    'Namely, the ', object.name, ' ',
+                    formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: object.adjectives[err.conclusion.adjective] }),
                     ' by ',
-                    formatProofTrace(summary.traceProof(contextCopy, err.conclusion.object, err.conclusion.adjective))
+                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective))
                 ]),
                 create('p', {}, [
                     'However, the converse follows by ',
-                    formatProofTrace(summary.traceProof(contextCopy, err.conclusion.object, err.conclusion.adjective, err.proof))
+                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective, err.proof))
                 ])
             ]));
         }
@@ -305,35 +306,21 @@ function updateHistory(context: Context, action: 'search' | 'deduce' | null = nu
     window.history.replaceState({}, '', url);
 }
 
-function formatProofTrace(steps: Proof[]): HTMLElement {
-    const items: (HTMLElement | string)[][] = [];
-    for (const step of steps)
-        items.push(['applying ', step.negated ? 'the negation of ' : '', navigation.anchorTheorem(step.type, step.theorem), ' to the ', step.subject]);
+// function formatStatement(summary: Book, object: Example, adjectives: string[]): (HTMLElement | string)[] {
+//     const type = object.type;
+//     const elems: (HTMLElement | string)[] = [];
+//     elems.push(object.name, ' ');
+//     const adjectivesTotal = adjectives.length;
+//     let adjectivesCount = 0;
+//     for (const adjId of adjectives) {
+//         if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1) elems.push(', ');
+//         if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1) elems.push(' and ');
+//         const adjective = summary.adjectives[type][adjId];
+//         const value = object.adjectives[adjId];
+//         const verbs = adjective.verb ?? ['is', 'is not'];
+//         elems.push(value ? verbs[0] : verbs[1], ' ', navigation.anchorAdjective(type, adjId));
+//         ++adjectivesCount;
+//     }
 
-    for (let i = 0; i < items.length; ++i) // add puncutation
-        items[i].push((i < items.length - 1) ? ',' : '.');
-
-    if (steps.length == 0) return create('span', {}, 'assumption.');
-    if (steps.length == 1) return create('span', {}, items[0]);
-
-    return create('ol', {}, items.map(item => create('li', {}, item)));
-}
-
-function formatStatement(summary: Book, object: Example, adjectives: string[]): (HTMLElement | string)[] {
-    const type = object.type;
-    const elems: (HTMLElement | string)[] = [];
-    elems.push(object.name, ' ');
-    const adjectivesTotal = adjectives.length;
-    let adjectivesCount = 0;
-    for (const adjId of adjectives) {
-        if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1) elems.push(', ');
-        if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1) elems.push(' and ');
-        const adjective = summary.adjectives[type][adjId];
-        const value = object.adjectives[adjId];
-        const verbs = adjective.verb ?? ['is', 'is not'];
-        elems.push(value ? verbs[0] : verbs[1], ' ', navigation.anchorAdjective(type, adjId));
-        ++adjectivesCount;
-    }
-
-    return elems;
-}
+//     return elems;
+// }

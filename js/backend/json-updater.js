@@ -5,19 +5,18 @@ function updateObject(source, target) {
     let changes = false;
     for (const key in target) {
         if (!(key in source)) {
-            source[key] = target[key]; // NOTE: probably safer to make a copy, but we never write in source[key] again
+            source[key] = target[key];
             changes = true;
         }
-        // check type compatibility
         const typeSourceKey = typeof source[key];
         const typeTargetKey = typeof target[key];
         if (typeSourceKey != typeTargetKey)
             throw new Error(`Cannot update field '${key}' of type '${typeSourceKey}' with object of type '${typeTargetKey}'`);
-        if (typeSourceKey == 'object') { // update objects or arrays
+        if (typeSourceKey == 'object') {
             if (updateObject(source[key], target[key]))
                 changes = true;
         }
-        else { // update string, number of booleans
+        else {
             if (source[key] != target[key]) {
                 source[key] = target[key];
                 changes = true;
@@ -27,7 +26,6 @@ function updateObject(source, target) {
     return changes;
 }
 function updateJSONFile(filePath, data) {
-    // Update the json file with data, but also keep the original data (overwrite when applies)
     try {
         let json;
         let changes;
@@ -53,7 +51,6 @@ function updateSummary(book) {
     updateJSONFile(PATH_SUMMARY, book.serialize());
 }
 export function updateJSON(book) {
-    // Update all json files
     for (const id in book.types)
         updateJSONFile(`${PATH_JSON}/types/${id}.json`, book.serializeType(book.types[id], true));
     for (const type in book.adjectives)
@@ -65,7 +62,6 @@ export function updateJSON(book) {
     for (const type in book.examples)
         for (const id in book.examples[type])
             updateJSONFile(`${PATH_JSON}/examples/${type}/${id}.json`, book.serializeExample(book.examples[type][id], true));
-    // Update the summary file
     updateSummary(book);
 }
 export function updateQuestions(questions) {

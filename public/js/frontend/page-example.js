@@ -14,7 +14,6 @@ export function pageExample(summary, options) {
     const spanSubtitle = create('span', { class: 'subtitle' });
     const pDescription = create('p', { class: 'description' }, '');
     const tableAdjectives = create('table', { class: 'adjectives' }, '');
-    // Update subtitle
     spanSubtitle.append(`(${summary.types[type].name}`);
     const args = Object.keys(summary.examples[type][id].args);
     for (let i = 0; i < args.length; ++i) {
@@ -32,16 +31,13 @@ export function pageExample(summary, options) {
     katexTypeset(spanSubtitle);
     fetch(`json/examples/${type}/${id}.json`, { cache: 'reload' }).then(response => response.json()).then(data => {
         var _a, _b, _c, _d;
-        // Update name span
         if ('name' in data)
             setText(spanName, data.name);
         katexTypeset(spanName);
-        // Update description paragraph
         if ('description' in data) {
             setText(pDescription, data.description);
             katexTypeset(pDescription);
         }
-        // Update adjectives table
         tableAdjectives.append(create('tr', {}, [
             create('th', {}, 'Adjective'),
             create('th', {}, 'Value'),
@@ -71,32 +67,28 @@ export function pageExample(summary, options) {
     return page;
 }
 function adjectivesOrder(summary, type, id, data) {
-    // If the proof of an adjective depends on another adjective, then it should be below that dependency. Keep track of these dependencies using 'depth'.
     const depths = {};
     function computeDepth(adjective) {
         var _a, _b;
         if (adjective in depths)
-            return; // if depth was already computed, done
+            return;
         if (((_a = data === null || data === void 0 ? void 0 : data.adjectives) === null || _a === void 0 ? void 0 : _a[adjective]) === undefined) {
             depths[adjective] = 999999;
             return;
         }
-        if (((_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjective]) === undefined) { // if there is no proof, depth is zero
+        if (((_b = data === null || data === void 0 ? void 0 : data.proofs) === null || _b === void 0 ? void 0 : _b[adjective]) === undefined) {
             depths[adjective] = 0;
             return;
         }
         const proof = data.proofs[adjective];
-        if (typeof proof == 'string') { // if there is a proof by words, depth is also zero
+        if (typeof proof == 'string') {
             depths[adjective] = 0;
             return;
         }
-        // console.log(proof);
-        // depths[adjective] = 1;
-        // TODO: use summary.traceProofDependencies
         const dependencies = summary.traceProofDependencies(summary.examples, summary.examples[type][id], adjective, proof);
-        let depth = 1; // penalty of 1 because it is a deduction
+        let depth = 1;
         for (const { object: obj, adjective: adj } of dependencies) {
-            if (obj.type == type && obj.id == id) { // only regard this example, because we have no access to proofs of other examples
+            if (obj.type == type && obj.id == id) {
                 computeDepth(adj);
                 depth = Math.max(depth, depths[adj] + 1);
             }

@@ -12,7 +12,6 @@ const options = {
         "\\FF": "\\mathbb{F}",
         "\\textup": "\\text{#1}",
         "\\im": "\\operatorname{im}",
-        // colim: "\\operatorname{colim}",
         "\\colim": "\\mathop{\\operatorname{colim}}\\limits",
         "\\coker": "\\operatorname{coker}",
         "\\tr": "\\operatorname{tr}",

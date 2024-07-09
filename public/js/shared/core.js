@@ -25,9 +25,8 @@ export class Book {
         return typeof object == 'object' && !Object.keys(object).some(x => x.match(/^[\w\-]+$/) == null);
     }
     deserializeType(id, data) {
-        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
-        const parameters = ('parameters' in data) ? data.parameters : {}; // fallback to empty set of parameters if none are given
-        // verify parameter keys
+        const name = ('name' in data) ? data.name : id;
+        const parameters = ('parameters' in data) ? data.parameters : {};
         if (!this.allKeysAreWords(parameters))
             throw new Error(`Invalid parameters in type '${id}'`);
         return { id, name, parameters };
@@ -39,13 +38,12 @@ export class Book {
         };
         if (Object.keys(type.parameters).length > 0)
             data.parameters = type.parameters;
-        if (elaborate && type.id in this.descriptions.types) // add description when elaborate is true
+        if (elaborate && type.id in this.descriptions.types)
             data.description = this.descriptions.types[type.id];
         return data;
     }
     deserializeTheorem(id, data) {
-        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
-        // parse subject
+        const name = ('name' in data) ? data.name : id;
         if (!('given' in data) || typeof data.given != 'string')
             throw new Error(`Missing field 'given' in theorem '${id}'`);
         const subjectParts = data.given.split(' ');
@@ -57,7 +55,6 @@ export class Book {
             this.theorems[type] = {};
         if (id in this.theorems[type])
             throw new Error(`Theorem with id '${id}' for type '${type}' already exists`);
-        // parse theorem conditions and conclusions
         function parseTheoremConditions(exprs, kind) {
             const conditions = {};
             if (!Array.isArray(exprs))
@@ -88,7 +85,6 @@ export class Book {
             throw new Error(`Invalid field 'then' in theorem '${id}'`);
         const conditions = parseTheoremConditions(('if' in data) ? (typeof data.if == 'string' ? [data.if] : data.if) : [], 'condition');
         const conclusions = parseTheoremConditions(typeof data.then == 'string' ? [data.then] : data.then, 'conclusion');
-        // parse equivalence
         const converse = ('converse' in data && data.converse == true);
         return { id, name, type, subject, conditions, conclusions, converse };
     }
@@ -115,14 +111,14 @@ export class Book {
             then: formatConditions(theorem.conclusions)
         };
         if (theorem.converse)
-            data.converse = true; // add converse if it is true
-        if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type]) // add description when elaborate is true
+            data.converse = true;
+        if (elaborate && theorem.type in this.descriptions.theorems && theorem.id in this.descriptions.theorems[theorem.type])
             data.description = this.descriptions.theorems[theorem.type][theorem.id];
         return data;
     }
     deserializeAdjective(id, data) {
         const type = data.type.replace(/ adjective$/, '');
-        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
+        const name = ('name' in data) ? data.name : id;
         const adjective = { id, type, name };
         if ('verb' in data) {
             if (!Array.isArray(data.verb) || data.verb.length != 2 || typeof data.verb[0] != 'string' || typeof data.verb[1] != 'string')
@@ -138,19 +134,16 @@ export class Book {
         };
         if (adjective.verb)
             data.verb = adjective.verb;
-        if (elaborate && adjective.type in this.descriptions.adjectives && adjective.id in this.descriptions.adjectives[adjective.type]) // add description when elaborate is true
+        if (elaborate && adjective.type in this.descriptions.adjectives && adjective.id in this.descriptions.adjectives[adjective.type])
             data.description = this.descriptions.adjectives[adjective.type][adjective.id];
         return data;
     }
     deserializeExample(id, data) {
         const type = data.type;
-        const name = ('name' in data) ? data.name : id; // fallback to `id` if no name is given
-        const args = ('with' in data) ? data.with : {}; // fallback to empty set of arguments if none are given
-        const adjectives = ('adjectives' in data) ? data.adjectives : {}; // fallback to empty set of adjectives if none are given
+        const name = ('name' in data) ? data.name : id;
+        const args = ('with' in data) ? data.with : {};
+        const adjectives = ('adjectives' in data) ? data.adjectives : {};
         const proofs = {};
-        // parse adjectives
-        // NOTE: adjective values may be 'boolean' (usually) or '[boolean, string]' where the string is the proof. We split them.
-        //       May also be [boolean], because David liked to do so.
         for (const key in adjectives) {
             const value = adjectives[key];
             if (typeof value == 'boolean') { }
@@ -164,7 +157,6 @@ export class Book {
             else
                 throw new Error(`Example with id '${id}' for type '${data.type}' has invalid value for adjective '${key}'`);
         }
-        // parse proofs
         if ('proofs' in data) {
             for (const key in data.proofs) {
                 const proof = data.proofs[key];
@@ -183,7 +175,6 @@ export class Book {
                 }
             }
         }
-        // check if keys are words
         if (!this.allKeysAreWords(args))
             throw new Error(`Invalid arguments in example '${id}' of type '${type}'`);
         if (!this.allKeysAreWords(adjectives))
@@ -203,7 +194,7 @@ export class Book {
             data.adjectives = example.adjectives;
         if (elaborate && Object.keys(example.proofs).length > 0)
             data.proofs = example.proofs;
-        if (elaborate) { // add description when elaborate is true
+        if (elaborate) {
             if (example.type in this.descriptions.examples && example.id in this.descriptions.examples[example.type])
                 data.description = this.descriptions.examples[example.type][example.id];
         }
@@ -212,10 +203,10 @@ export class Book {
     add(id, data) {
         if (!('type' in data) || typeof data.type != 'string')
             throw new Error(`Missing field type for id '${id}'`);
-        if (!id.match(/^[\w\-]+$/)) // make sure `id` is alphanumeric possibly with dashses
+        if (!id.match(/^[\w\-]+$/))
             throw new Error(`Invalid id '${id}'`);
         const type = data.type;
-        if (type == 'type') { // parse types
+        if (type == 'type') {
             if (id in this.types)
                 throw new Error(`Type with id '${id}' already exists`);
             this.types[id] = this.deserializeType(id, data);
@@ -224,7 +215,7 @@ export class Book {
                 this.descriptions.types[id] = description;
             return;
         }
-        if (type == 'theorem') { // parse theorems
+        if (type == 'theorem') {
             const theorem = this.deserializeTheorem(id, data);
             if (!(theorem.type in this.theorems))
                 this.theorems[theorem.type] = {};
@@ -239,7 +230,7 @@ export class Book {
             }
             return;
         }
-        if (type.endsWith(' adjective')) { // parse adjective
+        if (type.endsWith(' adjective')) {
             const adjective = this.deserializeAdjective(id, data);
             if (!(adjective.type in this.adjectives))
                 this.adjectives[adjective.type] = {};
@@ -256,7 +247,7 @@ export class Book {
         }
         if (type.includes(' '))
             throw new Error(`Invalid type '${type}'`);
-        { // parse examples
+        {
             const example = this.deserializeExample(id, data);
             if (!(type in this.examples))
                 this.examples[type] = {};
@@ -273,7 +264,7 @@ export class Book {
         }
     }
     verify() {
-        for (const id in this.types) { // verify types
+        for (const id in this.types) {
             const type = this.types[id];
             for (const key in type.parameters) {
                 const paramType = type.parameters[key];
@@ -281,7 +272,7 @@ export class Book {
                     throw new Error(`Type '${id}' refers to unknown type '${paramType}'`);
             }
         }
-        for (const type in this.adjectives) { // verify adjectives
+        for (const type in this.adjectives) {
             for (const id in this.adjectives[type]) {
                 const adjective = this.adjectives[type][id];
                 if (adjective.type != type)
@@ -290,14 +281,14 @@ export class Book {
                     throw new Error(`Adjective '${id}' refers to unknown type '${type}'`);
             }
         }
-        for (const type in this.theorems) { // verify theorems
+        for (const type in this.theorems) {
             for (const id in this.theorems[type]) {
                 const theorem = this.theorems[type][id];
                 if (theorem.type != type)
                     throw new Error(`Mysterious mismatch for type of theorem '${id}' ('${theorem.type}' != '${type}')`);
                 if (!(theorem.type in this.types))
                     throw new Error(`Theorem '${id}' refers to unknown type '${type}'`);
-                for (const con of [theorem.conditions, theorem.conclusions]) { // verify theorem conditions & conclusions
+                for (const con of [theorem.conditions, theorem.conclusions]) {
                     for (const path in con) {
                         let pathType;
                         try {
@@ -314,24 +305,21 @@ export class Book {
                 }
             }
         }
-        for (const type in this.examples) { // verify examples
+        for (const type in this.examples) {
             for (const id in this.examples[type]) {
                 const example = this.examples[type][id];
-                // verify type
                 if (example.type != type)
                     throw new Error(`Mysterious mismatch for type of example '${id}' ('${example.type}' != '${type}')`);
                 if (!(type in this.types))
                     throw new Error(`Adjective '${id}' refers to unknown type '${type}'`);
-                // verify arguments
                 const parameters = this.types[type].parameters;
                 for (const key in parameters) {
                     if (!(key in example.args))
                         throw new Error(`Missing argument '${key}' for example '${id}' of type '${type}'`);
                     const arg = example.args[key];
-                    if (!(arg in this.examples[parameters[key]])) // note: `parameters[key]` is already verified to be a correct type
+                    if (!(arg in this.examples[parameters[key]]))
                         throw new Error(`Example '${id}' of type '${type}' refers to unknown example '${arg}' of type '${parameters[key]}'`);
                 }
-                // verify adjectives
                 for (const adj in example.adjectives) {
                     if (!(adj in this.adjectives[type]))
                         throw new Error(`Example '${id}' of type '${type}' refers to unknown adjective '${adj}'`);
@@ -375,22 +363,22 @@ export class Book {
             theorems: {},
             examples: {}
         };
-        for (const id in this.types) { // add types
+        for (const id in this.types) {
             contents.types[id] = this.serializeType(this.types[id], elaborate);
         }
-        for (const type in this.adjectives) { // add adjectives
+        for (const type in this.adjectives) {
             if (!(type in contents.adjectives))
                 contents.adjectives[type] = {};
             for (const id in this.adjectives[type])
                 contents.adjectives[type][id] = this.serializeAdjective(this.adjectives[type][id], elaborate);
         }
-        for (const type in this.theorems) { // add theorems
+        for (const type in this.theorems) {
             if (!(type in contents.theorems))
                 contents.theorems[type] = {};
             for (const id in this.theorems[type])
                 contents.theorems[type][id] = this.serializeTheorem(this.theorems[type][id], elaborate);
         }
-        for (const type in this.examples) { // add examples
+        for (const type in this.examples) {
             if (!(type in contents.examples))
                 contents.examples[type] = {};
             for (const id in this.examples[type])
@@ -417,17 +405,13 @@ export class Book {
     }
     traceProof(context, object, adjective, proofHint) {
         var _a;
-        // use proof hint if provided, otherwise the use proof as in this book
         const proof = (_a = proofHint !== null && proofHint !== void 0 ? proofHint : object.proofs[adjective]) !== null && _a !== void 0 ? _a : null;
         if (proof == null || typeof proof == 'string')
             return [];
         const steps = [];
-        // trace the proofs of all dependencies
         for (const { object: obj, adjective: adj } of this.traceProofDependencies(context, object, adjective, proof))
             steps.push(...this.traceProof(context, obj, adj));
-        // do not forget to add the last (current) step in the proof:
         steps.push(proof);
-        // remove duplicate steps
         const stepsUnique = [];
         for (const step of steps)
             if (!stepsUnique.some(s => s.type == step.type && s.theorem == step.theorem && s.subject == step.subject))
@@ -436,18 +420,14 @@ export class Book {
     }
     traceProofDependencies(context, object, adjective, proofHint) {
         var _a;
-        // use proof hint if provided, otherwise the use proof as in this book
         const proof = (_a = proofHint !== null && proofHint !== void 0 ? proofHint : object.proofs[adjective]) !== null && _a !== void 0 ? _a : null;
         if (proof == null || typeof proof == 'string')
             return [];
         const theorem = this.theorems[proof.type][proof.theorem];
         const subject = context[proof.type][proof.subject];
-        // swap conditions and theorems if the theorem was applied in converse
         const theoremConditions = (proof.converse ? theorem.conclusions : theorem.conditions);
         const theoremConclusions = (proof.converse ? theorem.conditions : theorem.conclusions);
-        // the array which keeps track of the dependencies
         const dependencies = [];
-        // case 1: the theorem was applied in the forward direction
         const negated = proof.negated;
         if (negated === undefined) {
             for (const path in theoremConditions) {
@@ -456,11 +436,8 @@ export class Book {
                     dependencies.push({ object, adjective });
             }
         }
-        // case 2: the theorem was applied in the backward direction
         else {
-            // trace proof on the conclusion that was used to apply the negation of the theorem
             dependencies.push({ object: this.resolvePath(context, subject, negated.path), adjective: negated.adjective });
-            // trace the proof on all conditions other than the one we are tracing
             for (const path in theoremConditions) {
                 const obj = this.resolvePath(context, subject, path);
                 for (const adj in theoremConditions[path]) {

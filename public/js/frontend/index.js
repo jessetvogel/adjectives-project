@@ -4,8 +4,7 @@ import navigation from './navigation.js';
 let summary;
 async function main() {
     try {
-        // Load summary
-        summary = new Book(await (await fetch('json/summary.json', { cache: 'reload' })).json()); // load summary
+        summary = new Book(await (await fetch('json/summary.json', { cache: 'reload' })).json());
         summary.verify();
     }
     catch (err) {
@@ -26,22 +25,17 @@ async function main() {
         }
         return;
     }
-    // Initialize navigation
     navigation.init(summary, $('content'));
-    // Initialize theme
     initTheme();
 }
 function initTheme() {
-    // toggle theme by clicking button
     const buttonTheme = $('button-theme');
     onClick(buttonTheme, () => {
         toggleClass(document.body, 'dark');
         setCookie('theme', hasClass(document.body, 'dark') ? 'dark' : 'light', 365);
     });
-    // set initial theme by cookie
     if (getCookie('theme') == 'dark')
         addClass(document.body, 'dark');
-    // little hack to prevent initial transition, but it works
     setTimeout(function () {
         const sheet = window.document.styleSheets[0];
         sheet.insertRule('* { transition: background-color 0.2s, color 0.2s; }', sheet.cssRules.length);

@@ -6,54 +6,11 @@ const ADJECTIVES_CONSTRAINTS = {
         'cohen-macaulay': [],
         'connected': [true],
         'excellent': [],
-        // 'finite-dimensional',
-        // 'integral',
-        // 'irreducible',
         'jacobson': [],
-        // 'locally-noetherian',
-        // 'noetherian',
-        // 'normal',
-        // 'quasi-affine',
-        // 'quasi-compact',
-        // 'quasi-separated',
         'reduced': [true],
-        // 'regular',
-        // 'semi-separated',
-        // 'separated',
     },
     'morphism': {
-        // 'affine',
-        // 'closed-immersion',
-        // 'closed',
-        // 'etale',
-        // 'faithfully-flat',
-        // 'finite',
-        // 'flat',
-        // 'formally-etale',
-        // 'formally-smooth',
-        // 'formally-unramified',
-        // 'homeomorphism',
-        // 'immersion',
-        // 'locally-of-finite-presentation',
-        // 'locally-of-finite-type',
-        // 'of-finite-presentation',
-        // 'of-finite-type',
-        // 'open-immersion',
-        // 'open',
-        // 'proper',
-        // 'quasi-affine',
-        // 'quasi-compact',
-        // 'quasi-finite',
-        // 'quasi-separated',
-        // 'regular',
-        // 'semi-separated',
-        // 'separated',
-        // 'smooth',
-        // 'surjective',
         'syntomic': [],
-        // 'universally-closed',
-        // 'universally-open',
-        // 'unramified'
     }
 };
 function combinations(array, size) {
@@ -85,22 +42,21 @@ function questions(summary, type, constraints) {
     const adjectives = Object.keys(summary.adjectives[type]);
     const maxAdjectives = 2;
     const assistant = new Assistant(summary);
-    const questions = []; // contains the original questions
-    const questionsDeduced = []; // contains the deduced contexts
-    const id = 'X'; // dummy name
-    // GENERATE QUESTIONS
-    for (let n = 1; n <= maxAdjectives; ++n) { // loop over number of adjectives
-        for (const adjs of combinations(adjectives, n)) { // loop over all combinations of adjectives
-            for (const values of product([true, false], n)) { // loop over all values of the adjectives
-                if (adjs.some((adj, i) => (adj in constraints && !constraints[adj].includes(values[i])))) // if some value does not match the constraints, just skip this one
+    const questions = [];
+    const questionsDeduced = [];
+    const id = 'X';
+    for (let n = 1; n <= maxAdjectives; ++n) {
+        for (const adjs of combinations(adjectives, n)) {
+            for (const values of product([true, false], n)) {
+                if (adjs.some((adj, i) => (adj in constraints && !constraints[adj].includes(values[i]))))
                     continue;
-                if (!values.some(v => v)) // we want at least one positive property
+                if (!values.some(v => v))
                     continue;
-                const context = summary.createContextFromType(type, id); // create context for type
-                for (let i = 0; i < n; ++i) // assign the adjectives their values
+                const context = summary.createContextFromType(type, id);
+                for (let i = 0; i < n; ++i)
                     context[type][id].adjectives[adjs[i]] = values[i];
-                const results = assistant.search(context); // search for examples
-                let contradiction = false; // deduce on context, and see if there is a contradiction
+                const results = assistant.search(context);
+                let contradiction = false;
                 const contextClone = structuredClone(context);
                 try {
                     assistant.deduce(contextClone);
@@ -110,27 +66,26 @@ function questions(summary, type, constraints) {
                         throw err;
                     contradiction = true;
                 }
-                if (results.length == 0 && !contradiction) { // if there are no results and no contradiction ...
-                    questions.push(context); // ... then this is a good question
+                if (results.length == 0 && !contradiction) {
+                    questions.push(context);
                     questionsDeduced.push(contextClone);
                 }
             }
         }
     }
-    // FILTER QUESTIONS (IF A => B, THEN WE MAY AS WELL OMIT B)
     for (let i = 0; i < questions.length; ++i) {
         for (let j = 0; j < questions.length; ++j) {
             if (i == j)
                 continue;
             const A = questionsDeduced[i];
-            const B = questions[j]; // use this so that we need to check fewer conditions
+            const B = questions[j];
             const matcher = new Matcher(summary, B, A);
-            if (matcher.match(B[type][id], A[type][id])) { // check if A => B
-                questions.splice(j, 1); // remove B
-                questionsDeduced.splice(j, 1); // remove B
-                --j; // shift j one back
+            if (matcher.match(B[type][id], A[type][id])) {
+                questions.splice(j, 1);
+                questionsDeduced.splice(j, 1);
+                --j;
                 if (i > j)
-                    --i; // shift i one back if i > j
+                    --i;
             }
         }
     }
@@ -146,14 +101,10 @@ function shuffle(array) {
 }
 export function pageQuestions(summary) {
     const page = create('div', { class: 'page page-questions' });
-    // title
     page.append(create('span', { class: 'title' }, 'Questions'));
-    // description
     page.append(create('p', {}, 'The questions below could not be answered with \'yes\' by the examples, or with \'no\' using the theorems.'));
-    // loading icon
     const loading = create('div', { class: 'loading' });
     page.append(loading);
-    // table
     const table = create('table', { style: 'margin-bottom: 4px;' });
     page.append(table);
     setTimeout(() => {

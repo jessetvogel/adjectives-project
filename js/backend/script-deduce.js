@@ -5,7 +5,6 @@ import { updateJSON } from './json-updater.js';
 import { Log, PATH_SUMMARY } from './general.js';
 import { fileURLToPath } from 'url';
 export function main() {
-    // Parse arguments
     let options = {};
     for (const arg of process.argv) {
         let match;
@@ -25,14 +24,11 @@ export function main() {
             return;
         }
     }
-    // Load summary
     if (!fs.existsSync(PATH_SUMMARY))
         throw new Error(`Missing summary file '${PATH_SUMMARY}'`);
     const summary = JSON.parse(fs.readFileSync(PATH_SUMMARY, 'utf8'));
-    // Create book from summary
     const book = new Book(summary);
     book.verify();
-    // Make deductions
     const assistant = new Assistant(book);
     Log.action(`Deducing`);
     const conclusions = [];
@@ -41,7 +37,6 @@ export function main() {
         conclusions.push(...c);
     for (const conclusion of conclusions)
         Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
-    // Save conclusions
     if (conclusions.length > 0) {
         Log.action(`Saving conclusions`);
         updateJSON(book);
@@ -49,7 +44,6 @@ export function main() {
     else {
         Log.info(`No deductions were made`);
     }
-    // Done
     Log.success('Done');
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

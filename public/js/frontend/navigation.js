@@ -10,16 +10,15 @@ import { pageHelp } from './page-help.js';
 import { $$, clear, create, onClick, addClass, removeClass } from './util.js';
 import { pageQuestions } from './page-questions.js';
 import { pageGraph } from './page-graph.js';
+import { pageCompare } from './page-compare.js';
 let summary;
 let content;
 function navigateCallback(state) {
     var _a;
     const query = Object.fromEntries(new URLSearchParams(window.location.search));
     const page = (_a = query.page) !== null && _a !== void 0 ? _a : 'home';
-    // update nav buttons
     for (const button of $$('nav button'))
         (button.id == `button-${page}` ? addClass : removeClass)(button, 'selected');
-    // set content
     switch (page) {
         case 'home': return setContent(pageHome());
         case 'explore': return setContent(pageExplore(summary, query));
@@ -32,6 +31,7 @@ function navigateCallback(state) {
         case 'help': return setContent(pageHelp());
         case 'questions': return setContent(pageQuestions(summary));
         case 'graph': return setContent(pageGraph(summary, query));
+        case 'compare': return setContent(pageCompare(summary, query));
     }
     setContent(create('div', { class: 'page' }, [
         create('span', { class: 'title' }, '🥺 Page not found..')
@@ -72,14 +72,13 @@ function init(s, c) {
     content = c;
     window.onpopstate = (event) => navigateCallback(event.state);
     navigateCallback({});
-    // initialize navigation buttons
     for (const button of $$('nav button')) {
         const match = button.id.match(/^button-(\w+)$/);
         if (match) {
             const page = match[1];
             onClick(button, () => {
                 const query = Object.fromEntries(new URLSearchParams(window.location.search));
-                if (!('page' in query) || query.page != page) // prevent going to a page we are already one
+                if (!('page' in query) || query.page != page)
                     navigate(`?page=${match[1]}`, {});
             });
         }
@@ -92,8 +91,8 @@ function navigate(url, state) {
 function setContent(elem) {
     if (!content)
         throw new Error(`[ERROR] Content not found`);
-    clear(content); // clear content
-    content.append(elem); // set content
+    clear(content);
+    content.append(elem);
 }
 export default {
     init,

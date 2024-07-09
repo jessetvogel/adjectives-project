@@ -9,7 +9,7 @@ function info(msg) {
 function main() {
     console.clear();
     info('Watching YAML files for changes ...');
-    var cooldown = false; // prevent events to double fire
+    var cooldown = false;
     fs.watch(PATH_YAML, { recursive: true }, (eventType, filename) => {
         if (filename == null || !filename.endsWith('.' + EXTENSION_YAML))
             return;

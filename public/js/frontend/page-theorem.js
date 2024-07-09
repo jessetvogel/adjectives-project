@@ -2,7 +2,6 @@ import { formatTheoremStatement } from './formatter.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 import { create, setText, hasClass, addClass, removeClass } from './util.js';
-// Find examples which satisfy the theorem conclusion, but not the theorem conditions
 function counterexamples(summary, theorem) {
     var _a, _b;
     const type = theorem.type;
@@ -16,11 +15,10 @@ function counterexamples(summary, theorem) {
             for (const adjective in theorem.conclusions[path]) {
                 const value = theorem.conclusions[path][adjective];
                 if (!(adjective in object.adjectives) || object.adjectives[adjective] != value)
-                    continue loop_examples; // if theorem conclusion does not apply, continue
+                    continue loop_examples;
                 values[path][adjective] = value;
             }
         }
-        // check theorem conditions
         let hasFalse = false, hasNull = false;
         for (const path in theorem.conditions) {
             const object = summary.resolvePath(summary.examples, subject, path);
@@ -53,23 +51,19 @@ export function pageTheorem(summary, options) {
     const pDescription = create('p', { class: 'description' }, '');
     katexTypeset(pStatement);
     fetch(`json/theorems/${type}/${id}.json`).then(response => response.json()).then(data => {
-        // Update name span
         if ('name' in data)
             setText(spanName, data.name);
         katexTypeset(spanName);
-        // Update description paragraph
         if ('description' in data)
             setText(pDescription, data.description);
         katexTypeset(pDescription);
     }).catch(error => {
         console.log(`[ERROR] ${error}`);
     });
-    // TABLE OF COUNTEREXAMPLES TO THE CONVERSE OF THE THEOREM
     const divExamples = create('div');
     const tableExamples = create('table', { class: 'hidden' });
     const counterexamples_ = counterexamples(summary, theorem);
-    // divExamples.append(create('p', {}, 'The converse statement does not hold, as can be seen from the following counterexamples.'));
-    const columns = []; // array of adjectives and paths corresponding to the columns of the table
+    const columns = [];
     for (const path in theorem.conclusions)
         for (const adjective in theorem.conclusions[path])
             columns.push({ path, adjective });

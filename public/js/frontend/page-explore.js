@@ -1,11 +1,10 @@
 import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
-import { formatContext, formatProof } from './formatter.js';
+import { formatContext, formatProof, formatStepByStepProof, formatAdjectivesDescription } from './formatter.js';
 import navigation from './navigation.js';
 export function pageExplore(summary, options) {
     const pageElem = create('div', { class: 'page page-explore' });
-    // "I am looking for a <select>"
     const defaultOption = 'scheme';
     const selectElem = create('select', {}, Object.keys(summary.types).map(id => {
         const name = summary.types[id].name;
@@ -18,16 +17,15 @@ export function pageExplore(summary, options) {
     pageElem.append(create('div', { class: 'type-selection' }, [
         create('span', {}, 'I am looking for a '),
         create('label', {}, selectElem),
-        aHelp // .outerHTML // removes onclick
+        aHelp
     ]));
-    // Column of objects and column of adjectives
     const objectsElem = create('div', { class: 'column-objects' });
     const adjectivesElem = create('div', { class: 'column-adjectives' });
     pageElem.append(create('div', { class: 'context' }, [objectsElem, adjectivesElem,]));
     function initializeWithContext(context) {
         clear(objectsElem);
         clear(adjectivesElem);
-        for (const type in context) { // TODO: fix order (do not rely on browser specifications..)
+        for (const type in context) {
             for (const id in context[type]) {
                 const item = create('div', {}, [
                     create('span', { class: 'type' }, type),
@@ -36,24 +34,20 @@ export function pageExplore(summary, options) {
                     create('span', { class: 'adjectives' })
                 ]);
                 onClick(item, function () {
-                    // Update `.selected` class
                     objectsElem.querySelectorAll('.selected').forEach(elem => removeClass(elem, 'selected'));
                     addClass(item, 'selected');
-                    // Update overview
                     updateWithContext(context);
                 });
                 objectsElem.append(item);
             }
         }
-        objectsElem.firstChild.click(); // select the first object
-        // Search and Deduce onclick handlers
+        objectsElem.firstChild.click();
         searchButtonElem.onclick = function () { updateHistory(context, 'search'); search(summary, context, resultsElem); };
         deduceButtonElem.onclick = function () { updateHistory(context, 'deduce'); deduce(summary, context, resultsElem); };
     }
     function updateWithContext(context) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         clear(adjectivesElem);
-        // Update adjective list after object name
         for (const div of objectsElem.childNodes) {
             const type = (_b = (_a = div.querySelector('.type')) === null || _a === void 0 ? void 0 : _a.textContent) !== null && _b !== void 0 ? _b : '';
             const id = (_d = (_c = div.querySelector('.id')) === null || _c === void 0 ? void 0 : _c.textContent) !== null && _d !== void 0 ? _d : '';
@@ -65,26 +59,25 @@ export function pageExplore(summary, options) {
                 .join(', '));
         }
         katexTypeset(objectsElem);
-        // Update adjectives column
         const selectedElem = objectsElem.querySelector('.selected');
         if (selectedElem) {
             const type = (_f = (_e = selectedElem.querySelector('.type')) === null || _e === void 0 ? void 0 : _e.textContent) !== null && _f !== void 0 ? _f : '';
             const id = (_h = (_g = selectedElem.querySelector('.id')) === null || _g === void 0 ? void 0 : _g.textContent) !== null && _h !== void 0 ? _h : '';
-            const adjs = Object.keys(summary.adjectives[type]).sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' })); // alphabetically
+            const adjs = Object.keys(summary.adjectives[type]).sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
             for (const adj of adjs) {
                 const itemClass = (context[type][id].adjectives[adj] == true) ? 'yes' : ((context[type][id].adjectives[adj] == false) ? 'no' : '');
                 const itemElem = create('div', { class: itemClass }, create('label', {}, summary.adjectives[type][adj].name));
                 onClick(itemElem, function () {
-                    if (hasClass(itemElem, 'yes')) { // yes -> no
+                    if (hasClass(itemElem, 'yes')) {
                         removeClass(itemElem, 'yes');
                         addClass(itemElem, 'no');
                         context[type][id].adjectives[adj] = false;
                     }
-                    else if (hasClass(itemElem, 'no')) { // no -> _
+                    else if (hasClass(itemElem, 'no')) {
                         removeClass(itemElem, 'no');
                         delete context[type][id].adjectives[adj];
                     }
-                    else { // _ -> yes
+                    else {
                         addClass(itemElem, 'yes');
                         context[type][id].adjectives[adj] = true;
                     }
@@ -96,23 +89,20 @@ export function pageExplore(summary, options) {
         }
         updateHistory(context);
     }
-    // Append row of buttons and help link: " [Search] [Deduce] _Help_ "
     const searchButtonElem = create('button', {}, 'Search');
     const deduceButtonElem = create('button', {}, 'Deduce');
     pageElem.append(create('div', { class: 'row-buttons' }, [
         searchButtonElem,
         deduceButtonElem
     ]));
-    // Append div for results
     const resultsElem = create('div', { class: 'results' });
     pageElem.append(resultsElem);
-    // If select value changes, re-initialize the context
     onChange(selectElem, function () {
         const type = selectElem.value;
-        const context = summary.createContextFromType(type, type); // simply use id equal to type
+        const context = summary.createContextFromType(type, type);
         initializeWithContext(context);
     });
-    selectElem.dispatchEvent(new Event('change')); // trigger initalization
+    selectElem.dispatchEvent(new Event('change'));
     if ('q' in options) {
         const x = deserializeContext(summary, options.q);
         if (x != null) {
@@ -131,14 +121,7 @@ export function pageExplore(summary, options) {
 }
 function serializeContext(context) {
     const data = {};
-    /*
-     * {
-     *   type: "morphism",
-     *   " affine": true,
-     *   ".source affine": false
-     * }
-     */
-    data.type = Object.keys(context).find(type => Object.keys(context[type]).some(id => id.indexOf('.') == -1)); // subject is the object in the context whose id does not contain a period
+    data.type = Object.keys(context).find(type => Object.keys(context[type]).some(id => id.indexOf('.') == -1));
     for (const type in context) {
         for (const id in context[type]) {
             const path = id.substring(data.type.length);
@@ -152,7 +135,7 @@ function deserializeContext(summary, str) {
     try {
         const data = JSON.parse(atob(str));
         const type = data.type;
-        delete data.type; // for convenience
+        delete data.type;
         const context = summary.createContextFromType(type, type);
         const subject = context[type][type];
         for (const key in data) {
@@ -184,14 +167,13 @@ function search(summary, context, resultsElem) {
         ]));
     }
     else {
-        // The following are examples of {{ a ${type} which is [...], and whose source is [...], and whose target is [...] }}.
         resultsElem.append(create('p', { class: 'center' }, [
             'The following are examples of ',
             formatContext(summary, context),
             '.'
         ]));
         const tableElem = create('table');
-        { // table header
+        {
             const trElem = create('tr');
             for (const type in context) {
                 for (const id in context[type])
@@ -199,7 +181,7 @@ function search(summary, context, resultsElem) {
             }
             tableElem.append(trElem);
         }
-        for (const result of results) { // table rows
+        for (const result of results) {
             const trElem = create('tr', {});
             for (const type in context) {
                 for (const id in context[type])
@@ -207,17 +189,16 @@ function search(summary, context, resultsElem) {
             }
             tableElem.append(trElem);
         }
-        const divTableWrapper = create('div', { class: 'table-scroll-wrapper' }, tableElem); // wrap table so that we can scroll horizontally if needed
+        const divTableWrapper = create('div', { class: 'table-scroll-wrapper' }, tableElem);
         resultsElem.append(divTableWrapper);
     }
     katexTypeset(resultsElem);
-    // scroll into view
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 function deduce(summary, context, resultsElem) {
     var _a;
     clear(resultsElem);
-    const contextCopy = structuredClone(context); // NOTE: the conclusions must not pollute the original context
+    const contextCopy = structuredClone(context);
     try {
         const assistant = new Assistant(summary);
         const conclusions = assistant.deduce(contextCopy);
@@ -225,7 +206,6 @@ function deduce(summary, context, resultsElem) {
             resultsElem.append(create('p', { class: 'center' }, 'No new conclusions could be made.'));
         }
         else {
-            // Given {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}, the following conclusions hold.
             resultsElem.append(create('p', { class: 'center' }, [
                 'The following conclusions follow from ',
                 formatContext(summary, context),
@@ -256,58 +236,26 @@ function deduce(summary, context, resultsElem) {
                 formatContext(summary, context),
                 '.'
             ]));
+            const object = err.conclusion.object;
             resultsElem.append(create('div', { style: 'max-width: 800px;' }, [
                 create('p', {}, [
-                    'Namely, the ',
-                    ...formatStatement(summary, err.conclusion.object, [err.conclusion.adjective]),
+                    'Namely, the ', object.name, ' ',
+                    formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: object.adjectives[err.conclusion.adjective] }),
                     ' by ',
-                    formatProofTrace(summary.traceProof(contextCopy, err.conclusion.object, err.conclusion.adjective))
+                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective))
                 ]),
                 create('p', {}, [
                     'However, the converse follows by ',
-                    formatProofTrace(summary.traceProof(contextCopy, err.conclusion.object, err.conclusion.adjective, err.proof))
+                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective, err.proof))
                 ])
             ]));
         }
     }
     katexTypeset(resultsElem);
-    // scroll into view
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 function updateHistory(context, action = null) {
     const url = `?page=explore&q=${serializeContext(context)}${action != null ? '&action=' + action : ''}`;
     window.history.replaceState({}, '', url);
-}
-function formatProofTrace(steps) {
-    const items = [];
-    for (const step of steps)
-        items.push(['applying ', step.negated ? 'the negation of ' : '', navigation.anchorTheorem(step.type, step.theorem), ' to the ', step.subject]);
-    for (let i = 0; i < items.length; ++i) // add puncutation
-        items[i].push((i < items.length - 1) ? ',' : '.');
-    if (steps.length == 0)
-        return create('span', {}, 'assumption.');
-    if (steps.length == 1)
-        return create('span', {}, items[0]);
-    return create('ol', {}, items.map(item => create('li', {}, item)));
-}
-function formatStatement(summary, object, adjectives) {
-    var _a;
-    const type = object.type;
-    const elems = [];
-    elems.push(object.name, ' ');
-    const adjectivesTotal = adjectives.length;
-    let adjectivesCount = 0;
-    for (const adjId of adjectives) {
-        if (adjectivesTotal > 1 && adjectivesCount > 0 && adjectivesCount < adjectivesTotal - 1)
-            elems.push(', ');
-        if (adjectivesTotal > 1 && adjectivesCount == adjectivesTotal - 1)
-            elems.push(' and ');
-        const adjective = summary.adjectives[type][adjId];
-        const value = object.adjectives[adjId];
-        const verbs = (_a = adjective.verb) !== null && _a !== void 0 ? _a : ['is', 'is not'];
-        elems.push(value ? verbs[0] : verbs[1], ' ', navigation.anchorAdjective(type, adjId));
-        ++adjectivesCount;
-    }
-    return elems;
 }
 //# sourceMappingURL=page-explore.js.map

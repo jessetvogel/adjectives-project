@@ -5,12 +5,9 @@ function adjectiveGraph(summary, type) {
     const graph = {};
     const assistant = new Assistant(summary);
     for (const adjective in summary.adjectives[type]) {
-        // create context with object 'X' which which has `adjective`
         const context = summary.createContextFromType(type, 'X');
         context[type]['X'].adjectives[adjective] = true;
-        // deduce
         assistant.deduce(context);
-        // record all implications
         graph[adjective] = [];
         for (const key in context[type]['X'].adjectives) {
             if (key != adjective && context[type]['X'].adjectives[key])
@@ -20,7 +17,6 @@ function adjectiveGraph(summary, type) {
     return minimizeGraph(graph);
 }
 function minimizeGraph(graph) {
-    // minimize graph: if A => C factors as A => B and B => C, then remove A => C
     const out = {};
     for (const A in graph) {
         const Cs = [...graph[A]];
@@ -45,7 +41,6 @@ function graphToLayers(graph) {
     const layers = [];
     let keys = Object.keys(graph);
     while (keys.length > 0) {
-        // create a layer of all A for which there is no B => A for some B in keys
         const [layer, other] = partition(keys, A => !keys.some(B => graph[B].indexOf(A) != -1));
         layers.push(layer);
         keys = other;
@@ -81,14 +76,12 @@ function arrayshuffle(array) {
 function optimizeGraph(graph, layers, legend, score) {
     if (score == undefined)
         score = graphScore(graph, layers, legend);
-    // for (const layer of layers) arrayshuffle(layer); // randomize initially
     loop: while (true) {
         for (const layer of layers) {
             for (let i = 0; i < layer.length; ++i) {
                 for (let j = 0; j < layer.length; ++j) {
                     if (i == j)
                         continue;
-                    // move i -> j
                     arraymove(layer, i, j);
                     const newScore = graphScore(graph, layers, legend);
                     if (newScore < score) {
@@ -96,7 +89,6 @@ function optimizeGraph(graph, layers, legend, score) {
                         continue loop;
                     }
                     else {
-                        // move j -> i back
                         arraymove(layer, j, i);
                     }
                 }
@@ -110,16 +102,13 @@ export function pageGraph(summary, options) {
     var _a;
     const page = create('div', { class: 'page page-graph' });
     const type = (_a = options.type) !== null && _a !== void 0 ? _a : 'scheme';
-    // title
     page.append(create('span', { class: 'title' }, `Graph of ${summary.types[type].name} adjectives`));
-    // construct graph
     let g = adjectiveGraph(summary, type);
     let l = graphToLayers(g);
     const legend = {};
     for (const key in g)
         legend[key] = l.findIndex(layer => layer.includes(key));
-    const [graph, layers] = optimizeGraph(g, l, legend); // minimize arrow lengths
-    // render graph layers
+    const [graph, layers] = optimizeGraph(g, l, legend);
     const divGraph = create('div', { class: 'graph' });
     const mapDiv = {};
     for (const layer of layers) {
@@ -132,12 +121,10 @@ export function pageGraph(summary, options) {
         divGraph.append(divLayer);
     }
     page.append(divGraph);
-    // render graph arrows
     const arrows = [];
     for (const source in graph) {
         for (const target of graph[source]) {
             const color = `hsl(${Math.floor(Math.random() * 360.0)}, ${25}%, ${75}%)`;
-            // const color = `hsl(189, 69%, ${12 + Math.floor(Math.random() * (40 - 12))}%)`;
             const arrow = create('div', { class: 'arrow', style: `--color: ${color}` });
             arrows.push([arrow, mapDiv[source], mapDiv[target]]);
             divGraph.append(arrow);
