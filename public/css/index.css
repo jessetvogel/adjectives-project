@@ -14,6 +14,7 @@ body {
   --color-button: #dddddd;
   --color-button-hover: #cccccc;
   --color-nav-background: var(--color-light-gray);
+  --color-footer-background: var(--color-light-gray);
   --color-text: var(--color-black);
   --color-text-inverted: var(--color-white);
   --color-anchor: var(--color-blue);
@@ -43,6 +44,7 @@ body.dark {
   --color-button: var(--color-background-input);
   --color-button-hover: #696969;
   --color-nav-background: #323232;
+  --color-footer-background: #323232;
   --color-text: var(--color-white);
   --color-text-inverted: var(--color-white);
   --color-anchor: #77c7d3;
@@ -532,6 +534,9 @@ body {
   font-size: 1rem;
   background-color: var(--color-background);
   color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 nav {
@@ -616,6 +621,29 @@ nav #button-theme:hover {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+}
+
+footer {
+  margin-top: auto;
+  display: flex;
+  width: 100%;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-footer-background);
+  opacity: 0.4;
+}
+footer a {
+  color: currentcolor;
+}
+footer img {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  margin-right: 2px;
+  filter: var(--filter-invert-dark-theme);
 }
 
 /*# sourceMappingURL=index.css.map */

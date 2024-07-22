@@ -15,6 +15,7 @@ body {
     --color-button: #dddddd;
     --color-button-hover: #cccccc;
     --color-nav-background: var(--color-light-gray); //#1a7d8e7f; //#b5d4da;
+    --color-footer-background: var(--color-light-gray); //#1a7d8e7f; //#b5d4da;
     --color-text: var(--color-black);
     --color-text-inverted: var(--color-white);
     --color-anchor: var(--color-blue);
@@ -49,6 +50,7 @@ body.dark {
     --color-button: var(--color-background-input);
     --color-button-hover: #696969;
     --color-nav-background: #323232; // var(--color-button); //#1a7d8e7f; //#b5d4da;
+    --color-footer-background: #323232; // var(--color-button); //#1a7d8e7f; //#b5d4da;
     --color-text: var(--color-white);
     --color-text-inverted: var(--color-white);
     --color-anchor: #77c7d3;
