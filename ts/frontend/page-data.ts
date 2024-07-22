@@ -1,4 +1,4 @@
-import { create, onInput, $$ } from './util.js';
+import { create, onInput, $$, setCookie } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 import { Book } from '../shared/core.js';
@@ -10,6 +10,15 @@ export function pageData(summary: Book, options: any): HTMLElement {
 
     onInput(input, () => {
         const value = input.value.toLocaleLowerCase();
+
+        // HACK: type 'percentages' in search bar to show percentages
+        if (value == 'percentages' && document.cookie.indexOf('show_percentages=') == -1) {
+            setCookie('show_percentages', 'true', 365.25);
+            input.value = '';
+            window.location.reload();
+            return;
+        }
+
         for (const li of $$('li')) {
             const show = (value == '' || li.innerText.toLocaleLowerCase().includes(value));
             li.style.display = show ? 'list-item' : 'none';

@@ -1,4 +1,4 @@
-import { create, onInput, $$ } from './util.js';
+import { create, onInput, $$, setCookie } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 export function pageData(summary, options) {
@@ -6,6 +6,12 @@ export function pageData(summary, options) {
     const input = create('input', { type: 'text', placeholder: 'Search for example, adjective or theorem ...' });
     onInput(input, () => {
         const value = input.value.toLocaleLowerCase();
+        if (value == 'percentages' && document.cookie.indexOf('show_percentages=') == -1) {
+            setCookie('show_percentages', 'true', 365.25);
+            input.value = '';
+            window.location.reload();
+            return;
+        }
         for (const li of $$('li')) {
             const show = (value == '' || li.innerText.toLocaleLowerCase().includes(value));
             li.style.display = show ? 'list-item' : 'none';
