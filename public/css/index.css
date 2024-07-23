@@ -304,7 +304,7 @@ ol li::marker {
   right: 8px;
   top: 14px;
   border: solid var(--color-text);
-  border-width: 0 3px 3px 0;
+  border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 3px;
   transform: rotate(45deg);

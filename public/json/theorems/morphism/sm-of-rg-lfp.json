@@ -1,0 +1,1 @@
+{"type":"theorem","name":"smooth is regular and locally of finite presentation","given":"morphism f","if":["f regular","f locally-of-finite-presentation"],"then":"f smooth","converse":true}
