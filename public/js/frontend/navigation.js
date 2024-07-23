@@ -101,4 +101,3 @@ export default {
     anchorTheorem,
     anchorPage
 };
-//# sourceMappingURL=navigation.js.map

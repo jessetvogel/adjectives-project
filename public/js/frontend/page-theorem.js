@@ -114,4 +114,3 @@ export function pageTheorem(summary, options) {
         page.append(divExamples);
     return page;
 }
-//# sourceMappingURL=page-theorem.js.map

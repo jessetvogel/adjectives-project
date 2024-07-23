@@ -42,4 +42,3 @@ function initTheme() {
     }, 100);
 }
 window.onload = main;
-//# sourceMappingURL=index.js.map

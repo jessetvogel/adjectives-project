@@ -156,4 +156,3 @@ export function pageGraph(summary, options) {
     setTimeout(updateArrows, 100);
     return page;
 }
-//# sourceMappingURL=page-graph.js.map

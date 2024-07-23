@@ -450,4 +450,3 @@ export class Book {
     }
 }
 ;
-//# sourceMappingURL=core.js.map

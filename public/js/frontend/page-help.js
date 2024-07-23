@@ -23,4 +23,3 @@ export function pageHelp() {
     katexTypeset(page);
     return page;
 }
-//# sourceMappingURL=page-help.js.map

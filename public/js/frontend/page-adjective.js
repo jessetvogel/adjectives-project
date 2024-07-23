@@ -72,4 +72,3 @@ export function pageAdjective(summary, options) {
     ]);
     return page;
 }
-//# sourceMappingURL=page-adjective.js.map

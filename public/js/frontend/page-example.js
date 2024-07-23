@@ -102,4 +102,3 @@ function adjectivesOrder(summary, type, id, data) {
     adjectives.sort((a, b) => depths[a] - depths[b]);
     return adjectives;
 }
-//# sourceMappingURL=page-example.js.map

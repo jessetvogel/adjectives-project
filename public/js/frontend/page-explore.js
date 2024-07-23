@@ -258,4 +258,3 @@ function updateHistory(context, action = null) {
     const url = `?page=explore&q=${serializeContext(context)}${action != null ? '&action=' + action : ''}`;
     window.history.replaceState({}, '', url);
 }
-//# sourceMappingURL=page-explore.js.map

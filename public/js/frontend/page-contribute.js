@@ -18,4 +18,3 @@ export function pageContribute() {
     ]));
     return page;
 }
-//# sourceMappingURL=page-contribute.js.map

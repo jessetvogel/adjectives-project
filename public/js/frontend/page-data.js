@@ -74,4 +74,3 @@ function percentageForAdjective(summary, type, id) {
 function colorForPercentage(percentage) {
     return `color-mix(in hsl, var(--color-green) ${percentage}%, var(--color-red))`;
 }
-//# sourceMappingURL=page-data.js.map

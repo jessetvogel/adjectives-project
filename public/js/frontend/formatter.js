@@ -106,4 +106,3 @@ export function formatTheoremStatement(summary, theorem) {
     }
     return span;
 }
-//# sourceMappingURL=formatter.js.map
