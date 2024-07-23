@@ -52,7 +52,7 @@ const ADJECTIVES_CONSTRAINTS: { [type: string]: { [adj: string]: boolean[] } } =
         // 'separated',
         // 'smooth',
         // 'surjective',
-        'syntomic': [],
+        // 'syntomic': [],
         // 'universally-closed',
         // 'universally-open',
         // 'unramified'

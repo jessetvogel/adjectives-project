@@ -9,9 +9,7 @@ const ADJECTIVES_CONSTRAINTS = {
         'jacobson': [],
         'reduced': [true],
     },
-    'morphism': {
-        'syntomic': [],
-    }
+    'morphism': {}
 };
 function combinations(array, size) {
     const result = [];
