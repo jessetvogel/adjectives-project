@@ -1,0 +1,1 @@
+{"type":"theorem","name":"excellence lifts along locally finite type maps","given":"morphism f","if":["f locally-of-finite-type","f.target excellent"],"then":"f.source excellent","description":"https://stacks.math.columbia.edu/tag/07PV"}
