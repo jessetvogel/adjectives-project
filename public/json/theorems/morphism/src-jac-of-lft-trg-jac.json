@@ -1,0 +1,1 @@
+{"type":"theorem","name":"being Jacobson lifts along locally finite type maps","given":"morphism f","if":["f locally-of-finite-type","f.target jacobson"],"then":"f.source jacobson","description":"https://stacks.math.columbia.edu/tag/02J5"}
