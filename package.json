@@ -10,7 +10,8 @@
     "update-json-from-yaml": "node --enable-source-maps ./js/backend/script-update-json-from-yaml.js",
     "clear-json": "node --enable-source-maps ./js/backend/script-clear-json.js",
     "deduce": "node --enable-source-maps ./js/backend/script-deduce.js",
-    "find-redundant": "node --enable-source-maps ./js/backend/script-find-redundant.js"
+    "find-redundant": "node --enable-source-maps ./js/backend/script-find-redundant.js",
+    "build": "npm run clear-json && npm run update-json-from-yaml && npm run deduce && (cd ts && tsc --project tsconfig.backend.json) && (cd ts && tsc --project tsconfig.frontend.json)"
   },
   "author": "Jesse Vogel",
   "license": "MIT",
