@@ -19,7 +19,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     const pDescription = create('p', { class: 'description' }, '');
     const tableAdjectives = create('table', { class: 'adjectives' }, '');
 
-    // Update subtitle
+    // update subtitle
     spanSubtitle.append(`(${summary.types[type].name}`);
     const args = Object.keys(summary.examples[type][id].args);
     for (let i = 0; i < args.length; ++i) {
@@ -34,17 +34,17 @@ export function pageExample(summary: Book, options: any): HTMLElement {
     katexTypeset(spanSubtitle);
 
     fetch(`json/examples/${type}/${id}.json`, { cache: 'reload' }).then(response => response.json()).then(data => {
-        // Update name span
+        // update name span
         if ('name' in data) setText(spanName, data.name);
         katexTypeset(spanName);
 
-        // Update description paragraph
+        // update description paragraph
         if ('description' in data) {
             setText(pDescription, data.description);
             katexTypeset(pDescription);
         }
 
-        // Update adjectives table
+        // update adjectives table
         tableAdjectives.append(create('tr', {}, [
             create('th', {}, 'Adjective'),
             create('th', {}, 'Value'),
@@ -79,7 +79,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
 }
 
 function adjectivesOrder(summary: Book, type: string, id: string, data: any): string[] {
-    // If the proof of an adjective depends on another adjective, then it should be below that dependency. Keep track of these dependencies using 'depth'.
+    // if the proof of an adjective depends on another adjective, then it should be below that dependency. Keep track of these dependencies using 'depth'.
     const depths: { [adj: string]: number } = {};
 
     function computeDepth(adjective: string): void {

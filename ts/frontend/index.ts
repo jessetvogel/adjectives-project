@@ -6,7 +6,7 @@ let summary: Book;
 
 async function main() {
     try {
-        // Load summary
+        // load summary
         summary = new Book(await (await fetch('json/summary.json', { cache: 'reload' })).json()); // load summary
         summary.verify();
     }
@@ -30,10 +30,10 @@ async function main() {
         return;
     }
 
-    // Initialize navigation
+    // initialize navigation
     navigation.init(summary, $('content') as HTMLElement);
 
-    // Initialize theme
+    // initialize theme
     initTheme();
 }
 

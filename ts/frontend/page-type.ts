@@ -17,11 +17,11 @@ export function pageType(summary: Book, options: any): HTMLElement {
 
     // FETCH DATA
     fetch(`json/types/${id}.json`).then(response => response.json()).then(data => {
-        // Update name span
+        // update name span
         if ('name' in data) setText(spanName, data.name);
         katexTypeset(spanName);
 
-        // Update description paragraph
+        // update description paragraph
         if ('description' in data) {
             setText(pDescription, data.description);
             katexTypeset(pDescription);

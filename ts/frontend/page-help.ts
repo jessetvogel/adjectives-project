@@ -35,14 +35,14 @@ export function pageHelp(): HTMLElement {
 //     <li>Click <button>Search</button> and wait.</li>
 //     <li>Now you will see an example of a scheme $X$ which is not separated, e.g. [ex:AA_1_QQ_double_origin].</li>
 // </ol>
-// Suppose we are also interested in what other properties a non-separated scheme $X$ has.
+// suppose we are also interested in what other properties a non-separated scheme $X$ has.
 // <ol style="line-height: 24px;" start="5">
 //     <li>Make sure $X$ is selected, click <button>Deduce</button> and wait.</li>
 //     <li>Now you will see a table of scheme properties, indicating whether $X$ has (or does not have) certain other properties, together with a proof. For example, $X$ is also not [prop:scheme.affine] by [thm:sp_of_af].</li>
 // </ol>
 
 // <h2>Example 2 (is reduced an fppf-local property?)</h2>
-// Suppose we want to know if being reduced is an fppf-local property. That is, if $f : X \to Y$ is an [prop:morphism.fppf_cover] and $Y$ is [prop:scheme.reduced], does it follow that $X$ is reduced as well?
+// suppose we want to know if being reduced is an fppf-local property. That is, if $f : X \to Y$ is an [prop:morphism.fppf_cover] and $Y$ is [prop:scheme.reduced], does it follow that $X$ is reduced as well?
 // <ol style="line-height: 24px;">
 //     <li>Create a morphism $f : X \to Y$ using <button>+ morphism</button>.</li>
 //     <li>Click on the properties '<b>fppf-cover</b>' for $f$, and '<b>reduced</b>' for $Y$ to indicate that $f$ and $Y$ should have these properties.</li>

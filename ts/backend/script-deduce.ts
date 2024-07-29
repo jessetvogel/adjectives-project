@@ -7,7 +7,7 @@ import { Log, PATH_SUMMARY } from './general.js';
 import { fileURLToPath } from 'url';
 
 export function main() {
-    // Parse arguments
+    // parse arguments
     let options: DeduceOptions = {};
     for (const arg of process.argv) {
         let match: RegExpMatchArray | null;
@@ -26,17 +26,17 @@ export function main() {
         }
     }
 
-    // Load summary
+    // load summary
     if (!fs.existsSync(PATH_SUMMARY))
         throw new Error(`Missing summary file '${PATH_SUMMARY}'`);
 
     const summary = JSON.parse(fs.readFileSync(PATH_SUMMARY, 'utf8'));
 
-    // Create book from summary
+    // create book from summary
     const book = new Book(summary);
     book.verify();
 
-    // Make deductions
+    // make deductions
     const assistant = new Assistant(book);
     Log.action(`Deducing`);
     const conclusions: Conclusion[] = [];
@@ -46,7 +46,7 @@ export function main() {
     for (const conclusion of conclusions)
         Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
 
-    // Save conclusions
+    // save conclusions
     if (conclusions.length > 0) {
         Log.action(`Saving conclusions`);
         updateJSON(book);
@@ -55,7 +55,7 @@ export function main() {
         Log.info(`No deductions were made`);
     }
 
-    // Done
+    // done
     Log.success('Done');
 }
 

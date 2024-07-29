@@ -24,7 +24,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         aHelp // .outerHTML // removes onclick
     ]));
 
-    // Column of objects and column of adjectives
+    // column of objects and column of adjectives
     const objectsElem = create('div', { class: 'column-objects' });
     const adjectivesElem = create('div', { class: 'column-adjectives' });
     pageElem.append(create('div', { class: 'context' }, [objectsElem, adjectivesElem,]));
@@ -41,10 +41,10 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
                     create('span', { class: 'adjectives' })
                 ]);
                 onClick(item, function () {
-                    // Update `.selected` class
+                    // update `.selected` class
                     objectsElem.querySelectorAll('.selected').forEach(elem => removeClass(elem as HTMLElement, 'selected'))
                     addClass(item, 'selected');
-                    // Update overview
+                    // update overview
                     updateWithContext(context);
                 });
                 objectsElem.append(item);
@@ -52,7 +52,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         }
         (objectsElem.firstChild as HTMLElement).click(); // select the first object
 
-        // Search and Deduce onclick handlers
+        // search and Deduce onclick handlers
         searchButtonElem.onclick = function () { updateHistory(context, 'search'); search(summary, context, resultsElem); };
         deduceButtonElem.onclick = function () { updateHistory(context, 'deduce'); deduce(summary, context, resultsElem); };
     }
@@ -60,7 +60,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
     function updateWithContext(context: Context) {
         clear(adjectivesElem);
 
-        // Update adjective list after object name
+        // update adjective list after object name
         for (const div of objectsElem.childNodes as NodeListOf<HTMLElement>) {
             const type = div.querySelector('.type')?.textContent ?? '';
             const id = div.querySelector('.id')?.textContent ?? '';
@@ -75,7 +75,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         }
         katexTypeset(objectsElem);
 
-        // Update adjectives column
+        // update adjectives column
         const selectedElem = objectsElem.querySelector('.selected');
         if (selectedElem) {
             const type = selectedElem.querySelector('.type')?.textContent ?? '';
@@ -106,7 +106,7 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         updateHistory(context);
     }
 
-    // Append row of buttons and help link: " [Search] [Deduce] _Help_ "
+    // append row of buttons and help link: " [Search] [Deduce] _Help_ "
     const searchButtonElem = create('button', {}, 'Search');
     const deduceButtonElem = create('button', {}, 'Deduce');
     pageElem.append(create('div', { class: 'row-buttons' }, [
@@ -114,11 +114,11 @@ export function pageExplore(summary: Book, options: any): HTMLElement {
         deduceButtonElem
     ]));
 
-    // Append div for results
+    // append div for results
     const resultsElem = create('div', { class: 'results' });
     pageElem.append(resultsElem);
 
-    // If select value changes, re-initialize the context
+    // if select value changes, re-initialize the context
     onChange(selectElem, function () {
         const type = selectElem.value;
         const context = summary.createContextFromType(type, type) // simply use id equal to type
@@ -252,7 +252,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement, onlyS
             resultsElem.append(create('p', { class: 'center' }, 'No new conclusions could be made.'));
         }
         else {
-            // Given {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}, the following conclusions hold.
+            // given {{a ${type} which is [...], and whose source is [...], and whose target is [...]}}, the following conclusions hold.
             resultsElem.append(create('p', { class: 'center' }, [
                 'The following conclusions follow from ',
                 formatContext(summary, context),

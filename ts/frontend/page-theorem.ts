@@ -4,7 +4,7 @@ import { katexTypeset } from './katex-typeset.js';
 import navigation from './navigation.js';
 import { create, setText, hasClass, addClass, removeClass } from './util.js';
 
-// Find examples which satisfy the theorem conclusion, but not the theorem conditions
+// find examples which satisfy the theorem conclusion, but not the theorem conditions
 function counterexamples(summary: Book, theorem: Theorem): [Example, TheoremConditions][] {
     const type = theorem.type;
     const results: [Example, TheoremConditions][] = [];
@@ -60,11 +60,11 @@ export function pageTheorem(summary: Book, options: any): HTMLElement {
     katexTypeset(pStatement);
 
     fetch(`json/theorems/${type}/${id}.json`).then(response => response.json()).then(data => {
-        // Update name span
+        // update name span
         if ('name' in data) setText(spanName, data.name);
         katexTypeset(spanName);
 
-        // Update description paragraph
+        // update description paragraph
         if ('description' in data) setText(pDescription, data.description);
         katexTypeset(pDescription);
     }).catch(error => {

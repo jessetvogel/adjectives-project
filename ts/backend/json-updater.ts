@@ -33,7 +33,7 @@ function updateObject(source: any, target: any): boolean { // returns true if an
 }
 
 function updateJSONFile(filePath: string, data: any): void {
-    // Update the json file with data, but also keep the original data (overwrite when applies)
+    // update the json file with data, but also keep the original data (overwrite when applies)
     try {
         let json: any;
         let changes: boolean;
@@ -61,7 +61,7 @@ function updateSummary(book: Book): void {
 }
 
 export function updateJSON(book: Book): void {
-    // Update all json files
+    // update all json files
     for (const id in book.types)
         updateJSONFile(`${PATH_JSON}/types/${id}.json`, book.serializeType(book.types[id], true));
     for (const type in book.adjectives)
@@ -74,7 +74,7 @@ export function updateJSON(book: Book): void {
         for (const id in book.examples[type])
             updateJSONFile(`${PATH_JSON}/examples/${type}/${id}.json`, book.serializeExample(book.examples[type][id], true));
 
-    // Update the summary file
+    // update the summary file
     updateSummary(book);
 }
 

@@ -192,7 +192,7 @@ export class Assistant {
 
         const conclusions: Conclusion[] = [];
 
-        // If all the conditions hold, we can apply the theorem (in the forward direction) to arrive at the conclusion! (Watch out for contradictions though!)
+        // if all the conditions hold, we can apply the theorem (in the forward direction) to arrive at the conclusion! (Watch out for contradictions though!)
         if (conditionsThatHoldCount == conditionsCount) {
             for (const path in theoremConclusions) {
                 const object = this.book.resolvePath(context, subject, path);
@@ -211,17 +211,17 @@ export class Assistant {
             }
         }
 
-        // If there is a faulty conclusion, and all BUT ONE conditions hold, we can apply the theorem (in the backwards direction) to conclude the remaining condition must be false!
+        // if there is a faulty conclusion, and all BUT ONE conditions hold, we can apply the theorem (in the backwards direction) to conclude the remaining condition must be false!
         else if (!conclusionsArePossible && conditionsThatHoldCount == conditionsCount - 1 && conditionThatDoesNotHold != null) {
             const object = this.book.resolvePath(context, subject, conditionThatDoesNotHold.path);
             const adjective = conditionThatDoesNotHold.adjective;
             const value = !theoremConditions[conditionThatDoesNotHold.path][adjective]; // NOTE: invert the boolean
-            if (object.adjectives?.[adjective] == value) // If the conclusion was already known, simply return an empty list of conclusions
+            if (object.adjectives?.[adjective] == value) // if the conclusion was already known, simply return an empty list of conclusions
                 return [];
             conclusions.push({ object, adjective, value });
         }
 
-        // Apply the conclusions and return them
+        // apply the conclusions and return them
         for (const conclusion of conclusions) {
             conclusion.object.adjectives[conclusion.adjective] = conclusion.value;
             const proof: Proof = {

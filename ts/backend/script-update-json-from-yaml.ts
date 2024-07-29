@@ -7,8 +7,8 @@ import { updateJSON } from './json-updater.js';
 import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
 import { fileURLToPath } from 'url';
 
-// Finds all files (recursively) with the given extension inside the given directory.
-// Returns a list of the paths to all files found.
+// finds all files (recursively) with the given extension inside the given directory.
+// returns a list of the paths to all files found.
 // NOTE: ignore all hidden files (starting with .)
 function findFilesWithExtension(directory: string, extension: string): string[] {
     const files: string[] = [];
@@ -25,7 +25,7 @@ function findFilesWithExtension(directory: string, extension: string): string[] 
 }
 
 export function main() {
-    // Create book from .yaml files
+    // create book from .yaml files
     const book = new Book();
     for (const file of findFilesWithExtension(PATH_YAML, EXTENSION_YAML)) {
         try {
@@ -39,10 +39,10 @@ export function main() {
     }
     book.verify();
 
-    // Update json
+    // update json
     updateJSON(book);
 
-    // Done
+    // done
     Log.success('Done');
 }
 
