@@ -1,4 +1,4 @@
-import { Context, Book, Proof, Example } from '../shared/core.js';
+import { Context, Book } from '../shared/core.js';
 import { Assistant, ContradictionError } from '../shared/assistant.js';
 import { create, clear, onClick, hasClass, addClass, removeClass, setHTML, onChange } from './util.js';
 import { katexTypeset } from './katex-typeset.js';
@@ -199,9 +199,12 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
             formatContext(summary, context),
             '.'
         ]));
+
+        // look for contradiction and overwrite resultsElem if there is one
+        deduce(summary, context, resultsElem, true);
     }
     else {
-        // The following are examples of {{ a ${type} which is [...], and whose source is [...], and whose target is [...] }}.
+        // the following are examples of {{ a ${type} which is [...], and whose source is [...], and whose target is [...] }}.
         resultsElem.append(create('p', { class: 'center' }, [
             'The following are examples of ',
             formatContext(summary, context),
@@ -235,13 +238,15 @@ function search(summary: Book, context: Context, resultsElem: HTMLElement): void
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
 
-function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void {
+function deduce(summary: Book, context: Context, resultsElem: HTMLElement, onlySearchForContradiction: boolean = false): void {
     clear(resultsElem);
 
     const contextCopy = structuredClone(context); // NOTE: the conclusions must not pollute the original context
     try {
         const assistant = new Assistant(summary);
         const conclusions = assistant.deduce(contextCopy);
+
+        if (onlySearchForContradiction) return;
 
         if (conclusions.length == 0) {
             resultsElem.append(create('p', { class: 'center' }, 'No new conclusions could be made.'));
@@ -275,21 +280,25 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement): void
         if (err instanceof ContradictionError) {
             resultsElem.append(create('span', { class: 'title' }, 'Contradiction!'));
             resultsElem.append(create('p', { class: 'center' }, [
-                'A contradiction follows from ',
+                'There does not exist ',
                 formatContext(summary, context),
-                '.'
+                ', because of the following contradictory facts:'
             ]));
             const object = err.conclusion.object;
             resultsElem.append(create('div', { style: 'max-width: 800px;' }, [
-                create('p', {}, [
-                    'Namely, the ', object.name, ' ',
-                    formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: object.adjectives[err.conclusion.adjective] }),
-                    ' by ',
-                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective))
-                ]),
-                create('p', {}, [
-                    'However, the converse follows by ',
-                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective, err.proof))
+                create('ol', {}, [
+                    create('li', {}, [
+                        'Such a ', object.name, ' ',
+                        formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: object.adjectives[err.conclusion.adjective] }),
+                        ' by ',
+                        formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective))
+                    ]),
+                    create('li', {}, [
+                        'Such a ', object.name, ' ',
+                        formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: !object.adjectives[err.conclusion.adjective] }),
+                        ' by ',
+                        formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective, err.proof))
+                    ])
                 ])
             ]));
         }

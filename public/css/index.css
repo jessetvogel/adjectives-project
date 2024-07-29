@@ -141,6 +141,7 @@ span.katex {
 
 li {
   margin: 8px 0px;
+  padding-left: 2px;
 }
 
 table {
@@ -245,11 +246,13 @@ p {
   }
 }
 ol {
-  padding-left: 8px;
-  list-style-position: inside;
+  padding-left: 32px;
 }
 ol li::marker {
   color: var(--color-gray);
+}
+ol ol {
+  list-style-type: lower-roman;
 }
 
 .center {

@@ -74,6 +74,7 @@ span.katex {
 
 li {
     margin: 8px 0px;
+    padding-left: 2px;
 }
 
 table {
@@ -125,7 +126,7 @@ select {
     color: var(--color-text);
 
     &::after {
-        content: '';
+        content: "";
     }
 }
 
@@ -188,11 +189,15 @@ p {
 }
 
 ol {
-    padding-left: 8px;
-    list-style-position: inside;
+    padding-left: 32px;
+    // list-style-position: inside;
 
     li::marker {
         color: var(--color-gray);
+    }
+
+    ol {
+        list-style-type: lower-roman;
     }
 }
 

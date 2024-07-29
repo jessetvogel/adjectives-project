@@ -165,6 +165,7 @@ function search(summary, context, resultsElem) {
             formatContext(summary, context),
             '.'
         ]));
+        deduce(summary, context, resultsElem, true);
     }
     else {
         resultsElem.append(create('p', { class: 'center' }, [
@@ -195,13 +196,15 @@ function search(summary, context, resultsElem) {
     katexTypeset(resultsElem);
     setTimeout(() => resultsElem.scrollIntoView({ behavior: 'smooth' }), 0);
 }
-function deduce(summary, context, resultsElem) {
+function deduce(summary, context, resultsElem, onlySearchForContradiction = false) {
     var _a;
     clear(resultsElem);
     const contextCopy = structuredClone(context);
     try {
         const assistant = new Assistant(summary);
         const conclusions = assistant.deduce(contextCopy);
+        if (onlySearchForContradiction)
+            return;
         if (conclusions.length == 0) {
             resultsElem.append(create('p', { class: 'center' }, 'No new conclusions could be made.'));
         }
@@ -232,21 +235,25 @@ function deduce(summary, context, resultsElem) {
         if (err instanceof ContradictionError) {
             resultsElem.append(create('span', { class: 'title' }, 'Contradiction!'));
             resultsElem.append(create('p', { class: 'center' }, [
-                'A contradiction follows from ',
+                'There does not exist ',
                 formatContext(summary, context),
-                '.'
+                ', because of the following contradictory facts:'
             ]));
             const object = err.conclusion.object;
             resultsElem.append(create('div', { style: 'max-width: 800px;' }, [
-                create('p', {}, [
-                    'Namely, the ', object.name, ' ',
-                    formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: object.adjectives[err.conclusion.adjective] }),
-                    ' by ',
-                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective))
-                ]),
-                create('p', {}, [
-                    'However, the converse follows by ',
-                    formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective, err.proof))
+                create('ol', {}, [
+                    create('li', {}, [
+                        'Such a ', object.name, ' ',
+                        formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: object.adjectives[err.conclusion.adjective] }),
+                        ' by ',
+                        formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective))
+                    ]),
+                    create('li', {}, [
+                        'Such a ', object.name, ' ',
+                        formatAdjectivesDescription(summary, object.type, { [err.conclusion.adjective]: !object.adjectives[err.conclusion.adjective] }),
+                        ' by ',
+                        formatStepByStepProof(summary.traceProof(contextCopy, object, err.conclusion.adjective, err.proof))
+                    ])
                 ])
             ]));
         }
