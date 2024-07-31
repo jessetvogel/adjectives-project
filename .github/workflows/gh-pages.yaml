@@ -34,7 +34,6 @@ jobs:
       - name: Build Project
         run: |
           npm install
-          sass --version
           npm run build
 
       - name: Upload Artifact
