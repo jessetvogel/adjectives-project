@@ -6,27 +6,24 @@ import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
 import path from 'path';
 
 function main() {
-    try {
-        // load summary
+    // load summary
+    const book = new Book();
+    Log.action('Reading summary.json', () => {
         if (!fs.existsSync(PATH_SUMMARY))
             throw new Error(`Missing summary file '${PATH_SUMMARY}'`);
 
         const summary = JSON.parse(fs.readFileSync(PATH_SUMMARY, 'utf8'));
 
         // create book from summary
-        const book = new Book(summary);
+        book.initialize(summary);
         book.verify();
+    });
 
-        // find redundant theorems
-        findRedundantTheorems(book);
+    // find redundant theorems
+    findRedundantTheorems(book);
 
-        // find redundant examples
-        findRedundantExamples(book);
-    }
-    catch (err: any) {
-        Log.error(`${err}`);
-        process.exit(1);
-    }
+    // find redundant examples
+    findRedundantExamples(book);
 }
 
 function printProof(proof: Proof[]): void {

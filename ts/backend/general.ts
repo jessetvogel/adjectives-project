@@ -4,25 +4,41 @@ export const PATH_SUMMARY = './public/json/summary.json';
 export const EXTENSION_YAML = 'yaml';
 
 export class Log {
-
     static error(msg: string): void { console.log(`🚨 ${msg}`); }
     static info(msg: string): void { console.log(`💬 ${msg}`); }
     static warning(msg: string): void { console.log(`⚠️ ${msg}`); }
     static print(msg: string): void { console.log(msg); }
 
     static action(msg: string, fn: Function): void {
-        process.stdout.write(`⏳ ${msg} ...`);
+        const fancy = ('clearLine' in process.stdout && 'cursorTo' in process.stdout);
 
-        fn();
+        function write(msg: string) {
+            if (fancy) process.stdout.write(msg);
+            else console.log(msg);
+        }
 
-        if (process.stdout.clearLine && process.stdout.cursorTo) {
-            process.stdout.clearLine(0);
-            process.stdout.cursorTo(0);
+        function overwrite(msg: string) {
+            if (fancy) {
+                process.stdout.clearLine(0);
+                process.stdout.cursorTo(0);
+                process.stdout.write(msg + '\n');
+            }
+            else {
+                console.log(msg);
+            }
         }
-        else {
-            process.stdout.write('\n');
+
+        write(`⏳ ${msg} ...`);
+
+        try {
+            fn();
         }
-        process.stdout.write(`✅ ${msg}    \n`);
+        catch (err: any) {
+            if (fancy) write('\n');
+            Log.error(`${err}`);
+            process.exit(1);
+        }
+
+        overwrite(`✅ ${msg}    `);
     }
-
 };

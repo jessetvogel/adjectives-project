@@ -1,8 +1,7 @@
 import fs from 'fs';
+import { spawn } from 'child_process';
 
-import { main as mainUpdateJsonFromYaml } from './script-update-json-from-yaml.js';
-import { main as mainDeduce } from './script-deduce.js';
-import { EXTENSION_YAML, Log, PATH_YAML } from './general.js';
+import { EXTENSION_YAML, PATH_YAML } from './general.js';
 
 function info(msg: string): void {
     const date = new Date();
@@ -14,7 +13,7 @@ function main() {
     info('Watching YAML files for changes ...');
 
     var cooldown = false; // prevent events to double fire
-    fs.watch(PATH_YAML, { recursive: true }, (eventType, filename) => {
+    fs.watch(PATH_YAML, { recursive: true }, async (eventType, filename) => {
         if (filename == null || !filename.endsWith('.' + EXTENSION_YAML)) return;
         if (eventType != 'change' && eventType != 'rename') return;
         if (cooldown) return;
@@ -23,15 +22,23 @@ function main() {
 
         console.clear();
         info(`Detected file change (${filename}). Updating JSON files ...`);
-        try {
-            mainUpdateJsonFromYaml();
-            mainDeduce();
-        }
-        catch (err) {
-            Log.error(`${err}`);
-        }
+
+        const code = await launchChild('npm', ['run', 'update-json-from-yaml']);
+        if (code == 0) await launchChild('npm', ['run', 'deduce']);
+
         console.log();
         info('Watching YAML files for changes ...');
+    });
+}
+
+async function launchChild(cmd: string, args: string[]): Promise<number> {
+    return new Promise((resolve, reject) => {
+        const child = spawn(cmd, args);
+
+        child.stdout.on('data', (data) => process.stdout.write(data.toString()));
+        child.stderr.on('data', (data) => process.stdout.write(data.toString()));
+
+        child.on('exit', resolve);
     });
 }
 

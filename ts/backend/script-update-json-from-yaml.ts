@@ -5,7 +5,6 @@ import yaml from 'js-yaml';
 import { Book } from '../shared/core.js';
 import { updateJSON } from './json-updater.js';
 import { PATH_YAML, EXTENSION_YAML, Log } from './general.js';
-import { fileURLToPath } from 'url';
 
 // finds all files (recursively) with the given extension inside the given directory.
 // returns a list of the paths to all files found.
@@ -24,7 +23,7 @@ function findFilesWithExtension(directory: string, extension: string): string[] 
     return files;
 }
 
-export function main() {
+function main() {
     const book = new Book();
 
     Log.action('Reading YAML files', () => {
@@ -36,7 +35,7 @@ export function main() {
                 book.add(id, data);
             }
             catch (err: any) {
-                throw new Error(`Failed to load '${file}': ${err.stack}`);
+                throw new Error(`Failed to load '${file}': ${err}`);
             }
         }
         book.verify();
@@ -50,10 +49,4 @@ export function main() {
     Log.info(`${changedFiles} JSON file(s) were updated`);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    try { main(); }
-    catch (err) {
-        Log.error(`${err}`);
-        process.exit(1);
-    }
-}
+main();
