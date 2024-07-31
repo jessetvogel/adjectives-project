@@ -31,6 +31,10 @@ jobs:
         with:
           node-version: 21
 
+      - name: Update Git Submodules
+        run: |
+          git submodule update --init
+
       - name: Build Project
         run: |
           npm install

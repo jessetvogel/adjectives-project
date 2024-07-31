@@ -15,9 +15,10 @@ export class Log {
 
         fn();
 
-        if (process.stdout.clearLine && process.stdout.clearLine) {
+        if (process.stdout.clearLine && process.stdout.cursorTo) {
             process.stdout.clearLine(0);
             process.stdout.cursorTo(0);
+            process.stdout.write('\n');
         }
         process.stdout.write(`✅ ${msg}    \n`);
     }
