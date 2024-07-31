@@ -24,7 +24,7 @@ function main() {
         findRedundantExamples(book);
     }
     catch (err: any) {
-        Log.error(err.stack);
+        Log.error(`${err}`);
         process.exit(1);
     }
 }

@@ -50,7 +50,7 @@ function updateJSONFile(filePath: string, data: any): number {
             fs.writeFileSync(filePath, JSON.stringify(json), 'utf8');
         return changes ? 1 : 0;
     }
-    catch (err) {
+    catch (err: any) {
         Log.error(`Failed to update '${filePath}': ${err}`);
         return 0;
     }

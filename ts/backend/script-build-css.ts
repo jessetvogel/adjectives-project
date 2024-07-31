@@ -20,6 +20,6 @@ try {
         });
     }
 }
-catch (err) {
-    Log.error(err);
+catch (err: any) {
+    Log.error(`${err}`);
 }

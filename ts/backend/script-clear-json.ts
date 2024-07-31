@@ -15,7 +15,7 @@ function main() {
         });
     }
     catch (err: any) {
-        Log.error(err.stack);
+        Log.error(`${err.stack}`);
         process.exit(1);
     }
 }

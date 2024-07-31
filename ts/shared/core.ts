@@ -413,7 +413,7 @@ export class Book {
                         try {
                             pathType = this.resolvePathType(theorem.type, path);
                         }
-                        catch (err) {
+                        catch (err: any) {
                             throw new Error(`In theorem '${id}': ${err.stack}`);
                         }
                         for (const key in con[path]) {

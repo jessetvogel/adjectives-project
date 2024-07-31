@@ -67,7 +67,7 @@ export function pageTheorem(summary: Book, options: any): HTMLElement {
         // update description paragraph
         if ('description' in data) setText(pDescription, data.description);
         katexTypeset(pDescription);
-    }).catch(error => {
+    }).catch((error: any) => {
         console.log(`[ERROR] ${error}`);
     });
 

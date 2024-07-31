@@ -56,8 +56,8 @@ export function main() {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     try { main(); }
-    catch (err) {
-        Log.error(err.toString());
+    catch (err: any) {
+        Log.error(`${err}`);
         process.exit(1);
     }
 }

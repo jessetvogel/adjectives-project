@@ -28,7 +28,7 @@ function main() {
             mainDeduce();
         }
         catch (err) {
-            Log.error(err.toString());
+            Log.error(`${err}`);
         }
         console.log();
         info('Watching YAML files for changes ...');

@@ -109,7 +109,7 @@ function questions(summary: Book, type: string, constraints: { [adj: string]: bo
                 const results = assistant.search(context); // search for examples
                 let contradiction = false; // deduce on context, and see if there is a contradiction
                 const contextClone = structuredClone(context);
-                try { assistant.deduce(contextClone); } catch (err) {
+                try { assistant.deduce(contextClone); } catch (err: any) {
                     if (!(err instanceof ContradictionError)) throw err;
                     contradiction = true;
                 }
