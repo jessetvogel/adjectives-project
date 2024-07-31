@@ -26,7 +26,7 @@ export function pageType(summary: Book, options: any): HTMLElement {
             setText(pDescription, data.description);
             katexTypeset(pDescription);
         }
-    }).catch(error => {
+    }).catch((error: any) => {
         console.log(`[ERROR] ${error}`);
     });
 

@@ -25,31 +25,35 @@ function findFilesWithExtension(directory: string, extension: string): string[] 
 }
 
 export function main() {
-    // create book from .yaml files
     const book = new Book();
-    for (const file of findFilesWithExtension(PATH_YAML, EXTENSION_YAML)) {
-        try {
-            const id = path.parse(file).name;
-            const data = yaml.load(fs.readFileSync(file, 'utf8'));
-            book.add(id, data);
+
+    Log.action('Reading YAML files', () => {
+        // create book from .yaml files
+        for (const file of findFilesWithExtension(PATH_YAML, EXTENSION_YAML)) {
+            try {
+                const id = path.parse(file).name;
+                const data = yaml.load(fs.readFileSync(file, 'utf8'));
+                book.add(id, data);
+            }
+            catch (err: any) {
+                throw new Error(`Failed to load '${file}': ${err.stack}`);
+            }
         }
-        catch (err) {
-            throw new Error(`Failed to load '${file}': ${err.stack}`);
-        }
-    }
-    book.verify();
+        book.verify();
+    });
 
     // update json
-    updateJSON(book);
-
-    // done
-    Log.success('Done');
+    let changedFiles = 0;
+    Log.action('Writing JSON files', () => {
+        changedFiles = updateJSON(book);
+    });
+    Log.info(`${changedFiles} JSON file(s) were updated`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     try { main(); }
     catch (err) {
-        Log.error(err.toString());
+        Log.error(`${err}`);
         process.exit(1);
     }
 }

@@ -1,1 +1,0 @@
-{"type":"scheme adjective","name":"integral","description":"A scheme $X$ is integral if it is non-empty and for every non-empty open subset $U \\subset X$ the ring $\\mathcal{O}_X(U)$ is a domain."}

@@ -1,1 +1,0 @@
-{"type":"theorem","name":"definition G-unramified","given":"morphism f","if":["f unramified","f locally-of-finite-presentation"],"then":"f g-unramified","converse":true}

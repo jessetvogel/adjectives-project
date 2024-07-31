@@ -38,31 +38,26 @@ export function main() {
 
     // make deductions
     const assistant = new Assistant(book);
-    Log.action(`Deducing`);
     const conclusions: Conclusion[] = [];
-    let c: Conclusion[];
-    while ((c = assistant.deduce(book.examples, options)).length > 0)
-        conclusions.push(...c);
-    for (const conclusion of conclusions)
-        Log.info(`Example '${conclusion.object.id}' of type '${conclusion.object.type}' is${conclusion.value ? '' : ' not'} ${conclusion.adjective}`);
+    Log.action(`Deducing`, () => {
+        let c: Conclusion[];
+        while ((c = assistant.deduce(book.examples, options)).length > 0)
+            conclusions.push(...c);
+    });
+    Log.info(`Obtained ${conclusions.length} new conclusion(s)`);
 
     // save conclusions
     if (conclusions.length > 0) {
-        Log.action(`Saving conclusions`);
-        updateJSON(book);
+        Log.action(`Saving conclusions`, () => {
+            updateJSON(book);
+        });
     }
-    else {
-        Log.info(`No deductions were made`);
-    }
-
-    // done
-    Log.success('Done');
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     try { main(); }
-    catch (err) {
-        Log.error(err.toString());
+    catch (err: any) {
+        Log.error(`${err}`);
         process.exit(1);
     }
 }

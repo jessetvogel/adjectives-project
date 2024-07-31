@@ -62,7 +62,7 @@ export function pageExample(summary: Book, options: any): HTMLElement {
         }
         katexTypeset(tableAdjectives);
 
-    }).catch(error => {
+    }).catch((error: any) => {
         console.log(`[ERROR] ${error}`);
     });
 

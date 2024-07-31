@@ -1,1 +1,0 @@
-{"type":"scheme adjective","name":"irreducible","description":"A scheme $X$ is irreducible if its underlying topological space is irreducible, that is, if it is non-empty and cannot be written as a union $X = Z_1 \\cup Z_2$ of two closed proper subsets $Z_1, Z_2 \\subsetneq X$."}

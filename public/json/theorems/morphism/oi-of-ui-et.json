@@ -1,1 +1,0 @@
-{"type":"theorem","name":"open immersion is universally injective and étale","given":"morphism f","if":["f universally-injective","f etale"],"then":"f open-immersion","converse":true,"description":"https://stacks.math.columbia.edu/tag/025G"}

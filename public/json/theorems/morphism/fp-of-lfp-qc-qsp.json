@@ -1,1 +1,0 @@
-{"type":"theorem","name":"definition of finite presentation","given":"morphism f","if":["f locally-of-finite-presentation","f quasi-compact","f quasi-separated"],"then":"f of-finite-presentation","converse":true}

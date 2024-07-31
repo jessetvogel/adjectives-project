@@ -1,1 +1,0 @@
-{"type":"theorem","name":"morphisms locally of finite type with locally Noetherian target are locally of finite presentation","given":"morphism f","if":["f locally-of-finite-type","f.target locally-noetherian"],"then":"f locally-of-finite-presentation"}

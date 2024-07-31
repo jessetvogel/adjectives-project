@@ -1,1 +1,0 @@
-{"type":"theorem","name":"semi-separated morphisms with semi-separated target have semi-separated source","given":"morphism f","if":["f semi-separated","f.target semi-separated"],"then":"f.source semi-separated"}

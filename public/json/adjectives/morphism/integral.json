@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"integral","description":"A morphism $f : X \\to Y$ of schemes is integral if $f$ is affine and for every affine open $\\Spec R = V \\subset Y$ with inverse image $\\Spec A = f^{-1}(V) \\subset X$ the associated ring map $R \\to A$ is integral."}

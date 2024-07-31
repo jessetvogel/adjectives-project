@@ -1,1 +1,0 @@
-{"type":"theorem","name":"H-projective morphisms are bundle-projective","given":"morphism f","if":"f h-projective","then":"f bundle-projective"}

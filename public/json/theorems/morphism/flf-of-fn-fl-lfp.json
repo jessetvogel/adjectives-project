@@ -1,1 +1,0 @@
-{"type":"theorem","name":"finite locally free is finite, flat and locally of finite presentation","given":"morphism f","if":["f finite","f flat","f locally-of-finite-presentation"],"then":"f finite-locally-free","converse":true,"description":"https://stacks.math.columbia.edu/tag/02KB"}

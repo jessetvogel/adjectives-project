@@ -1,1 +1,0 @@
-{"type":"theorem","name":"smooth morphisms with regular target have regular source","given":"morphism f","if":["f smooth","f.target regular"],"then":"f.source regular"}

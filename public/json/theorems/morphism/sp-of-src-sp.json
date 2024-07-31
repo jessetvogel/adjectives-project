@@ -1,1 +1,0 @@
-{"type":"theorem","name":"morphisms with separated source are separated","given":"morphism f","if":"f.source separated","then":"f separated","description":"https://stacks.math.columbia.edu/tag/01KV"}

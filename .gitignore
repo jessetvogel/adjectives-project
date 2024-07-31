@@ -10,6 +10,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Built files
+js/**/*.js
+public/js/**/*.js
+public/css/**/*.css
+public/json/**/*.json
+
 # Source maps
 *.js.map
 *.css.map

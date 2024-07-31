@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"H-projective","description":"A morphism $f : X \\to Y$ of schemes is H-projective (or Hartshorne projective) if it factors as $X \\xrightarrow{i} \\PP^n_Y \\xrightarrow{\\pi} Y$ for some integer $n$, with $i$ a closed immersion and $\\pi$ the projection."}

@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"closed immersion","verb":["is a","is not a"],"description":"A morphism $f : X \\to Y$ of schemes is a closed immersion if $i$ induces a homeomorphism of the underlying topological space of $X$ onto a closed subset of that of $Y$, and furthermore the induced map $f^\\# : \\mathcal{O}_Y \\to f_* \\mathcal{O}_X$ of sheaves on $Y$ is surjective."}

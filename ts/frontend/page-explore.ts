@@ -182,8 +182,8 @@ function deserializeContext(summary: Book, str: string): [string, Context] | nul
             object.adjectives[adj] = data[key];
         }
         return [type, context];
-    } catch (err) {
-        console.log(err.toString());
+    } catch (err: any) {
+        console.log(`${err}`);
         return null;
     }
 }
@@ -276,7 +276,7 @@ function deduce(summary: Book, context: Context, resultsElem: HTMLElement, onlyS
             resultsElem.append(tableElem);
         }
     }
-    catch (err) {
+    catch (err: any) {
         if (err instanceof ContradictionError) {
             resultsElem.append(create('span', { class: 'title' }, 'Contradiction!'));
             resultsElem.append(create('p', { class: 'center' }, [

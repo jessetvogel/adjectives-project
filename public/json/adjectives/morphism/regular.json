@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"regular","description":"Let $f : X \\to Y$ be a morphism of schemes, and assume that all fibers $X_y$ are locally Noetherian. Then $f$ is regular at $x \\in X$ if $f$ is flat at $x$ and the fiber $X_{f(x)}$ is geometrically regular at $x$ over $\\kappa(y)$. The morphism $f$ is regular if it is regular at each $x \\in X$."}

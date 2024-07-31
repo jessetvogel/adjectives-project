@@ -1,1 +1,0 @@
-{"type":"scheme adjective","name":"connected","description":"A scheme $X$ is connected if its underlying topological space is connected, that is, the only subsets of $X$ that are both open and closed are $\\varnothing$ and $X$ itself."}

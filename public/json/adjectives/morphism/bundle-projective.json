@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"bundle-projective","description":"A morphism $f : X \\to Y$ of schemes is bundle-projective if $X$ is isomorphic as a $Y$-scheme to a closed subscheme of a projective bundle $\\PP(\\mathcal{E})$ for some finite locally free $\\mathcal{O}_Y$-module $\\mathcal{E}$."}

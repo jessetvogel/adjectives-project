@@ -1,1 +1,0 @@
-{"type":"theorem","name":"definition étale","given":"morphism f","if":["f flat","f unramified","f locally-of-finite-presentation"],"then":"f etale","converse":true}

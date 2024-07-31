@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"locally projective","description":"A morphism $f : X \\to Y$ of schemes is locally projective if there exists an open covering $Y = \\bigcup_i U_i$ such that $f^{-1}(U_i) \\to U_i$ is projective for each $i$."}

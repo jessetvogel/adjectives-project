@@ -1,1 +1,0 @@
-{"type":"theorem","name":"flat morphisms locally of finite presentation are universally open","given":"morphism f","if":["f flat","f locally-of-finite-presentation"],"then":"f universally-open","description":"https://stacks.math.columbia.edu/tag/01UA"}

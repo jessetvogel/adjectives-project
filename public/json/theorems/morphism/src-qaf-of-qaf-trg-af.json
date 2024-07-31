@@ -1,1 +1,0 @@
-{"type":"theorem","name":"quasi-affine morphisms with affine target have quasi-affine source","given":"morphism f","if":["f quasi-affine","f.target affine"],"then":"f.source quasi-affine"}
