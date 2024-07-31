@@ -1,1 +1,0 @@
-{"type":"scheme adjective","name":"reduced","description":"A scheme $X$ is reduced if for every open subset $U \\subset X$ the ring $\\mathcal{O}_X(U)$ has no non-zero nilpotent elements. Equivalently, this is the case if all stalks $\\mathcal{O}_{X, x}$ have no non-zero nilpotent elements."}

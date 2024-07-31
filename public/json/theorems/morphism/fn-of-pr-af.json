@@ -1,1 +1,0 @@
-{"type":"theorem","name":"finite is proper and affine","given":"morphism f","if":["f proper","f affine"],"then":"f finite","converse":true,"description":"https://lovelylittlelemmas.rjprojects.net/proper-affine-finite/"}

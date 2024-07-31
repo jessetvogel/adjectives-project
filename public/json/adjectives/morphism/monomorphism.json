@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"monomorphism","verb":["is a","is not a"],"description":"A morphism of schemes $f : X \\to Y$ is a monomorphism if it is a monomorphism in the category of schemes. Equivalently, $f$ is a monomorphism if the diagonal $\\Delta_{X/Y} : X \\to X \\times_Y X$ is an isomorphism."}

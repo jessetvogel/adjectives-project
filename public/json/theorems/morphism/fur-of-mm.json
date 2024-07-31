@@ -1,1 +1,0 @@
-{"type":"theorem","name":"monomorphisms are formally unramified","given":"morphism f","if":"f monomorphism","then":"f formally-unramified","description":"This is a formal consequency of the definition of formally unramified."}

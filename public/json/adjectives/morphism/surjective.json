@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"surjective","description":"A morphism $f : X \\to Y$ of schemes is surjective if the underlying map of topological spaces is surjective, that is, for every $y \\in Y$ there exists some $x \\in X$ such that $f(x) = y$."}

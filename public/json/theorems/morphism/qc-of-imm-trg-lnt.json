@@ -1,1 +1,0 @@
-{"type":"theorem","name":"immersions with locally Noetherian target are quasi-compact","given":"morphism f","if":["f immersion","f.target locally-noetherian"],"then":"f quasi-compact"}

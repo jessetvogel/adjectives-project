@@ -1,1 +1,0 @@
-{"type":"theorem","name":"morphisms with semi-separated source are semi-separated","given":"morphism f","if":"f.source semi-separated","then":"f semi-separated"}

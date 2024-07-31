@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"finite locally free","description":"A morphism $f : X \\to Y$ of schemes is finite locally free if $f$ is affine and $f_* \\mathcal{O}_X$ is a finite locally free $\\mathcal{O}_Y$-module."}

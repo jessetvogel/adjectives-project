@@ -1,1 +1,0 @@
-{"type":"morphism adjective","name":"closed","description":"A morphism $f : X \\to Y$ of schemes is closed if the image of every closed subset of $X$ is a closed subset of $Y$."}

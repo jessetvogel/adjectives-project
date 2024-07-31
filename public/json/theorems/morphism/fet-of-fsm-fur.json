@@ -1,1 +1,0 @@
-{"type":"theorem","name":"definition formally étale","given":"morphism f","if":["f formally-smooth","f formally-unramified"],"then":"f formally-etale","converse":true}

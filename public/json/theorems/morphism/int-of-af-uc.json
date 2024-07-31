@@ -1,1 +1,0 @@
-{"type":"theorem","name":"integral is affine and universally closed","given":"morphism f","if":["f affine","f universally-closed"],"then":"f integral","converse":true,"description":"https://stacks.math.columbia.edu/tag/01WM"}
