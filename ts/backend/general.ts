@@ -18,6 +18,8 @@ export class Log {
         if (process.stdout.clearLine && process.stdout.cursorTo) {
             process.stdout.clearLine(0);
             process.stdout.cursorTo(0);
+        }
+        else {
             process.stdout.write('\n');
         }
         process.stdout.write(`✅ ${msg}    \n`);
