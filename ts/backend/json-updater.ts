@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import { Book, Context } from '../shared/core.js'
-import { Log, PATH_JSON, PATH_QUESTIONS, PATH_SUMMARY } from './general.js';
+import { Book } from '../shared/core.js'
+import { Log, PATH_JSON, PATH_SUMMARY } from './general.js';
 
 function updateObject(source: any, target: any): boolean { // returns true if any actual change was made
     let changes = false;
@@ -32,7 +32,7 @@ function updateObject(source: any, target: any): boolean { // returns true if an
     return changes;
 }
 
-function updateJSONFile(filePath: string, data: any): void {
+function updateJSONFile(filePath: string, data: any): number {
     // update the json file with data, but also keep the original data (overwrite when applies)
     try {
         let json: any;
@@ -46,38 +46,37 @@ function updateJSONFile(filePath: string, data: any): void {
             changes = true;
             fs.mkdirSync(path.dirname(filePath), { recursive: true });
         }
-        if (changes) {
+        if (changes)
             fs.writeFileSync(filePath, JSON.stringify(json), 'utf8');
-            Log.success(`Updated '${filePath}'`);
-        }
+        return changes ? 1 : 0;
     }
     catch (err) {
         Log.error(`Failed to update '${filePath}': ${err}`);
+        return 0;
     }
 }
 
-function updateSummary(book: Book): void {
-    updateJSONFile(PATH_SUMMARY, book.serialize());
+function updateSummary(book: Book): number {
+    return updateJSONFile(PATH_SUMMARY, book.serialize());
 }
 
-export function updateJSON(book: Book): void {
+export function updateJSON(book: Book): number {
+    let changedFiles = 0;
     // update all json files
     for (const id in book.types)
-        updateJSONFile(`${PATH_JSON}/types/${id}.json`, book.serializeType(book.types[id], true));
+        changedFiles += updateJSONFile(`${PATH_JSON}/types/${id}.json`, book.serializeType(book.types[id], true));
     for (const type in book.adjectives)
         for (const id in book.adjectives[type])
-            updateJSONFile(`${PATH_JSON}/adjectives/${type}/${id}.json`, book.serializeAdjective(book.adjectives[type][id], true));
+            changedFiles += updateJSONFile(`${PATH_JSON}/adjectives/${type}/${id}.json`, book.serializeAdjective(book.adjectives[type][id], true));
     for (const type in book.theorems)
         for (const id in book.theorems[type])
-            updateJSONFile(`${PATH_JSON}/theorems/${type}/${id}.json`, book.serializeTheorem(book.theorems[type][id], true));
+            changedFiles += updateJSONFile(`${PATH_JSON}/theorems/${type}/${id}.json`, book.serializeTheorem(book.theorems[type][id], true));
     for (const type in book.examples)
         for (const id in book.examples[type])
-            updateJSONFile(`${PATH_JSON}/examples/${type}/${id}.json`, book.serializeExample(book.examples[type][id], true));
+            changedFiles += updateJSONFile(`${PATH_JSON}/examples/${type}/${id}.json`, book.serializeExample(book.examples[type][id], true));
 
     // update the summary file
-    updateSummary(book);
-}
+    changedFiles += updateSummary(book);
 
-export function updateQuestions(questions: Context[]): void {
-    fs.writeFileSync(PATH_QUESTIONS, JSON.stringify(questions), 'utf8');
+    return changedFiles;
 }

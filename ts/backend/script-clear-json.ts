@@ -6,12 +6,13 @@ function main() {
     try {
         // delete json directory, and create a fresh one
         if (fs.existsSync(PATH_JSON)) {
-            Log.action(`Deleting '${PATH_JSON}'`);
-            fs.rmSync(PATH_JSON, { recursive: true });
+            Log.action(`Deleting '${PATH_JSON}'`, () => {
+                fs.rmSync(PATH_JSON, { recursive: true });
+            });
         }
-        Log.action(`Creating '${PATH_JSON}'`);
-        fs.mkdirSync(PATH_JSON);
-        Log.success('Done');
+        Log.action(`Creating '${PATH_JSON}'`, () => {
+            fs.mkdirSync(PATH_JSON);
+        });
     }
     catch (err: any) {
         Log.error(err.stack);

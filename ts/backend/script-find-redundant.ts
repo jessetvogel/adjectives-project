@@ -22,9 +22,6 @@ function main() {
 
         // find redundant examples
         findRedundantExamples(book);
-
-        // done
-        Log.success('Done')
     }
     catch (err: any) {
         Log.error(err.stack);
