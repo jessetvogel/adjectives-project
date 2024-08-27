@@ -10,10 +10,10 @@
     "find-redundant": "node --enable-source-maps ./js/backend/script-find-redundant.js",
     "build": "npm run clear && npm run build-js && npm run build-css && npm run build-json",
     "build-css": "node ./js/backend/script-build-css.js",
-    "build-js": "(cd ts && tsc --project tsconfig.backend.json) && (cd ts && tsc --project tsconfig.frontend.json)",
+    "build-js": "(cd ts && npx tsc --project tsconfig.backend.json) && (cd ts && npx tsc --project tsconfig.frontend.json)",
     "build-json": "npm run clear-json && npm run update-json-from-yaml && npm run deduce",
-    "watch-ts": "(cd ts && tsc -w --project tsconfig.backend.json) & (cd ts && tsc -w --project tsconfig.frontend.json)",
-    "watch-scss": "(cd scss && sass -w index.scss:../public/css/index.css)",
+    "watch-ts": "(cd ts && npx tsc -w --project tsconfig.backend.json) & (cd ts && npx tsc -w --project tsconfig.frontend.json)",
+    "watch-scss": "(cd scss && npx sass -w index.scss:../public/css/index.css)",
     "watch-yaml": "node --enable-source-maps ./js/backend/script-watch-yaml.js",
     "clear": "rm -rf public/css && rm -rf public/js && rm -rf public/json && rm -rf js"
   },
@@ -23,7 +23,10 @@
   "dependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.14.1",
-    "js-yaml": "^4.1.0",
-    "sass": "^1.77.8"
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "sass": "^1.77.8",
+    "typescript": "^5.5.4"
   }
 }
