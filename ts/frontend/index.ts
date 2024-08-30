@@ -54,4 +54,4 @@ function initTheme(): void {
     }, 100);
 }
 
-window.onload = main;
+document.addEventListener('DOMContentLoaded', main);
