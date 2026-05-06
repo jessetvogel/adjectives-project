@@ -126,7 +126,16 @@ function findRedundantExamples(book: Book): void {
         for (const id in book.examples[type]) {
             const example = book.examples[type][id];
             const context = createLocalContext(book, type, id); // TODO: we could also just split up all examples into local contexts beforehand, would save some time
+
+            const pathExample = `./public/json/examples/${type}/${id}.json`;
+            const exampleWithProofs = book.deserializeExample("tmp", JSON.parse(fs.readFileSync(pathExample, 'utf8')));
+
             for (const adjective in example.adjectives) {
+                // skip adjectives that have human-written proof
+                if (adjective in exampleWithProofs.proofs && typeof exampleWithProofs.proofs[adjective] === "string") {
+                    continue;
+                }
+
                 // create context where example does not have adjective
                 const contextCopy = structuredClone(context);
                 delete contextCopy[type][id].adjectives[adjective];
