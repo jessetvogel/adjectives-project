@@ -5,13 +5,13 @@ import { create } from './util.js';
 
 const ADJECTIVES_CONSTRAINTS: { [type: string]: { [adj: string]: boolean[] } } = {
     'scheme': {
-        'cohen-macaulay': [],
+        // 'cohen-macaulay': [],
         'connected': [true],
-        'excellent': [],
+        // 'excellent': [],
         // 'finite-dimensional',
         // 'integral',
         // 'irreducible',
-        'jacobson': [],
+        // 'jacobson': [],
         // 'locally-noetherian',
         // 'noetherian',
         // 'normal',
